@@ -1,77 +1,83 @@
 <template>
   <section id="cost" class="section bg-alt">
-    <div class="section-eyebrow">Revenue Impact</div>
-    <h2 class="grad-text">What Silence Is<br />Costing You.</h2>
-    <p class="section-sub">
-      Conservative monthly estimate for a mid-size business:
-    </p>
-    <div class="cost-row">
-      <div class="cost-cell">
-        <div class="cost-big">4</div>
-        <div class="cost-lbl">Missed calls<br />per night</div>
+    <div class="section-inner">
+      <div class="section-eyebrow">Revenue Impact</div>
+      <h2 class="grad-text">What Silence Is<br />Costing You.</h2>
+      <p class="section-sub">
+        Conservative monthly estimate for a mid-size business:
+      </p>
+
+      <div class="cost-scroll">
+        <div class="cost-row">
+          <div class="cost-cell">
+            <div class="cost-big">4</div>
+            <div class="cost-lbl">Missed calls<br />per night</div>
+          </div>
+          <div class="cost-op">&times;</div>
+          <div class="cost-cell">
+            <div class="cost-big">30</div>
+            <div class="cost-lbl">Nights<br />per month</div>
+          </div>
+          <div class="cost-op">&times;</div>
+          <div class="cost-cell">
+            <div class="cost-big">$250</div>
+            <div class="cost-lbl">Avg booking<br />value</div>
+          </div>
+          <div class="cost-op">=</div>
+          <div class="cost-cell cost-cell-highlight">
+            <div class="cost-big cost-big-highlight">$30K</div>
+            <div class="cost-lbl">Lost revenue<br />per month</div>
+          </div>
+        </div>
       </div>
-      <div class="cost-op">&times;</div>
-      <div class="cost-cell">
-        <div class="cost-big">30</div>
-        <div class="cost-lbl">Nights<br />per month</div>
-      </div>
-      <div class="cost-op">&times;</div>
-      <div class="cost-cell">
-        <div class="cost-big">$250</div>
-        <div class="cost-lbl">Avg booking<br />value</div>
-      </div>
-      <div class="cost-op">=</div>
-      <div class="cost-cell cost-cell-highlight">
-        <div class="cost-big cost-big-highlight">$30K</div>
-        <div class="cost-lbl">Lost revenue<br />per month</div>
-      </div>
+
+      <p class="cost-note">
+        That is up to <strong>$30,000+ in walkaway revenue</strong> every single
+        month. NAP Solutions captures it back.
+      </p>
     </div>
-    <p class="cost-note">
-      That's up to <strong>$30,000+ in walkaway revenue</strong> every single
-      month. NAP Solutions captures it back.
-    </p>
   </section>
 </template>
 
 <style scoped>
-.section {
-  padding: 72px 60px;
-  position: relative;
-}
 .bg-alt {
   background: #f5f7fb;
+}
+.cost-scroll {
+  overflow-x: auto;
+  padding-bottom: 10px;
 }
 .cost-row {
   display: flex;
   align-items: stretch;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(10,15,30,0.08);
-  margin: 48px 0 32px;
+  border: 1px solid rgba(10, 15, 30, 0.08);
+  margin: clamp(2rem, 5vw, 3rem) 0 28px;
   background: #fff;
-  box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
 }
 .cost-cell {
   flex: 1;
-  padding: 38px 28px;
+  min-width: 180px;
+  padding: 32px 22px;
   text-align: center;
-  border-right: 1px solid rgba(10,15,30,0.08);
-  border-left: 1px solid rgba(10,15,30,0.08);
+  border-right: 1px solid rgba(10, 15, 30, 0.08);
+  border-left: 1px solid rgba(10, 15, 30, 0.08);
 }
 .cost-cell-highlight {
-  background: linear-gradient(135deg, rgba(123,47,255,0.04), rgba(0,212,192,0.04));
+  background: linear-gradient(135deg, rgba(123, 47, 255, 0.04), rgba(0, 212, 192, 0.04));
 }
 .cost-big {
   font-family: 'Orbitron', sans-serif;
-  font-size: 38px;
+  font-size: clamp(1.9rem, 1.6rem + 0.8vw, 2.4rem);
   font-weight: 900;
-  color: #7B2FFF;
+  color: #7b2fff;
   margin-bottom: 10px;
   line-height: 1;
 }
 .cost-big-highlight {
-  font-size: 46px;
-  background: linear-gradient(135deg, #7B2FFF, #00D4C0);
+  background: linear-gradient(135deg, #7b2fff, #00d4c0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -84,9 +90,9 @@
 }
 .cost-op {
   font-family: 'Orbitron', sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
-  color: rgba(123,47,255,0.2);
+  color: rgba(123, 47, 255, 0.2);
   display: flex;
   align-items: center;
   padding: 0 4px;
@@ -95,17 +101,14 @@
   font-size: 18px;
   color: #4a5580;
   line-height: 1.8;
+  max-width: 62ch;
 }
 .cost-note strong {
-  color: #7B2FFF;
+  color: #7b2fff;
   font-weight: 700;
 }
 
 @media (max-width: 960px) {
-  .section {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
   .cost-row {
     flex-direction: column;
   }

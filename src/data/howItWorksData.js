@@ -12,7 +12,7 @@ export const functionCards = [
   {
     num: '03',
     title: 'Reschedule',
-    desc: 'Handles rescheduling requests — finds a new time and updates the calendar automatically.',
+    desc: 'Handles rescheduling requests - finds a new time and updates the calendar automatically.',
   },
   {
     num: '04',
@@ -22,7 +22,7 @@ export const functionCards = [
   {
     num: '05',
     title: 'Look Up Appointment',
-    desc: 'Callers can check their booking details anytime — day or night, no staff needed.',
+    desc: 'Callers can check their booking details anytime - day or night, no staff needed.',
   },
   {
     num: '06',

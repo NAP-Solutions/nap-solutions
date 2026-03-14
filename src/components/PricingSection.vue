@@ -6,79 +6,77 @@ defineEmits(['open-booking'])
 
 <template>
   <section id="pricing" class="section bg-white">
-    <div class="section-eyebrow">Pricing</div>
-    <h2 class="grad-text">
-      Simple. Transparent.<br />No Hidden Fees.
-    </h2>
-    <p class="section-sub">
-      All plans include full setup, onboarding, and calendar integration. Book
-      a demo and we'll walk you through everything.
-    </p>
-    <div class="pricing-grid">
-      <div
-        v-for="plan in pricingPlans"
-        :key="plan.tier"
-        class="pricing-card"
-        :class="{ featured: plan.featured }"
-      >
-        <div v-if="plan.featured" class="popular-badge">MOST POPULAR</div>
-        <div class="pricing-tier">{{ plan.tier }}</div>
-        <div class="pricing-mins">{{ plan.minutes }}</div>
-        <div class="pricing-divider"></div>
-        <ul class="pricing-features">
-          <li v-for="(feat, i) in plan.features" :key="i">{{ feat }}</li>
-        </ul>
-        <button
-          :class="plan.featured ? 'btn-primary' : 'btn-ghost'"
-          style="width: 100%"
-          @click="$emit('open-booking')"
+    <div class="section-inner">
+      <div class="section-eyebrow">Pricing</div>
+      <h2 class="grad-text">
+        Simple. Transparent.<br />No Hidden Fees.
+      </h2>
+      <p class="section-sub">
+        All plans include full setup, onboarding, and calendar integration. Book
+        a demo and we will walk you through everything.
+      </p>
+      <div class="pricing-grid">
+        <div
+          v-for="plan in pricingPlans"
+          :key="plan.tier"
+          class="pricing-card"
+          :class="{ featured: plan.featured }"
         >
-          Book a Demo
-        </button>
+          <div v-if="plan.featured" class="popular-badge">MOST POPULAR</div>
+          <div class="pricing-tier">{{ plan.tier }}</div>
+          <div class="pricing-mins">{{ plan.minutes }}</div>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li v-for="(feat, i) in plan.features" :key="i">{{ feat }}</li>
+          </ul>
+          <button
+            :class="plan.featured ? 'btn-primary' : 'btn-ghost'"
+            style="width: 100%"
+            @click="$emit('open-booking')"
+          >
+            Book a Demo
+          </button>
+        </div>
       </div>
+      <p class="pricing-footer">
+        All plans include full setup, onboarding, and calendar integration. No
+        hidden fees.
+      </p>
     </div>
-    <p class="pricing-footer">
-      All plans include full setup, onboarding, and calendar integration. No
-      hidden fees.
-    </p>
   </section>
 </template>
 
 <style scoped>
-.section {
-  padding: 72px 60px;
-  position: relative;
-}
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 22px;
-  margin-top: 52px;
+  margin-top: clamp(2rem, 5vw, 3.2rem);
 }
 .pricing-card {
   border-radius: 20px;
-  padding: 42px 36px;
+  padding: 36px 30px;
   background: #fff;
-  border: 1px solid rgba(10,15,30,0.08);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  border: 1px solid rgba(10, 15, 30, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
   overflow: hidden;
 }
 .pricing-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 50px rgba(123,47,255,0.1);
+  box-shadow: 0 20px 50px rgba(123, 47, 255, 0.1);
 }
 .pricing-card.featured {
   background: linear-gradient(135deg, #faf8ff, #f0faff);
-  border-color: rgba(123,47,255,0.3);
-  box-shadow: 0 8px 40px rgba(123,47,255,0.12);
+  border-color: rgba(123, 47, 255, 0.3);
+  box-shadow: 0 8px 40px rgba(123, 47, 255, 0.12);
 }
 .popular-badge {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: linear-gradient(135deg, #7B2FFF, #00D4C0);
+  background: linear-gradient(135deg, #7b2fff, #00d4c0);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -90,7 +88,7 @@ defineEmits(['open-booking'])
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 4px;
-  color: #7B2FFF;
+  color: #7b2fff;
   margin-bottom: 10px;
   font-family: 'Space Mono', monospace;
 }
@@ -102,7 +100,7 @@ defineEmits(['open-booking'])
 }
 .pricing-divider {
   height: 1px;
-  background: rgba(10,15,30,0.08);
+  background: rgba(10, 15, 30, 0.08);
   margin-bottom: 24px;
 }
 .pricing-features {
@@ -114,14 +112,14 @@ defineEmits(['open-booking'])
   font-size: 16px;
   color: #4a5580;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(10,15,30,0.08);
+  border-bottom: 1px solid rgba(10, 15, 30, 0.08);
   display: flex;
   align-items: center;
   gap: 12px;
 }
 .pricing-features li::before {
   content: '\2713';
-  color: #00D4C0;
+  color: #00d4c0;
   font-size: 15px;
   font-weight: 700;
 }
@@ -131,15 +129,5 @@ defineEmits(['open-booking'])
   color: #8892b0;
   margin-top: 28px;
   letter-spacing: 1px;
-}
-
-@media (max-width: 960px) {
-  .section {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-  .pricing-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

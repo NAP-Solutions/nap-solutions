@@ -11,27 +11,27 @@ export const faqItems = [
   {
     cat: 'general',
     q: 'What exactly is NAP Solutions?',
-    a: 'NAP Solutions provides an AI-powered receptionist that answers your business calls 24/7. It books appointments, handles inquiries, reschedules, cancels, and escalates to your team when needed — all without any human staff required.',
+    a: 'NAP Solutions provides an AI-powered receptionist that answers your business calls 24/7. It books appointments, handles inquiries, reschedules, cancels, and escalates to your team when needed - all without any human staff required.',
   },
   {
     cat: 'general',
     q: 'How does the AI know how to handle my calls?',
-    a: "During setup, we fully configure the AI to understand your business — your services, hours, tone, and booking rules. It's trained on your specific information so it always sounds like a natural extension of your team, not a generic bot.",
+    a: "During setup, we fully configure the AI to understand your business - your services, hours, tone, and booking rules. It's trained on your specific information so it always sounds like a natural extension of your team, not a generic bot.",
   },
   {
     cat: 'general',
     q: 'Do I need any special equipment or software?',
-    a: 'No hardware or new software is required. NAP Solutions works with your existing phone number and integrates directly with the calendar software you already use — setup is simple and handled by our team.',
+    a: 'No hardware or new software is required. NAP Solutions works with your existing phone number and integrates directly with the calendar software you already use - setup is simple and handled by our team.',
   },
   {
     cat: 'general',
     q: 'What types of businesses does NAP Solutions work best for?',
-    a: 'NAP Solutions is ideal for any appointment-based business — medical, dental, legal, wellness, home services, beauty, fitness, and more. If your business relies on phone bookings and misses calls after hours, NAP Solutions is built for you.',
+    a: 'NAP Solutions is ideal for any appointment-based business - medical, dental, legal, wellness, home services, beauty, fitness, and more. If your business relies on phone bookings and misses calls after hours, NAP Solutions is built for you.',
   },
   {
     cat: 'calls',
     q: 'Can the AI book, reschedule, and cancel appointments?',
-    a: 'Yes — the AI handles all of it. It checks your live calendar availability, books new appointments, reschedules existing ones, and processes cancellations, all in real time directly into your scheduling system.',
+    a: 'Yes - the AI handles all of it. It checks your live calendar availability, books new appointments, reschedules existing ones, and processes cancellations, all in real time directly into your scheduling system.',
   },
   {
     cat: 'calls',
@@ -41,17 +41,17 @@ export const faqItems = [
   {
     cat: 'calls',
     q: 'What happens to calls I miss before signing up?',
-    a: "Once NAP Solutions is live on your number, every incoming call is answered immediately. Past missed calls can't be recovered, but from day one you'll never lose a booking to an unanswered phone again.",
+    a: "Once NAP Solutions is live on your number, every incoming call is answered immediately. Past missed calls cannot be recovered, but from day one you will never lose a booking to an unanswered phone again.",
   },
   {
     cat: 'calls',
     q: 'Does the AI sound natural, or robotic?',
-    a: "NAP Solutions uses advanced voice AI that sounds warm, professional, and conversational. Most callers won't know they're speaking to an AI — they'll simply experience a fast, friendly receptionist who gets the job done.",
+    a: "NAP Solutions uses advanced voice AI that sounds warm, professional, and conversational. Most callers will not know they are speaking to an AI - they will simply experience a fast, friendly receptionist who gets the job done.",
   },
   {
     cat: 'setup',
     q: 'How long does setup take?',
-    a: "Most businesses are fully up and running within a few business days. Our team handles all configuration, testing, and integration — you don't need to be technical to get started.",
+    a: 'Most businesses are fully up and running within a few business days. Our team handles all configuration, testing, and integration - you do not need to be technical to get started.',
   },
   {
     cat: 'setup',
@@ -66,7 +66,7 @@ export const faqItems = [
   {
     cat: 'pricing',
     q: 'How much does NAP Solutions cost?',
-    a: 'We offer three plans — Growth (2,000 min/month), Scale (4,000 min/month), and Enterprise (8,000 min/month). Pricing is discussed during your demo so we can match the right plan to your call volume and business needs.',
+    a: 'We offer three plans - Growth (2,000 min/month), Scale (4,000 min/month), and Enterprise (8,000 min/month). Pricing is discussed during your demo so we can match the right plan to your call volume and business needs.',
   },
   {
     cat: 'pricing',
@@ -76,12 +76,12 @@ export const faqItems = [
   {
     cat: 'pricing',
     q: "What's included in all plans?",
-    a: 'Every plan includes full setup and onboarding, calendar integration, call summaries, and 24/7 AI coverage. There are no hidden fees — what you see is what you get.',
+    a: 'Every plan includes full setup and onboarding, calendar integration, call summaries, and 24/7 AI coverage. There are no hidden fees - what you see is what you get.',
   },
   {
     cat: 'availability',
     q: 'Is NAP Solutions truly available 24/7?',
-    a: "Yes — nights, weekends, holidays, and every moment in between. The AI never sleeps, never calls in sick, and never puts a caller on hold. It's always on, always professional.",
+    a: "Yes - nights, weekends, holidays, and every moment in between. The AI never sleeps, never calls in sick, and never puts a caller on hold. It's always on and always professional.",
   },
   {
     cat: 'availability',
@@ -91,6 +91,6 @@ export const faqItems = [
   {
     cat: 'availability',
     q: 'Can I still take calls myself while using NAP Solutions?',
-    a: "Yes. NAP Solutions is designed to complement your team — it handles the overflow and after-hours calls you'd otherwise miss, while you and your staff continue taking calls during business hours as usual.",
+    a: "Yes. NAP Solutions is designed to complement your team - it handles the overflow and after-hours calls you would otherwise miss, while you and your staff continue taking calls during business hours as usual.",
   },
 ]

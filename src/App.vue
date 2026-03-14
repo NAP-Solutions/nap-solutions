@@ -25,15 +25,17 @@ function closeBooking() {
 
 <template>
   <NavBar @open-booking="openBooking" />
-  <HeroSection @open-booking="openBooking" />
-  <MarqueeBar />
-  <ProblemSection />
-  <CostSection />
-  <SolutionSection />
-  <HowItWorksSection />
-  <PricingSection @open-booking="openBooking" />
-  <FaqSection @open-booking="openBooking" />
-  <CtaSection @open-booking="openBooking" />
+  <main>
+    <HeroSection @open-booking="openBooking" />
+    <MarqueeBar />
+    <ProblemSection />
+    <CostSection />
+    <SolutionSection />
+    <HowItWorksSection />
+    <PricingSection @open-booking="openBooking" />
+    <FaqSection @open-booking="openBooking" />
+    <CtaSection @open-booking="openBooking" />
+  </main>
   <SiteFooter @open-booking="openBooking" />
   <BookingModal :open="bookingOpen" @close="closeBooking" />
 </template>
