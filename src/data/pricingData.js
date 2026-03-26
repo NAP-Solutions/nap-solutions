@@ -17,6 +17,7 @@ export const pricingPlans = [
     price: '$1,200',
     badge: null,
     featured: false,
+    badge: null,
     features: [
       '24/7 AI receptionist',
       'Calendar integration',
@@ -34,6 +35,7 @@ export const pricingPlans = [
     price: '$2,100',
     badge: 'MOST POPULAR',
     featured: true,
+    badge: 'MOST POPULAR',
     features: [
       '24/7 AI receptionist',
       'Calendar integration',
@@ -51,6 +53,7 @@ export const pricingPlans = [
     price: '$4,100',
     badge: null,
     featured: false,
+    badge: null,
     features: [
       'Multiple locations',
       'Custom call volume',
