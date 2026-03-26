@@ -8,28 +8,36 @@ import {
   Check,
   Send,
 } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
+const headerRef = ref(null)
+const stepRefs = ref([])
+const chatRef = ref(null)
+
+useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 </script>
 
 <template>
   <section id="how" class="section bg-alt">
     <div class="section-inner">
-      <div class="section-eyebrow">How It Works</div>
-      <h2 class="grad-text">
-        From First Ring<br />To Fully Booked.
-      </h2>
-      <p class="section-sub">
-        Every call handled end-to-end. Here's exactly what our AI takes care
-        of so you don't have to.
-      </p>
+      <div class="reveal-header" ref="headerRef">
+        <div class="section-eyebrow">How It Works</div>
+        <h2 class="grad-text">
+          From First Ring<br />To Fully Booked.
+        </h2>
+        <p class="section-sub">
+          Every call handled end-to-end. Here's exactly what our AI takes care
+          of so you don't have to.
+        </p>
+      </div>
 
       <div class="hiw-layout">
         <!-- Step cards -->
         <div class="steps-col">
-          <div class="step-card">
+          <div class="step-card" :ref="el => stepRefs[0] = el">
             <div class="step-icon-wrap">
-              <div class="step-icon si-purple">
-                <PhoneCall :size="20" />
-              </div>
+              <div class="step-icon si-purple"><PhoneCall :size="20" /></div>
               <span class="step-num">01</span>
             </div>
             <div class="step-content">
@@ -38,11 +46,9 @@ import {
             </div>
           </div>
 
-          <div class="step-card">
+          <div class="step-card" :ref="el => stepRefs[1] = el">
             <div class="step-icon-wrap">
-              <div class="step-icon si-cyan">
-                <MessageCircle :size="20" />
-              </div>
+              <div class="step-icon si-cyan"><MessageCircle :size="20" /></div>
               <span class="step-num">02</span>
             </div>
             <div class="step-content">
@@ -51,11 +57,9 @@ import {
             </div>
           </div>
 
-          <div class="step-card">
+          <div class="step-card" :ref="el => stepRefs[2] = el">
             <div class="step-icon-wrap">
-              <div class="step-icon si-purple">
-                <CalendarCheck :size="20" />
-              </div>
+              <div class="step-icon si-purple"><CalendarCheck :size="20" /></div>
               <span class="step-num">03</span>
             </div>
             <div class="step-content">
@@ -64,11 +68,9 @@ import {
             </div>
           </div>
 
-          <div class="step-card">
+          <div class="step-card" :ref="el => stepRefs[3] = el">
             <div class="step-icon-wrap">
-              <div class="step-icon si-cyan">
-                <ShieldCheck :size="20" />
-              </div>
+              <div class="step-icon si-cyan"><ShieldCheck :size="20" /></div>
               <span class="step-num">04</span>
             </div>
             <div class="step-content">
@@ -79,7 +81,7 @@ import {
         </div>
 
         <!-- Chat widget -->
-        <div class="chat-col">
+        <div class="chat-col" ref="chatRef">
           <div class="chat-widget">
             <div class="chat-header">
               <div class="ch-dots">
@@ -174,7 +176,9 @@ import {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   position: relative;
   overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, box-shadow 0.2s;
 }
 .step-card::before {
   content: '';
@@ -224,7 +228,7 @@ import {
   color: #00b8a6;
 }
 .step-num {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   color: #00d4c0;
   letter-spacing: 0.1em;
@@ -234,22 +238,47 @@ import {
   min-width: 0;
 }
 .step-title {
-  font-size: 15px;
+  font-size: clamp(15px, 0.9rem + 0.2vw, 17px);
   font-weight: 700;
   color: #0a0f1e;
   letter-spacing: -0.01em;
   margin-bottom: 5px;
 }
 .step-desc {
-  font-size: 13px;
+  font-size: clamp(14px, 0.85rem + 0.15vw, 15px);
   color: #8892b0;
   line-height: 1.7;
 }
+
+.reveal-header {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-header[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.step-card[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.step-card:nth-child(2) { transition-delay: 0.1s; }
+.step-card:nth-child(3) { transition-delay: 0.2s; }
+.step-card:nth-child(4) { transition-delay: 0.3s; }
 
 /* Chat widget */
 .chat-col {
   position: sticky;
   top: 100px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+}
+.chat-col[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
 }
 .chat-widget {
   border-radius: 18px;
@@ -297,7 +326,7 @@ import {
   flex-direction: column;
 }
 .ch-name {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
@@ -305,14 +334,14 @@ import {
   text-overflow: ellipsis;
 }
 .ch-sub {
-  font-size: 9px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.38);
 }
 .ch-live {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #00d4c0;
@@ -338,7 +367,7 @@ import {
 .bubble {
   border-radius: 14px;
   padding: 10px 13px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
   max-width: 88%;
 }
@@ -358,7 +387,7 @@ import {
   text-align: right;
 }
 .bubble-meta {
-  font-size: 9px;
+  font-size: 11px;
   color: #9aa0b8;
   margin-top: 0;
   margin-bottom: 4px;
@@ -397,13 +426,13 @@ import {
 }
 .confirm-icon :deep(svg) { display: block; }
 .confirm-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: #00897b;
   letter-spacing: 0.08em;
 }
 .confirm-detail {
-  font-size: 11px;
+  font-size: 13px;
   color: #4a5580;
   line-height: 1.65;
 }
@@ -427,7 +456,7 @@ import {
   border: 1.5px solid rgba(10, 15, 30, 0.09);
   border-radius: 10px;
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: 13px;
   color: #b0b8cc;
 }
 .chat-send {
@@ -460,14 +489,8 @@ import {
     display: none;
   }
   .step-card {
-    padding: 16px 14px;
-    gap: 14px;
-  }
-  .step-title {
-    font-size: 14px;
-  }
-  .step-desc {
-    font-size: 13px;
+    padding: 18px 16px;
+    gap: 16px;
   }
 }
 </style>
