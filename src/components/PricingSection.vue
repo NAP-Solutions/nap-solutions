@@ -44,9 +44,7 @@ defineEmits(['open-booking'])
           <button
             class="btn-primary"
             style="width: 100%"
-            @click="$emit('open-booking')"
-          >
-            {{ plan.tier === 'ENTERPRISE' ? 'Contact Us' : 'Book a Demo' }}
+            @click="$emit('open-booking')"}}
           </button>
         </div>
       </div>
