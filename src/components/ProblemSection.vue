@@ -1,31 +1,47 @@
 <script setup>
+import { ref } from 'vue'
 import { problemItems, statCards } from '../data/problemData'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
+const headerRef = ref(null)
+const itemRefs = ref([])
+const statRefs = ref([])
+
+useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
 </script>
 
 <template>
   <section id="problem" class="section bg-white">
     <div class="section-inner">
-      <div class="section-eyebrow">The Problem</div>
-      <h2 class="grad-text">
-        Your Phone Stops Working<br />When Clients Need It Most.
-      </h2>
-      <p class="section-sub">
-        Businesses are losing bookings every night, every weekend, and most do
-        not even realize it.
-      </p>
+      <div class="reveal-header" ref="headerRef">
+        <div class="section-eyebrow">The Problem</div>
+        <h2 class="grad-text">
+          Your Phone Stops Working<br />When Clients Need It Most.
+        </h2>
+        <p class="section-sub">
+          Businesses are losing bookings every night, every weekend, and most do
+          not even realize it.
+        </p>
+      </div>
       <div class="problem-layout">
         <div class="problem-list">
           <div
             v-for="(item, i) in problemItems"
             :key="i"
             class="problem-item"
+            :ref="el => itemRefs[i] = el"
           >
             <div class="problem-arrow">&rarr;</div>
             <p>{{ item }}</p>
           </div>
         </div>
         <div class="stats-col">
-          <div v-for="(stat, i) in statCards" :key="i" class="stat-card">
+          <div
+            v-for="(stat, i) in statCards"
+            :key="i"
+            class="stat-card"
+            :ref="el => statRefs[i] = el"
+          >
             <div class="big">{{ stat.big }}</div>
             <div class="lbl">{{ stat.label }}</div>
           </div>
@@ -36,6 +52,32 @@ import { problemItems, statCards } from '../data/problemData'
 </template>
 
 <style scoped>
+.reveal-header {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-header[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.problem-item,
+.stat-card {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.problem-item[data-revealed],
+.stat-card[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.problem-item:nth-child(2) { transition-delay: 0.08s; }
+.problem-item:nth-child(3) { transition-delay: 0.16s; }
+.problem-item:nth-child(4) { transition-delay: 0.24s; }
+.stat-card:nth-child(2) { transition-delay: 0.1s; }
+
 .problem-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
