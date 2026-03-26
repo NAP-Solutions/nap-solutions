@@ -134,10 +134,10 @@ onUnmounted(() => {
   object-fit: cover;
 }
 .nav-wordmark {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
   font-size: 16px;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.18em;
   white-space: nowrap;
   background: linear-gradient(90deg, #0a0f1e 0%, #7B2FFF 100%);
   -webkit-background-clip: text;
@@ -202,7 +202,6 @@ onUnmounted(() => {
   color: #fff;
   border: none;
   border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   font-weight: 700;
   padding: 12px 16px;
@@ -217,7 +216,7 @@ onUnmounted(() => {
   }
   .nav-wordmark {
     font-size: 14px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
   }
   .nav-toggle {
     display: inline-flex;
@@ -264,7 +263,7 @@ onUnmounted(() => {
 @media (max-width: 640px) {
   .nav-wordmark {
     font-size: 12px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
   }
 
   .nav-logo {

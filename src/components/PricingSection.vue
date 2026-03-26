@@ -90,7 +90,6 @@ defineEmits(['open-booking'])
   letter-spacing: 4px;
   color: #7b2fff;
   margin-bottom: 10px;
-  font-family: 'Space Mono', monospace;
 }
 .pricing-mins {
   font-size: 14px;

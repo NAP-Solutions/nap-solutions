@@ -106,9 +106,8 @@ import { problemItems, statCards } from '../data/problemData'
   border-radius: 3px 3px 0 0;
 }
 .stat-card .big {
-  font-family: 'Orbitron', sans-serif;
   font-size: 42px;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1;
   margin-bottom: 8px;
   background: linear-gradient(135deg, #7b2fff, #00d4c0);

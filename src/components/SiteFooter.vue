@@ -126,8 +126,8 @@ function scrollTo(id) {
   box-shadow: 0 0 8px #00d4c0;
 }
 .footer-wordmark {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
   font-size: 17px;
   letter-spacing: 5px;
   background: linear-gradient(90deg, #fff 0%, #00d4c0 100%);
@@ -203,9 +203,9 @@ function scrollTo(id) {
   gap: 10px;
 }
 .footer-tagline {
-  font-family: 'Space Mono', monospace;
   font-size: 11px;
-  letter-spacing: 3px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   color: rgba(0, 212, 192, 0.4);
 }
 
