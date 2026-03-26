@@ -127,11 +127,6 @@ function scrollToHow() {
             </div>
           </div>
 
-          <!-- Footer -->
-          <div class="dash-footer">
-            <span class="dash-footer-label">Est. revenue recovered tonight</span>
-            <span class="dash-footer-val">$2,750</span>
-          </div>
         </div>
       </div>
     </div>
@@ -270,7 +265,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
   color: #8892b0;
 }
@@ -350,7 +345,7 @@ h1 {
   min-width: 0;
 }
 .dash-ai-name {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
@@ -358,7 +353,7 @@ h1 {
   text-overflow: ellipsis;
 }
 .dash-ai-sub {
-  font-size: 9px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.38);
   white-space: nowrap;
 }
@@ -366,7 +361,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #00d4c0;
@@ -386,7 +381,7 @@ h1 {
   padding: 16px;
 }
 .dash-date {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   color: #8892b0;
   letter-spacing: 0.1em;
@@ -415,14 +410,14 @@ h1 {
 }
 .stat-num.stat-cyan { color: #00b8a6; }
 .stat-lbl {
-  font-size: 10px;
+  font-size: 12px;
   color: #8892b0;
   font-weight: 500;
   line-height: 1.4;
   margin-bottom: 4px;
 }
 .stat-trend {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   color: #00b8a6;
 }
@@ -432,7 +427,7 @@ h1 {
   margin-bottom: 12px;
 }
 .dash-act-label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   color: #8892b0;
   letter-spacing: 0.12em;
@@ -465,7 +460,7 @@ h1 {
   min-width: 0;
 }
 .act-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: #0a0f1e;
   white-space: nowrap;
@@ -473,7 +468,7 @@ h1 {
   text-overflow: ellipsis;
 }
 .act-sub {
-  font-size: 9.5px;
+  font-size: 11px;
   color: #8892b0;
   margin-top: 1px;
   white-space: nowrap;
@@ -481,39 +476,17 @@ h1 {
   text-overflow: ellipsis;
 }
 .act-time {
-  font-size: 9px;
+  font-size: 11px;
   color: #8892b0;
   white-space: nowrap;
   flex-shrink: 0;
-}
-
-/* Footer */
-.dash-footer {
-  background: linear-gradient(135deg, rgba(123, 47, 255, 0.04), rgba(0, 212, 192, 0.04));
-  border-top: 1px solid rgba(10, 15, 30, 0.06);
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.dash-footer-label {
-  font-size: 10px;
-  font-weight: 500;
-  color: #8892b0;
-}
-.dash-footer-val {
-  font-size: 12px;
-  font-weight: 700;
-  color: #7b2fff;
-  white-space: nowrap;
 }
 
 /* Responsive */
 @media (max-width: 960px) {
   .hero {
     min-height: auto;
-    padding-block: 6.5rem 4.2rem;
+    padding-block: 6rem 4rem;
   }
   .hero-inner {
     grid-template-columns: 1fr;
@@ -535,6 +508,11 @@ h1 {
   }
   .always-on-pill {
     margin-bottom: 24px;
+  }
+}
+@media (max-width: 480px) {
+  .hero {
+    padding-block: 5.5rem 3.5rem;
   }
 }
 @media (max-width: 520px) {
