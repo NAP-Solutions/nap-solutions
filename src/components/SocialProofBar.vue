@@ -1,0 +1,133 @@
+<template>
+  <div class="sp-bar">
+    <div class="sp-inner">
+      <p class="sp-label">Trusted by appointment-based businesses</p>
+      <div class="sp-logos">
+        <div class="sp-slot">
+          <div class="sp-icon-wrap">
+            <Activity :size="16" />
+          </div>
+          <span class="sp-name">MedClinic</span>
+        </div>
+        <div class="sp-slot">
+          <div class="sp-icon-wrap">
+            <Home :size="16" />
+          </div>
+          <span class="sp-name">LawGroup</span>
+        </div>
+        <div class="sp-slot">
+          <div class="sp-icon-wrap">
+            <Heart :size="16" />
+          </div>
+          <span class="sp-name">WellnessStudio</span>
+        </div>
+        <div class="sp-slot">
+          <div class="sp-icon-wrap">
+            <Stethoscope :size="16" />
+          </div>
+          <span class="sp-name">DentalCare</span>
+        </div>
+        <div class="sp-slot">
+          <div class="sp-icon-wrap">
+            <Briefcase :size="16" />
+          </div>
+          <span class="sp-name">FitLife</span>
+        </div>
+      </div>
+      <div class="sp-coming">
+        <span class="sp-dot"></span>
+        Client logos coming soon — currently in active onboarding
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
+</script>
+
+<style scoped>
+.sp-bar {
+  background: #ffffff;
+  border-top: 1px solid rgba(10, 15, 30, 0.08);
+  border-bottom: 1px solid rgba(10, 15, 30, 0.08);
+  padding-block: 28px;
+}
+.sp-inner {
+  width: min(var(--content-max), calc(100% - (var(--gutter) * 2)));
+  margin-inline: auto;
+  text-align: center;
+}
+.sp-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #b0b8cc;
+  margin-bottom: 18px;
+}
+.sp-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.sp-slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.28;
+  filter: grayscale(1);
+}
+.sp-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #0a0f1e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+.sp-icon-wrap :deep(svg) {
+  display: block;
+}
+.sp-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0a0f1e;
+  white-space: nowrap;
+}
+.sp-coming {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-top: 1px solid rgba(10, 15, 30, 0.06);
+  padding-top: 18px;
+  margin-top: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #b0b8cc;
+}
+.sp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00d4c0;
+  box-shadow: 0 0 5px #00d4c0;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+@media (max-width: 640px) {
+  .sp-logos {
+    gap: 20px;
+  }
+  .sp-name {
+    font-size: 12px;
+  }
+}
+</style>
