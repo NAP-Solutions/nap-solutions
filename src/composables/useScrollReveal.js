@@ -16,7 +16,7 @@ export function useScrollReveal(getTargets, { threshold = 0.12, once = true } = 
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.dataset.revealed = ''
-            if (once) observer.unobserve(entry.target)
+            if (once) observer?.unobserve(entry.target)
           }
         })
       },
