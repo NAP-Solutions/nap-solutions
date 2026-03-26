@@ -167,7 +167,7 @@ const noResults = computed(() => visibleItems.value.length === 0)
   color: #7b2fff;
 }
 .faq-tab.active {
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(90deg, #7b2fff 0%, #4a9eff 50%, #00d4c0 100%);
   border-color: transparent;
   color: #fff;
   font-weight: 700;
@@ -293,9 +293,13 @@ const noResults = computed(() => visibleItems.value.length === 0)
   .faq-tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
     margin-right: calc(var(--gutter) * -0.2);
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .faq-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .faq-tab {
