@@ -195,6 +195,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 .step-card:hover {
   border-color: rgba(123, 47, 255, 0.18);
   box-shadow: 0 6px 24px rgba(123, 47, 255, 0.07);
+  transition-delay: 0s;
 }
 .step-card:hover::before {
   opacity: 1;

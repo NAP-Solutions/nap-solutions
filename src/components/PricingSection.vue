@@ -146,6 +146,10 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 .pricing-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 20px 50px rgba(123, 47, 255, 0.1);
+  transition-delay: 0s;
+}
+.pricing-card[data-revealed]:hover {
+  transform: translateY(-6px);
 }
 .pricing-card.featured {
   background: linear-gradient(135deg, #faf8ff, #f0faff);
@@ -241,12 +245,6 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   .pricing-card {
     padding: 26px 16px 18px;
     border-radius: 16px;
-  }
-
-  .popular-badge {
-    top: 14px;
-    right: 14px;
-    letter-spacing: 1.2px;
   }
 
   .pricing-features {
