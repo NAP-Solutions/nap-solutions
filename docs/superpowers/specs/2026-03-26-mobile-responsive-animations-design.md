@@ -179,11 +179,13 @@ All sizes are updated to use `clamp()` or consistent pixel values. Hard-coded `1
 - CTA button: remove `max-width: 320px` constraint on `≤640px` — let it go full-width
 - Reduce `.cta-sub` bottom margin on `≤480px` to `24px`
 
-### ContactSection.vue (audit only — not yet reviewed in detail)
-- Read and fix any form field sizing / touch target issues
+### ContactSection.vue
+- Read component, apply the same fade-up pattern as other sections
+- Fix any form field sizing or touch-target issues found during implementation (min 48px tap height on inputs/buttons)
 
-### SiteFooter.vue (audit only)
-- Read and fix any stacking / overflow issues on mobile
+### SiteFooter.vue
+- Read component, apply a `fadeIn` reveal on the whole footer
+- Fix any stacking or overflow issues found on mobile
 
 ---
 
@@ -210,6 +212,8 @@ All sizes are updated to use `clamp()` or consistent pixel values. Hard-coded `1
 ## 6. Out of Scope
 
 - Hero dashboard widget on mobile — stays hidden (confirmed)
+- `CostSection.vue` — no animation or layout changes needed
+- `MarqueeBar.vue` — already handles its own scroll animation; no changes needed
 - Dark mode
 - New sections or content changes
 - Animation library dependencies
