@@ -1,5 +1,11 @@
 <script setup>
+import { ref } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
 defineEmits(['open-booking'])
+
+const footerRef = ref(null)
+useScrollReveal(() => [footerRef.value], { threshold: 0.05 })
 
 function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -7,7 +13,7 @@ function scrollTo(id) {
 </script>
 
 <template>
-  <footer class="footer">
+  <footer class="footer" ref="footerRef">
     <div class="footer-inner">
       <div class="footer-grid">
         <div class="footer-brand">
@@ -89,6 +95,11 @@ function scrollTo(id) {
   background: #0a0f1e;
   padding: clamp(3rem, 6vw, 4.2rem) 0 32px;
   color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.footer[data-revealed] {
+  opacity: 1;
 }
 .footer-grid {
   display: grid;
@@ -212,6 +223,17 @@ function scrollTo(id) {
 @media (max-width: 960px) {
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+  .footer-col li {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 960px) and (min-width: 641px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 

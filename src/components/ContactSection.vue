@@ -1,12 +1,18 @@
 <script setup>
 import { ref } from 'vue'
 import { Check } from 'lucide-vue-next'
+import { useScrollReveal } from '../composables/useScrollReveal'
 
 const name = ref('')
 const email = ref('')
 const message = ref('')
 const sending = ref(false)
 const sent = ref(false)
+
+const leftRef = ref(null)
+const rightRef = ref(null)
+
+useScrollReveal(() => [leftRef.value, rightRef.value])
 
 async function submitForm() {
   if (!name.value.trim() || !email.value.trim() || !message.value.trim()) {
@@ -42,7 +48,7 @@ async function submitForm() {
 <template>
   <section id="contact" class="contact-section">
     <div class="contact-inner">
-      <div class="contact-left">
+      <div class="contact-left" ref="leftRef">
         <div class="contact-eyebrow">Have a question?</div>
         <h3 class="contact-heading">We'll get back to you within 24 hours.</h3>
         <p class="contact-body">
@@ -50,7 +56,7 @@ async function submitForm() {
           anything you need to know.
         </p>
       </div>
-      <div class="contact-right">
+      <div class="contact-right" ref="rightRef">
         <div v-if="sent" class="form-success">
           <div class="success-icon"><Check :size="22" /></div>
           <div class="success-title">Message Sent!</div>
@@ -107,11 +113,8 @@ async function submitForm() {
   justify-content: space-between;
   gap: 48px;
 }
-.contact-left {
-  max-width: 400px;
-}
 .contact-eyebrow {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -127,13 +130,30 @@ async function submitForm() {
   line-height: 1.3;
 }
 .contact-body {
-  font-size: 14px;
+  font-size: 15px;
   color: #8892b0;
   line-height: 1.65;
+}
+.contact-left {
+  max-width: 400px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.contact-left[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
 }
 .contact-right {
   width: 300px;
   flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+}
+.contact-right[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
 }
 .contact-form {
   display: flex;

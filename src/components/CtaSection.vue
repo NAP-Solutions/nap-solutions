@@ -1,13 +1,18 @@
 <script setup>
+import { ref } from 'vue'
 import { Check } from 'lucide-vue-next'
+import { useScrollReveal } from '../composables/useScrollReveal'
 
 defineEmits(['open-booking'])
+
+const innerRef = ref(null)
+useScrollReveal(() => [innerRef.value])
 </script>
 
 <template>
   <section id="cta" class="section cta-section">
     <div class="cta-bg"></div>
-    <div class="cta-inner">
+    <div class="cta-inner" ref="innerRef">
       <div class="section-eyebrow center">Get Started</div>
       <h2 class="grad-text center">Ready to Stop<br />Missing Revenue?</h2>
       <p class="cta-sub">
@@ -79,7 +84,7 @@ defineEmits(['open-booking'])
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: #8892b0;
 }
@@ -99,6 +104,14 @@ defineEmits(['open-booking'])
   display: block;
 }
 
+.cta-inner {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.cta-inner[data-revealed] {
+  opacity: 1;
+}
+
 @media (max-width: 640px) {
   .cta-sub {
     font-size: 16px;
@@ -107,12 +120,17 @@ defineEmits(['open-booking'])
   }
   .cta-btn {
     width: 100%;
-    max-width: 320px;
     margin-bottom: 20px;
     padding: 16px 20px;
   }
   .cta-trust {
     gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta-sub {
+    margin-bottom: 24px;
   }
 }
 </style>
