@@ -510,11 +510,6 @@ h1 {
     margin-bottom: 24px;
   }
 }
-@media (max-width: 480px) {
-  .hero {
-    padding-block: 5.5rem 3.5rem;
-  }
-}
 @media (max-width: 520px) {
   .hero-actions {
     flex-direction: column;
@@ -525,6 +520,11 @@ h1 {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+}
+@media (max-width: 480px) {
+  .hero {
+    padding-block: 5.5rem 3.5rem;
   }
 }
 </style>
