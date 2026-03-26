@@ -37,7 +37,7 @@ html {
 body {
   background: #ffffff;
   color: var(--text-main);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   font-size: clamp(16px, 0.95rem + 0.15vw, 18px);
   line-height: 1.65;
@@ -103,10 +103,9 @@ section[id] {
 }
 
 h2 {
-  font-family: 'Orbitron', sans-serif;
   font-size: clamp(2rem, 4.4vw, 4.25rem);
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  font-weight: 800;
+  letter-spacing: -0.025em;
   line-height: 1.12;
   margin-bottom: 16px;
   color: var(--text-main);
@@ -136,7 +135,6 @@ h2 {
   border: none;
   padding: 15px 30px;
   border-radius: 11px;
-  font-family: 'DM Sans', sans-serif;
   font-size: 16px;
   font-weight: 700;
   line-height: 1.2;
@@ -164,7 +162,6 @@ h2 {
   border: 1.5px solid rgba(10, 15, 30, 0.08);
   padding: 15px 30px;
   border-radius: 11px;
-  font-family: 'DM Sans', sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.2;
