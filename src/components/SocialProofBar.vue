@@ -1,5 +1,5 @@
 <template>
-  <div class="sp-bar">
+  <div class="sp-bar" ref="barRef">
     <div class="sp-inner">
       <p class="sp-label">Trusted by appointment-based businesses</p>
       <div class="sp-logos">
@@ -43,7 +43,12 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
+const barRef = ref(null)
+useScrollReveal(() => [barRef.value])
 </script>
 
 <style scoped>
@@ -52,6 +57,9 @@ import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
   border-top: 1px solid rgba(10, 15, 30, 0.08);
   border-bottom: 1px solid rgba(10, 15, 30, 0.08);
   padding-block: 28px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 .sp-inner {
   width: min(var(--content-max), calc(100% - (var(--gutter) * 2)));
@@ -59,7 +67,7 @@ import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
   text-align: center;
 }
 .sp-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -108,7 +116,7 @@ import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
   border-top: 1px solid rgba(10, 15, 30, 0.06);
   padding-top: 18px;
   margin-top: 20px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: #b0b8cc;
 }
@@ -121,6 +129,10 @@ import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
   flex-shrink: 0;
   animation: pulse 2s infinite;
 }
+.sp-bar[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 @media (max-width: 640px) {
   .sp-logos {
@@ -128,6 +140,19 @@ import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
   }
   .sp-name {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sp-logos {
+    gap: 16px;
+  }
+  .sp-icon-wrap {
+    width: 24px;
+    height: 24px;
+  }
+  .sp-name {
+    font-size: 11px;
   }
 }
 </style>
