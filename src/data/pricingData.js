@@ -62,4 +62,19 @@ export const pricingPlans = [
       'Custom integrations',
     ],
   },
+  {
+    tier: 'CONSULTATION',
+    price: 'Let\'s Chat',
+    minutes: 'LOOKING FOR OTHER ASSISTANCE?',
+    featured: false,
+    badge: null,
+    cta: 'Book a Demo',
+    features: [
+      'Business process assessment',
+      'Custom AI strategy session',
+      'Workflow automation review',
+      'Tailored solution design',
+      'Direct expert access',
+    ],
+  },
 ]

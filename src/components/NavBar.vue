@@ -46,7 +46,7 @@ onUnmounted(() => {
 
       <ul class="nav-links">
         <li><a href="#problem">The Problem</a></li>
-        <li><a href="#solution">The Solution</a></li>
+        <li><a href="#solution">The Solutions</a></li>
         <li><a href="#how">How It Works</a></li>
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#faq">FAQ</a></li>
@@ -73,7 +73,7 @@ onUnmounted(() => {
 
     <div id="mobile-nav" class="mobile-menu" :class="{ open: mobileOpen }">
       <a href="#problem" @click="closeMobileMenu">The Problem</a>
-      <a href="#solution" @click="closeMobileMenu">The Solution</a>
+      <a href="#solution" @click="closeMobileMenu">The Solutions</a>
       <a href="#how" @click="closeMobileMenu">How It Works</a>
       <a href="#pricing" @click="closeMobileMenu">Pricing</a>
       <a href="#faq" @click="closeMobileMenu">FAQ</a>

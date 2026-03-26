@@ -33,7 +33,7 @@ defineEmits(['open-booking'])
           <div class="pricing-tier">{{ plan.tier }}</div>
           <div class="pricing-mins">{{ plan.minutes }}</div>
           <div class="pricing-price">
-            {{ plan.price }}<span class="pricing-tax">/mo + tax</span>
+            {{ plan.price }}<span v-if="plan.tier !== 'CONSULTATION' && plan.tier !== 'ENTERPRISE'" class="pricing-tax">/mo + tax</span>
           </div>
           <div class="pricing-divider"></div>
           <ul class="pricing-features">
@@ -46,7 +46,7 @@ defineEmits(['open-booking'])
             style="width: 100%"
             @click="$emit('open-booking')"
           >
-            {{ plan.tier === 'ENTERPRISE' ? 'Contact Us' : 'Book a Demo' }}
+            Book a Demo
           </button>
         </div>
       </div>
