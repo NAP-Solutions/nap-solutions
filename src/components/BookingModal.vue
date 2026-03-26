@@ -129,7 +129,6 @@ onUnmounted(() => {
   font-size: 15px;
 }
 .modal-title {
-  font-family: 'Orbitron', sans-serif;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
