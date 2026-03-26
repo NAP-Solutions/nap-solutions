@@ -256,7 +256,10 @@ onUnmounted(() => {
     font-size: 16px;
     font-weight: 500;
     line-height: 1.4;
-    padding: 4px 2px;
+    padding: 0 2px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
   }
 }
 
