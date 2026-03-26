@@ -16,9 +16,7 @@ export default {
         },
       },
       fontFamily: {
-        orbitron: ['Orbitron', 'sans-serif'],
-        sans: ['DM Sans', 'sans-serif'],
-        mono: ['Space Mono', 'monospace'],
+        sans: ['Inter', 'sans-serif'],
       },
       borderColor: {
         'brand-border': 'rgba(123,47,255,0.12)',

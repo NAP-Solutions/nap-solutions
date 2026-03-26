@@ -1,45 +1,56 @@
 <script setup>
+import { ref } from 'vue'
 import { pricingPlans } from '../data/pricingData'
+import { useScrollReveal } from '../composables/useScrollReveal'
 
 defineEmits(['open-booking'])
+
+const headerRef = ref(null)
+const bannerRef = ref(null)
+const cardRefs = ref([])
+
+useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 </script>
 
 <template>
   <section id="pricing" class="section bg-white" style="overflow: hidden">
     <div class="section-inner">
-      <div class="section-eyebrow">Pricing</div>
-      <h2 class="grad-text">
-        Simple. Transparent.<br />No Hidden Fees.
-      </h2>
-
-      <!-- Starting price banner -->
-      <div class="starting-banner">
-        <span class="banner-tag">BASE PLAN</span>
-        <span class="banner-text">Starting at <strong>$475/mo</strong> — 2,000 mins · 24/7 receptionist &amp; calendar integration included</span>
+      <div class="reveal-header" ref="headerRef">
+        <div class="section-eyebrow">Pricing</div>
+        <h2 class="grad-text">
+          Simple. Transparent.<br />No Hidden Fees.
+        </h2>
+        <p class="section-sub">
+          All plans include full setup, onboarding, and calendar integration. Book
+          a demo and we will walk you through everything.
+        </p>
+      </div>
+      <div class="base-plan-banner" ref="bannerRef">
+        <span class="base-plan-pill">BASE PLAN</span>
+        <p class="base-plan-text">
+          Starting at <strong>$475/mo</strong> — 2,000 mins · 24/7 receptionist &amp; calendar integration included
+        </p>
       </div>
 
-      <div class="plans-label">MONTHLY PLANS</div>
+      <p class="plans-label">MONTHLY PLANS</p>
 
       <div class="pricing-grid">
         <div
-          v-for="plan in pricingPlans"
+          v-for="(plan, i) in pricingPlans"
           :key="plan.tier"
           class="pricing-card"
           :class="{ featured: plan.featured }"
+          :ref="el => cardRefs[i] = el"
         >
-          <div v-if="plan.badge" class="plan-badge" :class="{ 'badge-start': plan.tier === 'BASE', 'badge-popular': plan.featured }">
-            {{ plan.badge }}
-          </div>
+          <div v-if="plan.badge" class="plan-badge" :class="{ 'badge-popular': plan.featured }">{{ plan.badge }}</div>
           <div class="pricing-tier">{{ plan.tier }}</div>
           <div class="pricing-mins">{{ plan.minutes }}</div>
           <div class="pricing-price">
-            {{ plan.price }}<span class="pricing-tax">/mo + tax</span>
+            {{ plan.price }}<span class="pricing-per">/mo + tax</span>
           </div>
           <div class="pricing-divider"></div>
           <ul class="pricing-features">
-            <li v-for="(feat, i) in plan.features" :key="i">
-              <span class="check-icon">✓</span>{{ feat }}
-            </li>
+            <li v-for="(feat, j) in plan.features" :key="j">{{ feat }}</li>
           </ul>
           <button
             class="btn-primary"
@@ -59,50 +70,60 @@ defineEmits(['open-booking'])
 </template>
 
 <style scoped>
-/* Starting price banner */
-.starting-banner {
+.reveal-header {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-header[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.base-plan-banner {
+  background: #fff;
+  border: 1.5px solid rgba(123, 47, 255, 0.15);
+  border-radius: 14px;
+  padding: 18px 24px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: linear-gradient(135deg, #faf8ff, #f0faff);
-  border: 1.5px solid rgba(123, 47, 255, 0.2);
-  border-radius: 14px;
-  padding: 14px 22px;
-  margin: 1.6rem auto 2rem;
-  max-width: 620px;
+  gap: 16px;
   flex-wrap: wrap;
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
 }
-.banner-tag {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: #fff;
+.base-plan-banner[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.base-plan-pill {
   background: linear-gradient(135deg, #7b2fff, #00d4c0);
-  padding: 4px 12px;
-  border-radius: 100px;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-.banner-text {
-  font-size: 15px;
-  color: #4a5580;
-}
-.banner-text strong {
-  color: #7b2fff;
-  font-weight: 700;
-}
-
-/* Plans label */
-.plans-label {
+  color: #fff;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.22em;
-  color: #8892b0;
-  margin-bottom: 1.2rem;
-  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 5px 14px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-
-/* Grid */
+.base-plan-text {
+  font-size: 16px;
+  color: #4a5580;
+}
+.base-plan-text strong {
+  color: #0a0f1e;
+}
+.plans-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #b0b8cc;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
@@ -117,15 +138,21 @@ defineEmits(['open-booking'])
   background: #fff;
   border: 1.5px solid rgba(10, 15, 30, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s, box-shadow 0.3s;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 .pricing-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 20px 50px rgba(123, 47, 255, 0.1);
+  transition-delay: 0s;
+}
+.pricing-card[data-revealed]:hover {
+  transform: translateY(-6px);
 }
 .pricing-card.featured {
   background: linear-gradient(160deg, #faf8ff 0%, #f3f0ff 100%);
@@ -133,20 +160,29 @@ defineEmits(['open-booking'])
   border-width: 2px;
   box-shadow: 0 8px 24px rgba(123, 47, 255, 0.1);
 }
-
-/* Badges */
+.pricing-card[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.pricing-card:nth-child(2) { transition-delay: 0.1s; }
+.pricing-card:nth-child(3) { transition-delay: 0.2s; }
 .plan-badge {
   position: absolute;
-  top: -16px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 20px;
+  right: 20px;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.2em;
   padding: 5px 16px;
   border-radius: 100px;
-  white-space: nowrap;
-  text-transform: uppercase;
+  background: rgba(123, 47, 255, 0.1);
+  color: #7b2fff;
+  border: 1px solid rgba(123, 47, 255, 0.2);
+}
+.plan-badge.badge-popular {
+  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  color: #fff;
+  border: none;
 }
 .badge-popular {
   background: linear-gradient(135deg, #7b2fff, #5b1fd4);
@@ -163,9 +199,7 @@ defineEmits(['open-booking'])
   font-weight: 700;
   letter-spacing: 0.22em;
   color: #7b2fff;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  text-align: center;
+  margin-bottom: 10px;
 }
 .pricing-card.featured .pricing-tier {
   color: #00a896;
@@ -175,31 +209,23 @@ defineEmits(['open-booking'])
 .pricing-mins {
   font-size: 12px;
   color: #8892b0;
-  margin-bottom: 16px;
-  letter-spacing: 0.1em;
-  text-align: center;
-  text-transform: uppercase;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
 }
-
-/* Price */
 .pricing-price {
-  font-size: clamp(2.4rem, 5vw, 3rem);
-  font-weight: 900;
-  font-family: 'Orbitron', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
   color: #0a0f1e;
+  letter-spacing: -0.03em;
   line-height: 1;
-  margin-bottom: 4px;
-  text-align: center;
+  margin-bottom: 18px;
 }
-.pricing-tax {
-  font-size: 0.9rem;
+.pricing-per {
+  font-size: 14px;
   font-weight: 400;
   color: #8892b0;
-  display: block;
-  margin-top: 4px;
-  font-size: 13px;
+  letter-spacing: 0;
 }
-
 .pricing-divider {
   height: 1px;
   background: rgba(10, 15, 30, 0.08);
@@ -261,20 +287,27 @@ defineEmits(['open-booking'])
     grid-template-columns: 1fr;
   }
 
-  .pricing-card {
-    padding: 28px 18px 20px;
-    border-radius: 16px;
-  }
-
-  .starting-banner {
-    flex-direction: column;
-    text-align: center;
-    gap: 8px;
+  .pricing-features {
+    margin-bottom: 22px;
   }
 
   .pricing-features li {
     font-size: 14px;
     padding: 9px 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .base-plan-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
 </style>

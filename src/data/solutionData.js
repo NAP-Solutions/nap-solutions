@@ -1,7 +1,26 @@
-export const solutionItems = [
-  'Answers instantly - zero hold time, zero missed calls',
-  'Books directly into your calendar in real time',
-  'Works nights, weekends, holidays - always on',
-  'Sounds like a professional receptionist, not a robot',
-  'Escalates complex situations to your human staff seamlessly',
+export const solutionCards = [
+  {
+    icon: 'PhoneIncoming',
+    iconVariant: 'purple',
+    title: 'Answers Every Call',
+    desc: 'Picks up instantly — no hold time, no voicemail, no missed opportunity.',
+  },
+  {
+    icon: 'CalendarCheck',
+    iconVariant: 'cyan',
+    title: 'Books in Real Time',
+    desc: 'Qualifies the caller and confirms the appointment before the call ends.',
+  },
+  {
+    icon: 'Clock',
+    iconVariant: 'purple',
+    title: 'Always On — 24/7',
+    desc: 'Evenings, weekends, holidays. Your front desk never goes dark.',
+  },
+  {
+    icon: 'Users',
+    iconVariant: 'cyan',
+    title: 'Escalates When Needed',
+    desc: 'Complex cases are handed off to your team — nothing falls through.',
+  },
 ]

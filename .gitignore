@@ -1,2 +1,7 @@
 node_modules
-.claude/settings.local.json
+/.superpowers
+/.claude
+/docs
+/node_modules
+/BRAND_GUIDELINES.md
+/dist

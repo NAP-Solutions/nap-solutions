@@ -29,7 +29,6 @@
   color: #8892b0;
   padding: 0 clamp(18px, 2.8vw, 32px);
   white-space: nowrap;
-  font-family: 'Space Mono', monospace;
 }
 .marquee-sep {
   color: #00D4C0;

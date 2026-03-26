@@ -1,5 +1,11 @@
 <script setup>
+import { ref } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
 defineEmits(['open-booking'])
+
+const innerRef = ref(null)
+useScrollReveal(() => [innerRef.value], { threshold: 0.05 })
 
 function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -8,7 +14,7 @@ function scrollTo(id) {
 
 <template>
   <footer class="footer">
-    <div class="footer-inner">
+    <div class="footer-inner" ref="innerRef">
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="brand-row">
@@ -90,6 +96,13 @@ function scrollTo(id) {
   padding: clamp(3rem, 6vw, 4.2rem) 0 32px;
   color: rgba(255, 255, 255, 0.6);
 }
+.footer-inner {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.footer-inner[data-revealed] {
+  opacity: 1;
+}
 .footer-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -126,8 +139,8 @@ function scrollTo(id) {
   box-shadow: 0 0 8px #00d4c0;
 }
 .footer-wordmark {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
   font-size: 17px;
   letter-spacing: 5px;
   background: linear-gradient(90deg, #fff 0%, #00d4c0 100%);
@@ -203,15 +216,26 @@ function scrollTo(id) {
   gap: 10px;
 }
 .footer-tagline {
-  font-family: 'Space Mono', monospace;
   font-size: 11px;
-  letter-spacing: 3px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   color: rgba(0, 212, 192, 0.4);
 }
 
 @media (max-width: 960px) {
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+  .footer-col li {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 960px) and (min-width: 641px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 

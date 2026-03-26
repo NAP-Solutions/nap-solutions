@@ -70,9 +70,8 @@
   background: linear-gradient(135deg, rgba(123, 47, 255, 0.04), rgba(0, 212, 192, 0.04));
 }
 .cost-big {
-  font-family: 'Orbitron', sans-serif;
   font-size: clamp(1.9rem, 1.6rem + 0.8vw, 2.4rem);
-  font-weight: 900;
+  font-weight: 800;
   color: #7b2fff;
   margin-bottom: 10px;
   line-height: 1;
@@ -90,9 +89,8 @@
   line-height: 1.6;
 }
 .cost-op {
-  font-family: 'Orbitron', sans-serif;
   font-size: 24px;
-  font-weight: 900;
+  font-weight: 800;
   color: rgba(123, 47, 255, 0.2);
   display: flex;
   align-items: center;
