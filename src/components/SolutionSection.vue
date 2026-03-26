@@ -1,29 +1,40 @@
 <script setup>
+import { ref } from 'vue'
 import { PhoneIncoming, CalendarCheck, Clock, Users } from 'lucide-vue-next'
 import { solutionCards } from '../data/solutionData'
+import { useScrollReveal } from '../composables/useScrollReveal'
 
 defineEmits(['open-booking'])
 
 const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
+
+const headerRef = ref(null)
+const cardRefs = ref([])
+const ctaRef = ref(null)
+
+useScrollReveal(() => [headerRef.value, ...cardRefs.value, ctaRef.value])
 </script>
 
 <template>
   <section id="solution" class="section bg-white">
     <div class="section-inner">
-      <div class="section-eyebrow">The Solution</div>
-      <h2 class="grad-text">
-        An AI Receptionist<br />That Never Clocks Out.
-      </h2>
-      <p class="section-sub">
-        NAP Solutions answers every call, qualifies the caller, and books the
-        appointment — 24/7, 365 days a year.
-      </p>
+      <div class="reveal-header" ref="headerRef">
+        <div class="section-eyebrow">The Solution</div>
+        <h2 class="grad-text">
+          An AI Receptionist<br />That Never Clocks Out.
+        </h2>
+        <p class="section-sub">
+          NAP Solutions answers every call, qualifies the caller, and books the
+          appointment — 24/7, 365 days a year.
+        </p>
+      </div>
 
       <div class="feature-grid">
         <div
           v-for="(card, i) in solutionCards"
           :key="i"
           class="feature-card"
+          :ref="el => cardRefs[i] = el"
         >
           <div class="fc-icon" :class="`fc-icon--${card.iconVariant}`">
             <component :is="iconMap[card.icon]" :size="18" />
@@ -33,7 +44,7 @@ const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
         </div>
       </div>
 
-      <div class="solution-cta">
+      <div class="solution-cta" ref="ctaRef">
         <p class="solution-cta-text">
           Ready to put your front desk on autopilot?
           <span>Let's talk.</span>
@@ -60,7 +71,9 @@ const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
   border: 1.5px solid rgba(10, 15, 30, 0.06);
   position: relative;
   overflow: hidden;
-  transition: border-color 0.2s;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s;
 }
 .feature-card::before {
   content: '';
@@ -102,15 +115,31 @@ const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
   border: 1px solid rgba(0, 212, 192, 0.2);
   color: #00b8a6;
 }
+.reveal-header {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-header[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.feature-card[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.feature-card:nth-child(2) { transition-delay: 0.08s; }
+.feature-card:nth-child(3) { transition-delay: 0.16s; }
+.feature-card:nth-child(4) { transition-delay: 0.24s; }
 .fc-title {
-  font-size: 13px;
+  font-size: clamp(15px, 0.9rem + 0.2vw, 17px);
   font-weight: 700;
   color: #0a0f1e;
   letter-spacing: -0.01em;
   margin-bottom: 5px;
 }
 .fc-desc {
-  font-size: 12px;
+  font-size: clamp(14px, 0.85rem + 0.15vw, 15px);
   color: #8892b0;
   line-height: 1.6;
 }
@@ -125,9 +154,16 @@ const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s 0.2s ease, transform 0.5s 0.2s ease;
+}
+.solution-cta[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
 }
 .solution-cta-text {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #0a0f1e;
 }
@@ -135,9 +171,9 @@ const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
   color: #7b2fff;
 }
 .solution-cta-btn {
-  font-size: 12px;
-  padding: 9px 18px;
-  min-height: auto;
+  font-size: 14px;
+  padding: 11px 20px;
+  min-height: 44px;
 }
 
 @media (max-width: 640px) {
