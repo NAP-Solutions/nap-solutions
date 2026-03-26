@@ -2,16 +2,16 @@
 
 **Date:** 2026-03-26
 **Approach:** Targeted High-Impact Redesign (Approach 1)
-**Scope:** All existing components updated in place. Two new sections added. One section split. Section order unchanged.
+**Scope:** All existing components updated in place. Two new sections added. One section split. Section order unchanged for existing sections; two new sections inserted.
 
 ---
 
 ## 1. Overview
 
-A component-level redesign of the NAP Solutions landing page. No section reordering. Every section gets meaningfully improved. The goal is a cleaner, more professional SaaS feel with better conversion flow and a clear path to adding social proof when client relationships are confirmed.
+A component-level redesign of the NAP Solutions landing page. No reordering of existing sections. Every section gets meaningfully improved. The goal is a cleaner, more professional SaaS feel with better conversion flow and a clear path to adding social proof when client relationships are confirmed.
 
 ### What is NOT changing
-- Section order: NavBar → Hero → Marquee → Problem → Cost → Solution → HowItWorks → Pricing → FAQ → CTA → Footer
+- Order of existing sections. Two new sections are inserted: `SocialProofBar` (after Marquee) and `ContactSection` (after CTA). Full order: NavBar → Hero → Marquee → **SocialProofBar** → Problem → Cost → Solution → HowItWorks → Pricing → FAQ → CTA → **ContactSection** → Footer
 - Core brand color palette (purple `#7B2FFF`, cyan `#00D4C0`, dark `#0A0F1E`)
 - Global CSS variables (`--content-max`, `--gutter`, `--section-space`)
 - Booking modal behavior
@@ -44,8 +44,8 @@ All three current fonts (Orbitron, DM Sans, Space Mono) are removed and replaced
 - Global find-and-replace: remove all `font-family: 'Orbitron'`, `font-family: 'DM Sans'`, `font-family: 'Space Mono'` references across all `.vue` files
 
 ### Typography scale adjustments
-- H1 letter-spacing: `-0.03em` (tighter than Orbitron's `0.02em`)
-- H2 letter-spacing: `-0.025em`
+- H1 letter-spacing: `-0.03em` (applies to HeroSection H1 only)
+- H2 letter-spacing: `-0.025em` (applies globally in `main.css` to all `h2` elements)
 - Card titles: `-0.01em`
 - Eyebrow labels: `0.18–0.22em` (keep wide tracking for label legibility)
 - All `font-size` values remain unchanged
@@ -68,11 +68,13 @@ All three current fonts (Orbitron, DM Sans, Space Mono) are removed and replaced
 | Solution — Books in Real Time | `CalendarCheck` |
 | Solution — Always On 24/7 | `Clock` |
 | Solution — Escalates When Needed | `Users` |
-| HowItWorks — Call Received | `PhoneCall` |
-| HowItWorks — Caller Qualified | `MessageCircle` |
-| HowItWorks — Appointment Booked | `CalendarCheck` |
-| HowItWorks — Escalated If Needed | `ShieldCheck` |
-| Dashboard widget (hero) | `Bot` (AI avatar) |
+| HowItWorks steps — Call Received | `PhoneCall` |
+| HowItWorks steps — Caller Qualified | `MessageCircle` |
+| HowItWorks steps — Appointment Booked | `CalendarCheck` |
+| HowItWorks steps — Escalated If Needed | `ShieldCheck` |
+| HowItWorks chat widget activity — booking row | `CalendarCheck` (cyan container) |
+| HowItWorks chat widget activity — call row | `PhoneCall` (purple container) |
+| Dashboard widget hero — AI avatar | `Bot` |
 | FAQ toggle open/closed | `Plus` (rotated 45° when open) |
 | Trust signal checks | `Check` (small, in cyan circle) |
 | Contact form confirmation | `Check` |
@@ -86,10 +88,11 @@ All three current fonts (Orbitron, DM Sans, Space Mono) are removed and replaced
 ### 4.1 NavBar
 **Change type: Tweak**
 
-- Font → Inter. Remove all `font-family: 'Orbitron'` from `.nav-wordmark`; use Inter 800 with `letter-spacing: 0.18em`
-- Nav link font → Inter 500 (was DM Sans 500 — functionally same)
-- `.nav-cta` button → Inter 700 (was DM Sans 700)
-- `.nav-mobile-cta` → Inter 700
+- `.nav-wordmark`: remove `font-family: 'Orbitron'`; use Inter 800 with `letter-spacing: 0.18em` at desktop
+- Update existing responsive overrides to maintain decreasing tracking: `0.14em` at `max-960`, `0.1em` at `max-640`. The `display: none` at `max-390px` is unchanged
+- Nav link font: remove `font-family` declaration (inherits Inter from body)
+- `.nav-cta`: remove `font-family: 'DM Sans'` (inherits Inter)
+- `.nav-mobile-cta`: remove `font-family: 'DM Sans'` (inherits Inter)
 - No structural changes
 
 ---
@@ -102,28 +105,29 @@ All three current fonts (Orbitron, DM Sans, Space Mono) are removed and replaced
 - "NEVER MISS" line: `color: #0a0f1e` (no gradient on first line)
 - "A CALL AGAIN." line: gradient `linear-gradient(90deg, #7b2fff, #00d4c0)` — keep this moment
 - Sub copy: Inter 400, same size/color as current
-- "ALWAYS ON" pill: Inter 700 for text, Inter 700 for badge
+- "ALWAYS ON" pill: Inter 700 for text and badge — remove any DM Sans / Space Mono references
 - CTAs: unchanged
 
 #### New — Trust signals row
-Add below `.hero-actions`, separated by a 1px border-top:
+Add below `.hero-actions`, separated by a `1px solid rgba(10,15,30,0.07)` border-top, with `padding-top: 24px; margin-top: 28px`:
 
 ```
 [✓ No contracts]  [✓ Setup included]  [✓ Cancel anytime]
 ```
 
-- Cyan checkmark in a 16px circle (rgba(0,212,192,0.12) bg, rgba(0,212,192,0.3) border)
+- Each check: Lucide `Check` icon (12px) in a 16×16px circle — `background: rgba(0,212,192,0.12)`, `border: 1px solid rgba(0,212,192,0.3)`, `border-radius: 50%`, `display: flex; align-items: center; justify-content: center`
 - Text: Inter 500, 12px, `#8892b0`
-- Row: `display: flex; gap: 20px; flex-wrap: wrap`
-- On mobile (<520px): stack to column, align left
+- Row: `display: flex; gap: 20px; flex-wrap: wrap; align-items: center`
+- Each item: `display: flex; align-items: center; gap: 6px`
+- On mobile (<520px): `flex-direction: column; align-items: flex-start; gap: 10px`
 
 #### Right column — Dashboard Widget (replaces orb)
-Replace `.orb-card` and all orb/chip/waveform markup with a new `.dash-widget` component.
+Remove `.orb-card` and all descendant elements: `.orb-core`, `.orb-label`, `.orb-nap`, `.orb-solutions`, `.waveform`, `.wave-bar`, `.orb-chip`, `.chip1`, `.chip2`, `.chip3`, and all their associated CSS. Replace with a new `.dash-widget` element.
 
 **Widget structure:**
 ```
 ┌─ Dark topbar (#0a0f1e) ────────────────────────────────┐
-│  [● ● ●]  NAP Receptionist              [● LIVE]        │
+│  [● ● ●]  [Bot avatar]  NAP Receptionist    [● LIVE]   │
 ├─ Widget body (white) ──────────────────────────────────┤
 │  Tonight's performance · 6pm – now                      │
 │  ┌──────────────┐  ┌──────────────┐                    │
@@ -134,26 +138,30 @@ Replace `.orb-card` and all orb/chip/waveform markup with a new `.dash-widget` c
 │  └──────────────┘  └──────────────┘                    │
 │  ─────────────────────────────────                      │
 │  Recent Activity                                        │
-│  [📅] Booking Confirmed  Dental · Thu 10am    2m ago    │
-│  [📞] Call Answered      New patient inquiry  7m ago    │
-│  [📅] Booking Confirmed  Follow-up · Wed 2pm  14m ago   │
+│  [CalendarCheck] Booking Confirmed  Dental · Thu 10am   │
+│  [PhoneCall]     Call Answered      New patient inquiry  │
+│  [CalendarCheck] Booking Confirmed  Follow-up · Wed 2pm  │
 ├─ Widget footer ─────────────────────────────────────────┤
 │  Est. revenue recovered tonight          $2,750          │
 └─────────────────────────────────────────────────────────┘
 ```
 
 **Styling:**
-- Widget: `width: clamp(280px, 28vw, 340px)`, white bg, `border-radius: 18px`, `border: 1.5px solid rgba(10,15,30,0.09)`, `box-shadow: 0 16px 56px rgba(0,0,0,0.1)`
-- Topbar: `background: #0a0f1e`, `border-radius: 18px 18px 0 0`, `padding: 12px 18px`
-- Traffic light dots: decorative only, grey/grey/cyan
-- LIVE badge: cyan text, no background pill needed
-- Stats grid: 2 columns, `background: #f8f9fb`, border-radius 10px, purple stat number Inter 800
-- Activity icons: Lucide `CalendarCheck` (cyan container) and `Phone` (purple container), 26×26px containers
-- Footer: `background: linear-gradient(135deg, rgba(123,47,255,0.04), rgba(0,212,192,0.04))`, border-top
-- Revenue figure: Inter 700, `#7b2fff`
+- Widget wrapper: `width: clamp(280px, 28vw, 340px)`, `border-radius: 18px`, `border: 1.5px solid rgba(10,15,30,0.09)`, `box-shadow: 0 16px 56px rgba(0,0,0,0.1), 0 4px 16px rgba(123,47,255,0.06)`, `overflow: hidden`
+- Topbar: `background: #0a0f1e`, `padding: 12px 18px`, flex row with `gap: 10px`, `align-items: center`
+- Traffic light dots: three 8–9px circles — first two `rgba(255,255,255,0.12)`, third `rgba(0,212,192,0.5)`
+- Bot avatar: 30×30px circle, `background: linear-gradient(135deg, #7b2fff, #00d4c0)`, `Bot` icon 15px white stroke
+- LIVE badge: flex row with 6px cyan pulsing dot + "LIVE" text, Inter 700 9px `#00d4c0`, `letter-spacing: 0.1em`
+- Body: white bg, `padding: 18px`
+- Date label: Inter 600, 9px, `#8892b0`, `letter-spacing: 0.12em`, `text-transform: uppercase`
+- Stats: 2-col grid, `gap: 10px`. Each stat card: `background: #f8f9fb`, `border-radius: 10px`, `padding: 12px`. Number: Inter 800, 26px, `#7b2fff` (calls) / `#00b8a6` (bookings), `letter-spacing: -0.03em`. Label: Inter 500, 10px, `#8892b0`. Trend line: Inter 700, 9px, `#00b8a6`
+- Divider: `1px solid rgba(10,15,30,0.06)`, `margin: 14px 0`
+- Activity label: Inter 700, 9px, `#8892b0`, `letter-spacing: 0.12em`, `text-transform: uppercase`
+- Activity rows: flex, `align-items: center`, `gap: 10px`, `padding: 7px 0`, `border-bottom: 1px solid rgba(10,15,30,0.05)`. Icon container: 26×26px, `border-radius: 8px`. CalendarCheck container: `rgba(0,212,192,0.12)` bg. PhoneCall container: `rgba(123,47,255,0.1)` bg. Title: Inter 600, 11px, `#0a0f1e`. Sub: Inter 400, 9.5px, `#8892b0`. Time: Inter 400, 9px, `#8892b0`, `white-space: nowrap`
+- Footer: `background: linear-gradient(135deg, rgba(123,47,255,0.04), rgba(0,212,192,0.04))`, `border-top: 1px solid rgba(10,15,30,0.06)`, `padding: 10px 18px`, flex space-between. Left text: Inter 500, 10px, `#8892b0`. Right value: Inter 700, 12px, `#7b2fff`
 
 **Responsive:**
-- <960px: widget moves below content, `justify-self: start`
+- <960px: grid collapses to `1fr`, widget moves below text content. Widget retains its `clamp(280px, 28vw, 340px)` width, `justify-self: start`
 - <760px: widget hidden (`display: none`) — hero is text-only on mobile
 
 ---
@@ -161,8 +169,8 @@ Replace `.orb-card` and all orb/chip/waveform markup with a new `.dash-widget` c
 ### 4.3 Marquee Bar
 **Change type: Tweak**
 
-- Font → Inter 700, `letter-spacing: clamp(2px, 0.6vw, 5px)`
-- Remove `font-family: 'Space Mono'`
+- Remove `font-family: 'Space Mono'` from `.marquee-item` — inherits Inter from body
+- `letter-spacing: clamp(2px, 0.6vw, 5px)` — unchanged
 - All other styles unchanged
 
 ---
@@ -170,36 +178,39 @@ Replace `.orb-card` and all orb/chip/waveform markup with a new `.dash-widget` c
 ### 4.4 Social Proof Placeholder *(New Section)*
 **Change type: New component — `SocialProofBar.vue`**
 
-Position: between `<MarqueeBar />` and `<ProblemSection />` in `App.vue`
+Position: between `<MarqueeBar />` and `<ProblemSection />` in `App.vue`. Does not emit `open-booking`.
 
-**Structure:**
+**Placeholder slot markup** — each of 5 slots is a `<div class="sp-slot">` containing:
+- A 28×28px icon container (`background: #0a0f1e`, `border-radius: 6px`) with a relevant Lucide icon (white stroke, 16px): use `Activity`, `Home`, `Heart`, `Stethoscope`, `Briefcase` for the five slots respectively
+- A `<span class="sp-name">` with placeholder business-type name text: "MedClinic", "LawGroup", "WellnessStudio", "DentalCare", "FitLife"
+- Each slot: `display: flex; align-items: center; gap: 8px`
+- All slots wrapped in `.sp-logos`: `display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap`
+- Each slot has `opacity: 0.28` and `filter: grayscale(1)` — both removed when real logos arrive
+
+**Full structure:**
 ```
-"Trusted by appointment-based businesses"
-[Logo] Business Name  ×5 slots  (greyscale, 28% opacity)
-─────────────────────────────────────────────────────
-● Client logos coming soon — currently in active onboarding
+"Trusted by appointment-based businesses"   ← Inter 600, 10px, #b0b8cc, letter-spacing 0.18em
+[slot] [slot] [slot] [slot] [slot]          ← greyscale 28% opacity
+────────────────────────────────────────    ← 1px border
+● Client logos coming soon                  ← Inter 500, 11px, #b0b8cc + cyan pulse dot
 ```
 
 **Styling:**
 - Section bg: `#ffffff`
 - `border-top: 1px solid rgba(10,15,30,0.08)` / `border-bottom: 1px solid rgba(10,15,30,0.08)`
 - `padding-block: 28px`
-- Label: Inter 600, 10px, `letter-spacing: 0.18em`, `#b0b8cc`
-- Logo slots: flex row, centered, `gap: 32px`, `flex-wrap: wrap`
-- Each slot: `opacity: 0.28`, `filter: grayscale(1)`
-- "Coming soon" line: Inter 500, 11px, `#b0b8cc`, with cyan pulsing dot
+- `.sp-name`: Inter 700, 13px, `#0a0f1e`
+- "Coming soon" row: `border-top: 1px solid rgba(10,15,30,0.06)`, `padding-top: 18px`, `margin-top: 20px`, flex centered, `gap: 7px`. Dot: 6px cyan circle with `box-shadow: 0 0 5px #00d4c0`, `animation: pulse 2s infinite`
 
-**Future-proofing:** When real logos arrive, remove `opacity` + `filter: grayscale(1)` from slots and remove the "coming soon" line. Zero layout change required.
+**Future-proofing:** When real logos arrive, remove `opacity: 0.28` + `filter: grayscale(1)` from `.sp-slot` and remove the "coming soon" row entirely. Zero layout change required.
 
 ---
 
 ### 4.5 Problem Section
 **Change type: Tweak**
 
-- All font references → Inter
-- Stat card `.big` number: Inter 800, remove `font-family: 'Orbitron'`
-- `.problem-item p`: Inter 400
-- `.problem-arrow`: Inter 700 for the arrow character
+- All font references → Inter (remove `font-family: 'Orbitron'` from `.stat-card .big`)
+- `.problem-item p`: inherits Inter from body — remove any explicit font-family
 - No structural changes
 
 ---
@@ -207,9 +218,9 @@ Position: between `<MarqueeBar />` and `<ProblemSection />` in `App.vue`
 ### 4.6 Cost / Revenue Section
 **Change type: Tweak**
 
-- `.cost-big`: Inter 800 replaces Orbitron 900
-- `.cost-op`: Inter 800 replaces Orbitron 900
-- `.cost-lbl`: Inter 500
+- `.cost-big`: Inter 800 replaces Orbitron 900 — remove `font-family: 'Orbitron'`
+- `.cost-op`: Inter 800 replaces Orbitron 900 — remove `font-family: 'Orbitron'`
+- `.cost-lbl`: inherits Inter
 - All other styles unchanged — the equation layout works well
 
 ---
@@ -217,98 +228,119 @@ Position: between `<MarqueeBar />` and `<ProblemSection />` in `App.vue`
 ### 4.7 Solution Section
 **Change type: Full redesign**
 
-Replace the current vertical checklist with a **2×2 feature card grid**.
+**Data layer change:** Update `src/data/solutionData.js`. Replace the current flat `solutionItems` string array with a structured `solutionCards` array of objects:
 
-**New structure:**
+```js
+export const solutionCards = [
+  {
+    icon: 'PhoneIncoming',
+    iconVariant: 'purple',
+    title: 'Answers Every Call',
+    desc: 'Picks up instantly — no hold time, no voicemail, no missed opportunity.',
+  },
+  {
+    icon: 'CalendarCheck',
+    iconVariant: 'cyan',
+    title: 'Books in Real Time',
+    desc: 'Qualifies the caller and confirms the appointment before the call ends.',
+  },
+  {
+    icon: 'Clock',
+    iconVariant: 'purple',
+    title: 'Always On — 24/7',
+    desc: 'Evenings, weekends, holidays. Your front desk never goes dark.',
+  },
+  {
+    icon: 'Users',
+    iconVariant: 'cyan',
+    title: 'Escalates When Needed',
+    desc: 'Complex cases are handed off to your team — nothing falls through.',
+  },
+]
+```
+
+Update the import in `SolutionSection.vue` from `solutionItems` to `solutionCards`.
+
+**New template structure:**
 ```
 [eyebrow] The Solution
 [H2] An AI Receptionist That Never Clocks Out.
-[sub] NAP Solutions answers every call, qualifies the caller, and books the appointment...
+[sub] NAP Solutions answers every call...
 
-┌──────────────────┐  ┌──────────────────┐
-│ [PhoneIncoming]  │  │ [CalendarCheck]   │
-│ Answers Every    │  │ Books in          │
-│ Call             │  │ Real Time         │
-│ Picks up         │  │ Qualifies and     │
-│ instantly...     │  │ confirms...       │
-└──────────────────┘  └──────────────────┘
-┌──────────────────┐  ┌──────────────────┐
-│ [Clock]          │  │ [Users]           │
-│ Always On — 24/7 │  │ Escalates         │
-│ Evenings,        │  │ When Needed       │
-│ weekends...      │  │ Complex cases...  │
-└──────────────────┘  └──────────────────┘
+[2×2 feature card grid]
 
-┌─ Inline CTA strip ───────────────────────────────────────┐
-│  Ready to put your front desk on autopilot? Let's talk.  │
-│                                               [Book Demo] │
-└──────────────────────────────────────────────────────────┘
+[Inline CTA strip]
 ```
 
 **Card styling:**
-- Background: `#f8f9fb`, border: `1.5px solid rgba(10,15,30,0.06)`, border-radius: 12px
-- Top gradient bar (2px, purple→cyan, `opacity: 0` at rest, `opacity: 1` on hover)
-- Icon container: 38×38px, border-radius 10px, alternating purple/cyan tint
-- Purple icon containers: `rgba(123,47,255,0.08)` bg, `rgba(123,47,255,0.15)` border, purple icon stroke
-- Cyan icon containers: `rgba(0,212,192,0.08)` bg, `rgba(0,212,192,0.2)` border, `#00b8a6` icon stroke
-- Title: Inter 700, 15px, `#0a0f1e`, `letter-spacing: -0.01em`
-- Description: Inter 400, 13px, `#8892b0`, `line-height: 1.7`
-- Grid: `display: grid; grid-template-columns: 1fr 1fr; gap: 14px`
-- Responsive: single column at <640px
+- Background: `#f8f9fb`, `border: 1.5px solid rgba(10,15,30,0.06)`, `border-radius: 12px`, `padding: 18px 16px`
+- Top gradient bar: `::before` pseudo, `height: 2px`, `background: linear-gradient(90deg, #7b2fff, #00d4c0)`, `opacity: 0` at rest → `opacity: 1` on hover, `transition: opacity 0.2s`
+- Purple icon containers (`iconVariant: 'purple'`): `background: rgba(123,47,255,0.08)`, `border: 1px solid rgba(123,47,255,0.15)`, icon stroke `#7b2fff`
+- Cyan icon containers (`iconVariant: 'cyan'`): `background: rgba(0,212,192,0.08)`, `border: 1px solid rgba(0,212,192,0.2)`, icon stroke `#00b8a6`
+- Icon container size: 38×38px, `border-radius: 10px`, `margin-bottom: 12px`
+- Title: Inter 700, 13px (not 15px — matches card size), `#0a0f1e`, `letter-spacing: -0.01em`, `margin-bottom: 5px`
+- Description: Inter 400, 12px, `#8892b0`, `line-height: 1.6`
+- Grid: `display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: clamp(1.8rem, 5vw, 3rem)`
+- Responsive: `grid-template-columns: 1fr` at <640px
 
 **Inline CTA strip:**
 - `background: linear-gradient(135deg, rgba(123,47,255,0.05), rgba(0,212,192,0.05))`
-- `border: 1.5px solid rgba(123,47,255,0.12)`, border-radius 12px
-- `padding: 14px 18px`, `margin-top: 18px`
-- Flex row, space-between, wraps on mobile
-- Text: Inter 600, 13px; "Let's talk." in `#7b2fff`
-- Button: `.btn-primary` at reduced size (12px, padding 9px 18px)
+- `border: 1.5px solid rgba(123,47,255,0.12)`, `border-radius: 12px`, `padding: 14px 18px`, `margin-top: 18px`
+- `display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap`
+- Text: Inter 600, 13px, `#0a0f1e`. "Let's talk." span: `color: #7b2fff`
+- Button: `.btn-primary` with overriding `font-size: 12px; padding: 9px 18px; min-height: auto`
 
 ---
 
 ### 4.8 How It Works Section
 **Change type: Redesign**
 
-Replace the auto-fit card grid with a **two-column layout**: step cards left, chat UI right.
+Remove the existing `functions-grid` auto-fit layout and the `func-card.filler` element entirely. Replace with a two-column layout.
 
 **Layout:**
-```
-grid-template-columns: 1fr 300px
-gap: 36px
+```css
+display: grid;
+grid-template-columns: 1fr 300px;
+gap: 36px;
+align-items: start;
+margin-top: clamp(1.8rem, 5vw, 3rem);
 ```
 
-**Step cards (left):**
-- Stack of 4 cards, `gap: 12px`, white bg, `border-radius: 14px`
-- Each card: flex row, icon-wrap left + content right
-- Icon wrap: Lucide icon in 42×42 container + step number below
-- Step number: Inter 700, 9px, `#00d4c0`, `letter-spacing: 0.1em`
-- Left accent bar: 3px gradient, `opacity: 0` → `opacity: 1` on hover
-- 4 steps: Call Received / Caller Qualified / Appointment Booked / Escalated If Needed
+**Step cards (left column):**
+- `.steps-col`: `display: flex; flex-direction: column; gap: 12px`
+- Each `.step-card`: white bg, `border-radius: 14px`, `border: 1.5px solid rgba(10,15,30,0.07)`, `padding: 20px 22px`, flex row, `gap: 18px`, `align-items: flex-start`, `box-shadow: 0 2px 12px rgba(0,0,0,0.04)`, `position: relative; overflow: hidden`
+- Left accent bar via `::before`: `position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, #7b2fff, #00d4c0); opacity: 0` → `opacity: 1` on hover
+- Icon wrap: flex column, `align-items: center`, contains icon container + step number below
+- Icon container: 42×42px, `border-radius: 11px`. Steps 1 & 3: purple variant. Steps 2 & 4: cyan variant (same tints as Solution cards)
+- Step number: Inter 700, 9px, `#00d4c0`, `letter-spacing: 0.1em`, `margin-top: 6px`
+- Step title: Inter 700, 15px, `#0a0f1e`, `letter-spacing: -0.01em`, `margin-bottom: 5px`
+- Step description: Inter 400, 13px, `#8892b0`, `line-height: 1.7`
 
-**Chat widget (right) — Hybrid light/dark:**
-- Overall: white card, `border-radius: 18px`, `border: 1.5px solid rgba(10,15,30,0.14)`, strong shadow
-- **Header** (`#0a0f1e`): traffic light dots + Bot avatar (gradient circle) + name/sub + LIVE badge
-- **Chat body** (`#f0f2f8`): tinted background to separate from white step cards
-  - AI bubbles: white card, `border: 1px solid rgba(10,15,30,0.09)`, dark text
-  - Caller bubbles: `#1a2240`, light text, right-aligned
-  - Bubble meta: Inter 500, 9px, `#9aa0b8`
-- **Confirmation card**: white, `border: 1.5px solid rgba(0,212,192,0.3)`, Check icon in cyan container
-- **Footer**: `#f8f9fc`, input mock + Send button (gradient)
-- **Sticky on desktop**: `position: sticky; top: 100px` so it stays visible while scrolling steps
-- **Filler card removed**: "POWERED BY AI" card gone entirely
+**Chat widget (right column):**
+- `.chat-col`: `position: sticky; top: 100px`
+- Widget overall: `border-radius: 18px`, `border: 1.5px solid rgba(10,15,30,0.14)`, `box-shadow: 0 16px 48px rgba(10,15,30,0.12), 0 3px 10px rgba(123,47,255,0.08)`, `overflow: hidden`
+- **Header** (`background: #0a0f1e`, `padding: 14px 18px`): traffic light dots (3 dots: first two `rgba(255,255,255,0.12)`, third `rgba(0,212,192,0.5)`) + Bot avatar (30×30px gradient circle with `Bot` icon, white stroke, 15px) + name/sub (`ch-name`: Inter 700, 11px, `rgba(255,255,255,0.9)` / `ch-sub`: Inter 400, 9.5px, `rgba(255,255,255,0.38)`) + LIVE badge (6px cyan dot + Inter 700, 9px `#00d4c0`)
+- **Chat body** (`background: #f0f2f8`, `padding: 16px 14px`): flex column, `gap: 6px`
+  - AI bubbles: `background: #fff`, `border: 1.5px solid rgba(10,15,30,0.08)`, `color: #0a0f1e`, `border-bottom-left-radius: 4px`, `align-self: flex-start`, `box-shadow: 0 1px 4px rgba(0,0,0,0.06)`. Inter 400, 12px, `line-height: 1.6`
+  - Caller bubbles: `background: #1a2240`, `color: rgba(255,255,255,0.88)`, `border-bottom-right-radius: 4px`, `align-self: flex-end`, `text-align: right`
+  - Bubble meta text: Inter 500, 9px, `#9aa0b8`
+  - Both bubble types: `border-radius: 14px`, `padding: 10px 13px`, `max-width: 88%`
+- **Confirmation card**: `background: #fff`, `border: 1.5px solid rgba(0,212,192,0.3)`, `border-radius: 14px`, `padding: 12px 14px`. Icon wrap: 24×24px, `border-radius: 7px`, `background: rgba(0,212,192,0.12)`, `border: 1px solid rgba(0,212,192,0.25)`. Label: Inter 700, 10px, `#00897b`, `letter-spacing: 0.08em`. Detail: Inter 400, 11px, `#4a5580`, `line-height: 1.65`. Strong tags: `color: #0a0f1e; font-weight: 600`
+- **Footer** (`background: #f8f9fc`, `padding: 11px 14px`, `border-top: 1px solid rgba(10,15,30,0.07)`): input mock (Inter 400, 11px, `#b0b8cc`, `background: #fff`, `border: 1.5px solid rgba(10,15,30,0.09)`, `border-radius: 10px`) + Send button (32×32px, gradient, `border-radius: 9px`, `box-shadow: 0 3px 10px rgba(123,47,255,0.3)`)
+- **Filler card**: remove `.func-card.filler` and all `.filler-label` / `.filler-text` CSS entirely
 
 **Responsive:**
-- <960px: single column, chat widget below steps
-- <640px: chat widget hidden, steps only
+- <960px: `grid-template-columns: 1fr`. Chat widget goes below steps, loses sticky, retains full width
+- <640px: chat widget `display: none`, steps only
 
 ---
 
 ### 4.9 Pricing Section
 **Change type: Tweak**
 
-- `.pricing-tier`: Inter 700, `letter-spacing: 0.2em` (remove Space Mono)
-- `.pricing-mins`: Inter 500
-- `.pricing-footer`: Inter 500
+- `.pricing-tier`: remove `font-family: 'Space Mono'` — inherits Inter. Keep `letter-spacing: 0.2em` and other styles
+- `.pricing-mins`: inherits Inter
+- `.pricing-footer`: inherits Inter
 - All other styles unchanged
 
 ---
@@ -316,84 +348,114 @@ gap: 36px
 ### 4.10 FAQ Section
 **Change type: Simplify**
 
-**Remove entirely:**
-- `.faq-search-wrap` and `faq-search` input
-- `.faq-tabs` and all tab/category logic
-- `searchQuery`, `activeTab`, category filtering from `<script setup>`
-- `faqCategories` import from faqData
-- Related CSS
+**Remove from `<script setup>`:**
+- `searchQuery` ref
+- `activeTab` ref
+- `setTab` function
+- `filteredItems` computed
+- `visibleItems` computed
+- `noResults` computed
+- `faqCategories` import from `faqData`
 
-**Keep:**
-- `openIndex` accordion toggle logic
-- `faqItems` data (all questions, no category filtering needed)
+**Remove from template:**
+- `.faq-search-wrap` div and its `<input>` and `.faq-search-icon`
+- `.faq-tabs` div and all `<button>` tab elements
+- `v-if="noResults"` no-results div
+- Change `v-for="item in visibleItems"` → `v-for="(item, i) in faqItems"` with `:key="i"` and `openIndex === i` for open state
+
+**Remove from CSS:**
+- `.faq-search-wrap`, `.faq-search`, `.faq-search:focus`, `.faq-search-icon`
+- `.faq-tabs`, `.faq-tab`, `.faq-tab:hover`, `.faq-tab.active`
+- `.no-results`
+- Responsive overrides for `.faq-search-wrap` and `.faq-tabs` at `max-640`
+
+**`faqData.js` cleanup:**
+- Remove the `faqCategories` export entirely
+- Remove the `cat` property from every `faqItem` object (dead code after tab removal)
+- Keep all question/answer content unchanged
+
+**FAQ icon update:**
+- Replace `<span class="faq-icon" aria-hidden="true">+</span>` with `<Plus :size="13" class="faq-icon-svg" />`
+- Keep the existing `.faq-icon` span as the container element — it retains its 30×30px circle, background, border, and `transform: rotate(45deg)` on open. Only the inner content changes from `+` text to the `Plus` component
+- Add to scoped CSS: `.faq-icon :deep(svg) { display: block; }` to prevent baseline offset
+
+**Keep unchanged:**
+- `openIndex` ref and `toggleItem` function
+- `faqItems` import
+- All accordion item markup and open/close CSS
 - Inline CTA block at bottom
-
-**Updated `filteredItems`:** Remove — just use `faqItems` directly, no computed filtering needed.
-
-**Icon update:**
-- Replace `<span class="faq-icon">+</span>` with Lucide `Plus` component
-- Add `display: block` to icon SVG to prevent baseline offset
-- Rotate 45° on open state via CSS transform
 
 ---
 
 ### 4.11 CTA Section
 **Change type: Simplify**
 
-**Remove from `CtaSection.vue`:**
-- Entire `.contact-wrap` div (label, form, success state, disclaimer)
+**Remove from `<script setup>`:**
 - `name`, `email`, `message`, `sending`, `sent` refs
-- `submitForm` function
-- Formspree fetch call
-- All contact form CSS
+- `submitForm` function (moves to `ContactSection.vue`)
 
-**Keep:**
-- Eyebrow, H2, sub copy, primary CTA button
-- Background gradient and mesh
-- Trust signals row (same as hero — add here too for conversion reinforcement)
+**Remove from template:**
+- Entire `.contact-wrap` div and all descendants (`.contact-label`, `.form-success`, `.contact-form`, `.cta-disclaimer`)
+
+**Remove from CSS:**
+- `.contact-wrap`, `.contact-label`, `.form-success`, `.success-icon`, `.success-title`, `.success-sub`, `.contact-form`, `.form-input`, `.form-textarea`, `.cta-disclaimer`
+- Responsive overrides for these at `max-640`
+
+**Keep in template:**
+- `.cta-bg` mesh div
+- `.section-eyebrow.center` ("Get Started")
+- `h2.grad-text.center` ("Ready to Stop Missing Revenue?")
+- `.cta-sub` paragraph
+- `.cta-btn` Book a Demo button
+
+**Add to template** — trust signals row, identical content to hero, centered alignment:
+```html
+<div class="cta-trust">
+  <div class="trust-item"><Check :size="11" class="trust-check-icon" />No contracts</div>
+  <div class="trust-item"><Check :size="11" class="trust-check-icon" />Setup included</div>
+  <div class="trust-item"><Check :size="11" class="trust-check-icon" />Cancel anytime</div>
+</div>
+```
+- `.cta-trust`: `display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 20px`
+- `.trust-item`: `display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #8892b0`
+- `.trust-check-icon`: wrap in a 16×16px flex circle container — same cyan circle as hero version. No border-top separator here (CTA section is already visually separated by the section background)
 
 ---
 
 ### 4.12 Contact Section *(New — split from CTA)*
 **Change type: New component — `ContactSection.vue`**
 
-Position: between `<CtaSection />` and `<SiteFooter />` in `App.vue`
+Position: between `<CtaSection />` and `<SiteFooter />` in `App.vue`. Does not emit `open-booking`.
 
-Move all contact form logic from `CtaSection.vue` into this new component.
+Move all form logic from `CtaSection.vue` into this component: `name`, `email`, `message`, `sending`, `sent` refs, `submitForm` function, and Formspree fetch — all unchanged.
 
-**Structure (horizontal band):**
-```
-┌─ Left: copy ─────────────────────────────────────────────┐
-│  HAVE A QUESTION?                                         │
-│  We'll get back to you within 24 hours.                   │
-│  Not ready to book? Send us a message...                  │
-└───────────────────────────────────────────────────────────┘
-┌─ Right: form (260px wide) ───────────────────────────────┐
-│  [Your name          ]                                    │
-│  [Your email         ]                                    │
-│  [Your question...   ]                                    │
-│  [        Send Message        ]                           │
-└───────────────────────────────────────────────────────────┘
-```
+**Desktop layout (≥960px):** flex row, `justify-content: space-between`, `align-items: flex-start`, `gap: 48px`
+- Left copy block: `max-width: 400px`
+- Right form: `width: 300px`, `flex-shrink: 0`
+
+**Responsive (<960px):** `flex-direction: column`, `gap: 32px`. Both blocks go full width. Left block loses its `max-width` constraint. `padding-block` reduces from 48px to `clamp(2rem, 5vw, 3rem)`.
+
+**Success state:** When `sent === true`, replace only the right-side form column with the success card (same markup and CSS as the current `CtaSection.vue` `.form-success` block). The left copy block remains visible at all times.
 
 **Styling:**
 - `background: #ffffff`, `border-top: 1px solid rgba(10,15,30,0.07)`
 - `padding-block: 48px`
-- Layout: flex row, space-between, `gap: 48px`
-- Left max-width: 400px
-- Right: fixed 300px wide form
-- Responsive (<960px): stack to column
-
-**Formspree:** Move the existing fetch logic from `CtaSection.vue` into this component unchanged.
+- Left eyebrow label: Inter 700, 10px, `#7b2fff`, `letter-spacing: 0.16em`, `text-transform: uppercase`, `margin-bottom: 6px`
+- Left heading: Inter 700, 18px, `#0a0f1e`, `letter-spacing: -0.01em`, `margin-bottom: 8px`
+- Left body text: Inter 400, 14px, `#8892b0`, `line-height: 1.65`
+- Form inputs: same `.form-input` styles as current `CtaSection.vue` — keep scoped CSS identical
+- Textarea: `resize: vertical`, `min-height: 80px`
+- Submit button: `.btn-primary`, `width: 100%`
+- Disclaimer ("NO CONTRACTS · CANCEL ANYTIME"): Inter 500, 12px, `#8892b0`, `text-align: center`, `margin-top: 12px`, `letter-spacing: 0.06em`
 
 ---
 
 ### 4.13 Site Footer
 **Change type: Tweak**
 
-- `.footer-wordmark`: Inter 800, `letter-spacing: 0.18em` (remove Orbitron)
-- `.footer-tagline`: Inter 700, `letter-spacing: 0.14em` (remove Space Mono)
-- `.footer-col h4`: Inter 700
+- `.footer-wordmark`: remove `font-family: 'Orbitron'`; use Inter 800 with `letter-spacing: 0.18em` at desktop. Responsive overrides: `0.14em` at `max-640` (keep existing responsive rule, just remove Orbitron)
+- `.footer-tagline`: remove `font-family: 'Space Mono'`; Inter 700, `letter-spacing: 0.14em`
+- `.footer-col h4`: inherits Inter (remove any explicit font-family)
 - All other styles unchanged
 
 ---
@@ -404,20 +466,23 @@ Move all contact form logic from `CtaSection.vue` into this new component.
 npm install lucide-vue-next
 ```
 
-Import per component as needed:
+Import per component as needed — example for `SolutionSection.vue`:
 ```js
-import { PhoneIncoming, CalendarCheck, Clock, Users, PhoneCall, MessageCircle, ShieldCheck, Plus, Check, Send, Bot } from 'lucide-vue-next'
+import { PhoneIncoming, CalendarCheck, Clock, Users } from 'lucide-vue-next'
 ```
+
+Full import list across all components:
+`PhoneIncoming`, `CalendarCheck`, `Clock`, `Users`, `PhoneCall`, `MessageCircle`, `ShieldCheck`, `Plus`, `Check`, `Send`, `Bot`, `Activity`, `Home`, `Heart`, `Stethoscope`, `Briefcase`
 
 ---
 
 ## 6. Global CSS Changes (`main.css`)
 
-1. Remove Google Fonts import for Orbitron, DM Sans, Space Mono
-2. Add Inter import: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap')`
+1. Remove Google Fonts `@import` for Orbitron, DM Sans, Space Mono
+2. Add: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap')`
 3. Update `body { font-family: 'Inter', sans-serif; }`
-4. H1 and H2 base styles: remove `font-family: 'Orbitron'`, update `letter-spacing` to `-0.025em`
-5. `.btn-primary` and `.btn-ghost`: remove `font-family: 'DM Sans'` (will inherit Inter from body)
+4. Update `h2` base rule: remove `font-family: 'Orbitron'`; set `letter-spacing: -0.025em` (H2 only — H1 is set per-component at `-0.03em`)
+5. Remove `font-family: 'DM Sans'` from `.btn-primary` and `.btn-ghost` (both inherit Inter from body)
 
 ---
 
@@ -426,7 +491,7 @@ import { PhoneIncoming, CalendarCheck, Clock, Users, PhoneCall, MessageCircle, S
 ```js
 fontFamily: {
   sans: ['Inter', 'sans-serif'],
-  // Remove: orbitron, mono
+  // orbitron and mono entries removed
 },
 ```
 
@@ -435,38 +500,62 @@ fontFamily: {
 ## 8. `App.vue` Changes
 
 ```vue
-import SocialProofBar from './components/SocialProofBar.vue'
-import ContactSection from './components/ContactSection.vue'
+<script setup>
+import { ref } from 'vue'
+import NavBar from './components/NavBar.vue'
+import HeroSection from './components/HeroSection.vue'
+import MarqueeBar from './components/MarqueeBar.vue'
+import SocialProofBar from './components/SocialProofBar.vue'       // NEW
+import ProblemSection from './components/ProblemSection.vue'
+import CostSection from './components/CostSection.vue'
+import SolutionSection from './components/SolutionSection.vue'
+import HowItWorksSection from './components/HowItWorksSection.vue'
+import PricingSection from './components/PricingSection.vue'
+import FaqSection from './components/FaqSection.vue'
+import CtaSection from './components/CtaSection.vue'
+import ContactSection from './components/ContactSection.vue'        // NEW
+import SiteFooter from './components/SiteFooter.vue'
+import BookingModal from './components/BookingModal.vue'
 
-// Template order:
-<NavBar />
-<HeroSection />
-<MarqueeBar />
-<SocialProofBar />         // NEW
-<ProblemSection />
-<CostSection />
-<SolutionSection />
-<HowItWorksSection />
-<PricingSection />
-<FaqSection />
-<CtaSection />
-<ContactSection />         // NEW (form moved here from CtaSection)
-<SiteFooter />
-<BookingModal />
+const bookingOpen = ref(false)
+function openBooking() { bookingOpen.value = true }
+function closeBooking() { bookingOpen.value = false }
+</script>
+
+<template>
+  <NavBar @open-booking="openBooking" />
+  <main>
+    <HeroSection @open-booking="openBooking" />
+    <MarqueeBar />
+    <SocialProofBar />
+    <ProblemSection />
+    <CostSection />
+    <SolutionSection />
+    <HowItWorksSection />
+    <PricingSection @open-booking="openBooking" />
+    <FaqSection @open-booking="openBooking" />
+    <CtaSection @open-booking="openBooking" />
+    <ContactSection />
+  </main>
+  <SiteFooter @open-booking="openBooking" />
+  <BookingModal :open="bookingOpen" @close="closeBooking" />
+</template>
 ```
+
+`SocialProofBar` and `ContactSection` do not emit `open-booking` — no event binding needed on them.
 
 ---
 
 ## 9. What Is Explicitly Out of Scope
 
 - Pricing data or plan structure changes
-- FAQ content changes (questions/answers)
+- FAQ question/answer content changes
 - Booking modal redesign
 - Any backend or Formspree configuration changes
 - Animations beyond what currently exists
 - Dark mode
 - Any new pages or routes
-- Testimonials/social proof content (placeholder only)
+- Testimonials/social proof content (placeholder only — no real client data)
 
 ---
 
@@ -476,10 +565,10 @@ import ContactSection from './components/ContactSection.vue'
 |---|---|---|
 | Typography | Full Inter (A) | Cleaner SaaS feel, single font system, easier maintenance |
 | Social proof | Placeholder only | No confirmed clients yet; space reserved for future |
-| Hero visual | Dashboard widget (C) | Shows outcomes (calls answered, bookings made) without explaining the product |
-| Chat UI in HowItWorks | Phone/chat UI (B) per user request | Shows product in action mid-funnel |
+| Hero visual | Dashboard widget (C) | Shows outcomes (calls answered, bookings made) concretely |
+| Chat UI in HowItWorks | Added per user request | Shows product in action mid-funnel |
 | Chat UI style | Hybrid (dark header, tinted body) | Too dark was jarring; too light blended with step cards |
-| FAQ | Remove search + tabs | Landing page FAQ needs zero friction; 6–8 questions is sufficient |
+| FAQ | Remove search + tabs | Landing page FAQ needs zero friction; accordion only is sufficient |
 | CTA / Contact | Split into two sections | Eliminates decision paralysis; CTA stays conversion-focused |
 | Icon library | Lucide (`lucide-vue-next`) | Clean SVGs, Vue-native, consistent with site's geometric style |
-| Section order | Unchanged | Current narrative (Problem → Cost → Solution → HowItWorks → Pricing → FAQ → CTA) is solid |
+| Section order | Unchanged for existing sections | Current narrative (Problem → Cost → Solution → HowItWorks → Pricing → FAQ → CTA) is solid |
