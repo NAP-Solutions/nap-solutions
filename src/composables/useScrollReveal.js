@@ -7,7 +7,7 @@ import { onMounted, onUnmounted } from 'vue'
  * @param {() => (Element | null)[]} getTargets - called onMounted to get elements
  * @param {{ threshold?: number, once?: boolean }} options
  */
-export function useScrollReveal(getTargets, { threshold = 0.12, once = true } = {}) {
+export function useScrollReveal(getTargets, { threshold = 0.06, once = true } = {}) {
   let observer
 
   onMounted(() => {

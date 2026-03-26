@@ -114,23 +114,23 @@ async function submitForm() {
   gap: 48px;
 }
 .contact-eyebrow {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #7b2fff;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .contact-heading {
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 700;
   color: #0a0f1e;
-  letter-spacing: -0.01em;
-  margin-bottom: 10px;
-  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  line-height: 1.25;
 }
 .contact-body {
-  font-size: 15px;
+  font-size: 16px;
   color: #8892b0;
   line-height: 1.65;
 }

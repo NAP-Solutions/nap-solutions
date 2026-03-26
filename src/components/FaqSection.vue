@@ -38,6 +38,7 @@ function toggleItem(i) {
               <div
                 v-for="(item, i) in faqItems"
                 :key="i"
+                v-show="showAll || i < 3"
                 class="faq-item"
                 :class="{ open: openIndex === i }"
               >
@@ -141,8 +142,7 @@ function toggleItem(i) {
 
 /* Collapse / fade */
 .faq-collapse.collapsed {
-  max-height: 280px;
-  overflow: hidden;
+  /* items beyond index 2 hidden via v-show */
 }
 .faq-fade {
   position: absolute;
