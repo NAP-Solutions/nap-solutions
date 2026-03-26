@@ -156,7 +156,7 @@ useScrollReveal(() => [headerRef.value, ...cardRefs.value, ctaRef.value])
   flex-wrap: wrap;
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity 0.5s 0.2s ease, transform 0.5s 0.2s ease;
+  transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
 }
 .solution-cta[data-revealed] {
   opacity: 1;

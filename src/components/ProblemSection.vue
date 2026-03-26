@@ -66,6 +66,8 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
 .stat-card {
   opacity: 0;
   transform: translateY(18px);
+}
+.stat-card {
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 .problem-item[data-revealed],
@@ -96,7 +98,7 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
   padding: 20px 24px;
   border-radius: 12px;
   border: 1px solid transparent;
-  transition: background 0.2s, border-color 0.2s;
+  transition: opacity 0.5s ease, transform 0.5s ease, background 0.2s, border-color 0.2s;
   cursor: default;
 }
 .problem-item:hover {
