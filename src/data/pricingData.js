@@ -2,8 +2,9 @@ export const pricingPlans = [
   {
     tier: 'BASE',
     minutes: '2,000 MIN / MO',
-    price: '$475',
+    price: '$479',
     badge: 'START HERE',
+    subBadge: '7 DAY TRIAL',
     featured: false,
     features: [
       '24/7 AI receptionist',
@@ -14,8 +15,9 @@ export const pricingPlans = [
   {
     tier: 'GROWTH',
     minutes: '2,000 MIN / MO',
-    price: '$1,200',
+    price: '$1,199',
     badge: null,
+    subBadge: null,
     featured: false,
     badge: null,
     features: [
@@ -32,10 +34,13 @@ export const pricingPlans = [
   {
     tier: 'SCALE',
     minutes: '4,000 MIN / MO',
-    price: '$2,100',
+    price: '$1,799',
     badge: 'MOST POPULAR',
+    subBadge: null,
     featured: true,
-    badge: 'MOST POPULAR',
+    originalPrice: '$2,099',
+    discountText: '14.3% OFF',
+    promoNote: 'First month only at $1,799. Renews at $2,099/mo + tax.',
     features: [
       '24/7 AI receptionist',
       'Calendar integration',
@@ -50,8 +55,9 @@ export const pricingPlans = [
   {
     tier: 'ENTERPRISE',
     minutes: '8,000 MIN / MO',
-    price: '$4,100',
+    price: '$3,999',
     badge: null,
+    subBadge: null,
     featured: false,
     badge: null,
     features: [

@@ -28,7 +28,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
       <div class="base-plan-banner" ref="bannerRef">
         <span class="base-plan-pill">BASE PLAN</span>
         <p class="base-plan-text">
-          Starting at <strong>$475/mo</strong> — 2,000 mins · 24/7 receptionist &amp; calendar integration included
+          Starting at <strong>$479/mo</strong> - 2,000 mins - 24/7 receptionist &amp; calendar integration included
         </p>
       </div>
 
@@ -38,27 +38,43 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
         <div
           v-for="(plan, i) in pricingPlans"
           :key="plan.tier"
-          class="pricing-card"
-          :class="{ featured: plan.featured }"
-          :ref="el => cardRefs[i] = el"
+          class="pricing-plan"
         >
-          <div v-if="plan.badge" class="plan-badge" :class="{ 'badge-popular': plan.featured }">{{ plan.badge }}</div>
-          <div class="pricing-tier">{{ plan.tier }}</div>
-          <div class="pricing-mins">{{ plan.minutes }}</div>
-          <div class="pricing-price">
-            {{ plan.price }}<span class="pricing-per">/mo + tax</span>
-          </div>
-          <div class="pricing-divider"></div>
-          <ul class="pricing-features">
-            <li v-for="(feat, j) in plan.features" :key="j">{{ feat }}</li>
-          </ul>
-          <button
-            class="btn-primary"
-            style="width: 100%"
-            @click="$emit('open-booking')"
+          <div
+            class="pricing-card"
+            :class="{ featured: plan.featured, 'has-attached-banner': !!plan.subBadge }"
+            :ref="el => cardRefs[i] = el"
           >
-            Book a Demo
-          </button>
+            <div class="plan-top-row">
+              <div class="pricing-tier">{{ plan.tier }}</div>
+              <div class="plan-badge-slot">
+                <div v-if="plan.badge" class="plan-badge" :class="{ 'badge-popular': plan.featured }">{{ plan.badge }}</div>
+              </div>
+            </div>
+            <div class="pricing-head">
+              <div class="pricing-mins">{{ plan.minutes }}</div>
+              <div class="pricing-price">
+                {{ plan.price }}<span class="pricing-per">/mo + tax</span>
+              </div>
+              <div v-if="plan.originalPrice || plan.discountText" class="pricing-promo-row">
+                <span v-if="plan.originalPrice" class="pricing-old-price">{{ plan.originalPrice }}</span>
+                <span v-if="plan.discountText" class="pricing-discount-pill">{{ plan.discountText }}</span>
+              </div>
+            </div>
+            <div class="pricing-divider"></div>
+            <ul class="pricing-features">
+              <li v-for="(feat, j) in plan.features" :key="j">{{ feat }}</li>
+            </ul>
+            <button
+              :class="plan.featured ? 'btn-primary' : 'btn-ghost'"
+              style="width: 100%"
+              @click="$emit('open-booking')"
+            >
+              Book a Demo
+            </button>
+            <div v-if="plan.subBadge" class="plan-attached-banner">{{ plan.subBadge }}</div>
+          </div>
+          <p v-if="plan.promoNote" class="pricing-note pricing-note-outside">{{ plan.promoNote }}</p>
         </div>
       </div>
 
@@ -122,17 +138,27 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   letter-spacing: 0.18em;
   color: #b0b8cc;
   text-transform: uppercase;
+  margin-top: 10px;
   margin-bottom: 16px;
 }
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
-  gap: 20px;
-  margin-top: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 22px;
+  margin-top: clamp(2rem, 5vw, 3.2rem);
+  align-items: stretch;
+  padding-bottom: 56px;
+}
+.pricing-plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Cards */
 .pricing-card {
+  flex: 1;
   border-radius: 20px;
   padding: 36px 28px;
   background: #fff;
@@ -142,9 +168,13 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   transform: translateY(18px);
   transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
+}
+.pricing-card.has-attached-banner {
+  border-radius: 20px 20px 0 0;
+  border-bottom: none;
 }
 .pricing-card:hover {
   transform: translateY(-6px);
@@ -164,12 +194,23 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   opacity: 1;
   transform: translateY(0);
 }
-.pricing-card:nth-child(2) { transition-delay: 0.1s; }
-.pricing-card:nth-child(3) { transition-delay: 0.2s; }
+.pricing-plan:nth-child(2) .pricing-card { transition-delay: 0.1s; }
+.pricing-plan:nth-child(3) .pricing-card { transition-delay: 0.2s; }
+.plan-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  min-height: 30px;
+}
+.plan-badge-slot {
+  min-width: 118px;
+  display: flex;
+  justify-content: flex-end;
+}
 .plan-badge {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+  position: static;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -199,7 +240,10 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   font-weight: 700;
   letter-spacing: 0.22em;
   color: #7b2fff;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+}
+.pricing-head {
+  min-height: 112px;
 }
 .pricing-card.featured .pricing-tier {
   color: #00a896;
@@ -212,24 +256,92 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   margin-bottom: 10px;
   letter-spacing: 1px;
 }
+.pricing-promo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 24px;
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+.pricing-old-price {
+  font-size: 17px;
+  color: #8b94ad;
+  text-decoration: line-through;
+  font-weight: 600;
+}
+.pricing-discount-pill {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: #12a773;
+  border-radius: 100px;
+  padding: 4px 10px;
+}
 .pricing-price {
   font-size: 42px;
   font-weight: 800;
   color: #0a0f1e;
   letter-spacing: -0.03em;
   line-height: 1;
-  margin-bottom: 18px;
+  margin-bottom: 0;
 }
 .pricing-per {
+  display: inline-block;
+  margin-left: 8px;
   font-size: 14px;
   font-weight: 400;
   color: #8892b0;
   letter-spacing: 0;
 }
+.plan-sub-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #0a0f1e;
+  background: #f3f6ff;
+  border: 1px solid rgba(10, 15, 30, 0.12);
+  border-radius: 100px;
+  padding: 5px 12px;
+  margin-bottom: 12px;
+}
+.pricing-note {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #5b6688;
+}
+.pricing-note-outside {
+  position: absolute;
+  top: 100%;
+  left: 30px;
+  right: 30px;
+  margin: 12px 0 0;
+}
+.plan-attached-banner {
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  right: -1px;
+  padding: 12px 14px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #fff;
+  background: linear-gradient(135deg, #12a773, #00c7b5);
+  border: 1px solid rgba(10, 15, 30, 0.08);
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  z-index: 2;
+}
 .pricing-divider {
   height: 1px;
   background: rgba(10, 15, 30, 0.08);
-  margin: 20px 0 22px;
+  margin: 10px 0 12px;
 }
 
 /* Features */
@@ -286,6 +398,21 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   .pricing-grid {
     grid-template-columns: 1fr;
   }
+  .pricing-card.has-attached-banner {
+    border-radius: 16px 16px 0 0;
+  }
+  .pricing-grid {
+    padding-bottom: 46px;
+  }
+  .pricing-note-outside {
+    position: static;
+    left: auto;
+    right: auto;
+    margin: 10px 16px 0;
+  }
+  .plan-attached-banner {
+    border-radius: 0 0 16px 16px;
+  }
 
   .pricing-features {
     margin-bottom: 22px;
@@ -294,6 +421,9 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   .pricing-features li {
     font-size: 14px;
     padding: 9px 0;
+  }
+  .pricing-head {
+    min-height: 0;
   }
 }
 

@@ -1,11 +1,19 @@
 export const faqItems = [
   {
-    q: 'What exactly is NAP Solutions?',
-    a: 'NAP Solutions provides an AI-powered receptionist that answers your business calls 24/7. It books appointments, handles inquiries, reschedules, cancels, and escalates to your team when needed - all without any human staff required.',
+    q: 'How is NAP different from competitors?',
+    a: 'NAP Solutions is built for real appointment-based businesses that need reliable booking outcomes, not just basic call handling. We customize the AI to your workflows, connect to your live calendar, and keep human handoff options in place so calls are handled accurately and professionally.',
   },
   {
     q: 'How does the AI know how to handle my calls?',
     a: "During setup, we fully configure the AI to understand your business - your services, hours, tone, and booking rules. It's trained on your specific information so it always sounds like a natural extension of your team, not a generic bot.",
+  },
+  {
+    q: 'Can I still take calls myself while using NAP Solutions?',
+    a: 'Yes. NAP Solutions is designed to complement your team - it handles overflow and after-hours calls, while you and your staff can keep taking calls during business hours.',
+  },
+  {
+    q: 'What exactly is NAP Solutions?',
+    a: 'NAP Solutions provides an AI-powered receptionist that answers your business calls 24/7. It books appointments, handles inquiries, reschedules, cancels, and escalates to your team when needed - all without any human staff required.',
   },
   {
     q: 'Do I need any special equipment or software?',
@@ -45,7 +53,7 @@ export const faqItems = [
   },
   {
     q: 'How much does NAP Solutions cost?',
-    a: 'We offer three plans - Growth (2,000 min/month), Scale (4,000 min/month), and Enterprise (8,000 min/month). Pricing is discussed during your demo so we can match the right plan to your call volume and business needs.',
+    a: 'Plans start at $479/month (Base), with Growth at $1,199/month, Scale at $1,799 for the first month then $2,099/month, and Enterprise at $3,999/month. We confirm the best fit during your demo based on your call volume and business needs.',
   },
   {
     q: 'Are there contracts or long-term commitments?',
@@ -62,9 +70,5 @@ export const faqItems = [
   {
     q: "What happens if there's a technical outage?",
     a: 'We build on enterprise-grade infrastructure with high uptime guarantees. In the rare event of an issue, your calls will be handled according to fallback rules we set up with you during onboarding.',
-  },
-  {
-    q: 'Can I still take calls myself while using NAP Solutions?',
-    a: "Yes. NAP Solutions is designed to complement your team - it handles the overflow and after-hours calls you would otherwise miss, while you and your staff continue taking calls during business hours as usual.",
   },
 ]
