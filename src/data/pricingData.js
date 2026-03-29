@@ -19,6 +19,7 @@ export const pricingPlans = [
     badge: null,
     subBadge: null,
     featured: false,
+    badge: null,
     features: [
       '24/7 AI receptionist',
       'Calendar integration',
@@ -58,6 +59,7 @@ export const pricingPlans = [
     badge: null,
     subBadge: null,
     featured: false,
+    badge: null,
     features: [
       'Multiple locations',
       'Custom call volume',

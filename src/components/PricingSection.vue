@@ -13,7 +13,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 </script>
 
 <template>
-  <section id="pricing" class="section bg-white">
+  <section id="pricing" class="section bg-white" style="overflow: hidden">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">Pricing</div>
@@ -77,6 +77,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
           <p v-if="plan.promoNote" class="pricing-note pricing-note-outside">{{ plan.promoNote }}</p>
         </div>
       </div>
+
       <p class="pricing-footer">
         All plans include full setup, onboarding, and calendar integration. Prices + tax. No hidden fees.
       </p>
@@ -153,12 +154,14 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   flex-direction: column;
   height: 100%;
 }
+
+/* Cards */
 .pricing-card {
   flex: 1;
   border-radius: 20px;
-  padding: 36px 30px;
+  padding: 36px 28px;
   background: #fff;
-  border: 1px solid rgba(10, 15, 30, 0.08);
+  border: 1.5px solid rgba(10, 15, 30, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
   opacity: 0;
   transform: translateY(18px);
@@ -181,9 +184,10 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   transform: translateY(-6px);
 }
 .pricing-card.featured {
-  background: linear-gradient(135deg, #faf8ff, #f0faff);
-  border-color: rgba(123, 47, 255, 0.3);
-  box-shadow: 0 8px 40px rgba(123, 47, 255, 0.12);
+  background: linear-gradient(160deg, #faf8ff 0%, #f3f0ff 100%);
+  border-color: rgba(123, 47, 255, 0.35);
+  border-width: 2px;
+  box-shadow: 0 8px 24px rgba(123, 47, 255, 0.1);
 }
 .pricing-card[data-revealed] {
   opacity: 1;
@@ -208,8 +212,8 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   position: static;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 2px;
-  padding: 5px 13px;
+  letter-spacing: 0.2em;
+  padding: 5px 16px;
   border-radius: 100px;
   background: rgba(123, 47, 255, 0.1);
   color: #7b2fff;
@@ -220,18 +224,33 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   color: #fff;
   border: none;
 }
+.badge-popular {
+  background: linear-gradient(135deg, #7b2fff, #5b1fd4);
+  color: #fff;
+}
+.badge-start {
+  background: linear-gradient(135deg, #7b2fff, #5b1fd4);
+  color: #fff;
+}
+
+/* Tier */
 .pricing-tier {
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 0.22em;
   color: #7b2fff;
   margin-bottom: 0;
 }
 .pricing-head {
   min-height: 136px;
 }
+.pricing-card.featured .pricing-tier {
+  color: #00a896;
+}
+
+/* Minutes */
 .pricing-mins {
-  font-size: 14px;
+  font-size: 12px;
   color: #8892b0;
   margin-bottom: 10px;
   letter-spacing: 1px;
@@ -321,41 +340,62 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 .pricing-divider {
   height: 1px;
   background: rgba(10, 15, 30, 0.08);
-  margin-bottom: 24px;
+  margin: 20px 0 22px;
 }
+
+/* Features */
 .pricing-features {
   list-style: none;
-  margin-bottom: 34px;
+  margin-bottom: 28px;
   padding: 0;
   flex: 1;
 }
 .pricing-features li {
-  font-size: 16px;
+  font-size: 15px;
   color: #4a5580;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(10, 15, 30, 0.08);
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(10, 15, 30, 0.07);
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.pricing-features li::before {
-  content: '\2713';
-  color: #00d4c0;
-  font-size: 15px;
-  font-weight: 700;
+.pricing-features li:last-child {
+  border-bottom: none;
 }
-.pricing-footer {
-  text-align: center;
-  font-size: 14px;
-  color: #8892b0;
-  margin-top: 28px;
-  letter-spacing: 1px;
+.check-icon {
+  width: 22px;
+  height: 22px;
+  background: #00d4c0;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 1px;
 }
 
-@media (max-width: 640px) {
-  .pricing-card {
-    padding: 26px 16px 18px;
-    border-radius: 16px;
+/* Footer */
+.pricing-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #8892b0;
+  margin-top: 28px;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+  .pricing-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
   }
   .pricing-card.has-attached-banner {
     border-radius: 16px 16px 0 0;
@@ -378,8 +418,8 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   }
 
   .pricing-features li {
-    font-size: 15px;
-    padding: 8px 0;
+    font-size: 14px;
+    padding: 9px 0;
   }
   .pricing-head {
     min-height: 0;
