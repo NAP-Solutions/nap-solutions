@@ -138,6 +138,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   letter-spacing: 0.18em;
   color: #b0b8cc;
   text-transform: uppercase;
+  margin-top: 10px;
   margin-bottom: 16px;
 }
 .pricing-grid {
@@ -242,7 +243,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   margin-bottom: 0;
 }
 .pricing-head {
-  min-height: 136px;
+  min-height: 112px;
 }
 .pricing-card.featured .pricing-tier {
   color: #00a896;
@@ -340,7 +341,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 .pricing-divider {
   height: 1px;
   background: rgba(10, 15, 30, 0.08);
-  margin: 20px 0 22px;
+  margin: 10px 0 12px;
 }
 
 /* Features */
