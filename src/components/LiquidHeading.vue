@@ -86,7 +86,8 @@ const layers = [
 }
 
 .liquid-heading-content {
-  display: block;
+  display: inline;
+  line-height: inherit;
   padding-bottom: 0.08em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
@@ -106,7 +107,7 @@ const layers = [
   -webkit-text-stroke: 0;
   background-image: var(--heading-gradient);
   background-size: 100% 100%;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
   background-position: 50% 50%;
   -webkit-background-clip: text;
   background-clip: text;
