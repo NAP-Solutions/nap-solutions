@@ -60,8 +60,10 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 
             <!-- Price -->
             <div class="pricing-head">
-              <div class="pricing-price">{{ plan.price }}</div>
-              <div class="pricing-period">/ month + tax</div>
+              <div class="pricing-price-row">
+                <div class="pricing-price">{{ plan.price }}</div>
+                <div class="pricing-period">/ mo + tax</div>
+              </div>
               <div v-if="plan.originalPrice || plan.discountText" class="pricing-promo-row">
                 <span v-if="plan.originalPrice" class="pricing-old-price">{{ plan.originalPrice }}</span>
                 <span v-if="plan.discountText" class="pricing-discount-pill">{{ plan.discountText }}</span>
@@ -275,8 +277,31 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   100% { background-position: 0% 0%; }
 }
 
+.pricing-card.featured .pricing-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background-image: radial-gradient(
+    transparent, transparent,
+    var(--brand), var(--accent), var(--brand-strong),
+    transparent, transparent
+  );
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: shine-pulse 5s infinite linear;
+  will-change: background-position;
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* Header */
 .card-header {
+  min-height: 62px; /* tallest: tier label + 2-line description */
   margin-bottom: 20px;
 }
 .pricing-tier {
@@ -297,7 +322,13 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 
 /* Price */
 .pricing-head {
-  margin-bottom: 14px;
+  min-height: 78px; /* tallest: price-row + promo row (SCALE) */
+  margin-bottom: 6px;
+}
+.pricing-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 .pricing-price {
   font-size: 42px;
@@ -309,14 +340,14 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 .pricing-period {
   font-size: 13px;
   color: var(--text-muted);
-  margin-top: 4px;
   font-weight: 400;
+  white-space: nowrap;
 }
 .pricing-promo-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-bottom: 6px;
 }
 .pricing-old-price {
   font-size: 15px;
@@ -462,6 +493,10 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   }
   .pricing-price {
     font-size: 36px;
+  }
+  .card-header,
+  .pricing-head {
+    min-height: 0;
   }
 }
 
