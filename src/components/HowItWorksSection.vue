@@ -10,13 +10,17 @@ import {
 } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { useTilt } from '../composables/useTilt'
 import LiquidHeading from './LiquidHeading.vue'
 
 const headerRef = ref(null)
 const stepRefs = ref([])
 const chatRef = ref(null)
+const chatWidgetRef = ref(null)
 
 useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
+useTilt(() => stepRefs.value)
+useTilt(() => [chatWidgetRef.value], { requireReveal: false })
 </script>
 
 <template>
@@ -25,7 +29,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">How It Works</div>
         <LiquidHeading>
-          From First Ring<br />To Fully Booked.
+          From first ring<br />to fully booked.
         </LiquidHeading>
         <p class="section-sub">
           Every call handled end-to-end. Here's exactly what our AI takes care
@@ -37,6 +41,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
         <!-- Step cards -->
         <div class="steps-col">
           <div class="step-card" :ref="el => stepRefs[0] = el">
+            <div class="tilt-glare" aria-hidden="true"></div>
             <div class="step-icon-wrap">
               <div class="step-icon si-purple"><PhoneCall :size="20" /></div>
               <span class="step-num">01</span>
@@ -48,6 +53,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
           </div>
 
           <div class="step-card" :ref="el => stepRefs[1] = el">
+            <div class="tilt-glare" aria-hidden="true"></div>
             <div class="step-icon-wrap">
               <div class="step-icon si-cyan"><MessageCircle :size="20" /></div>
               <span class="step-num">02</span>
@@ -59,6 +65,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
           </div>
 
           <div class="step-card" :ref="el => stepRefs[2] = el">
+            <div class="tilt-glare" aria-hidden="true"></div>
             <div class="step-icon-wrap">
               <div class="step-icon si-purple"><CalendarCheck :size="20" /></div>
               <span class="step-num">03</span>
@@ -70,6 +77,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
           </div>
 
           <div class="step-card" :ref="el => stepRefs[3] = el">
+            <div class="tilt-glare" aria-hidden="true"></div>
             <div class="step-icon-wrap">
               <div class="step-icon si-cyan"><ShieldCheck :size="20" /></div>
               <span class="step-num">04</span>
@@ -83,7 +91,8 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 
         <!-- Chat widget -->
         <div class="chat-col" ref="chatRef">
-          <div class="chat-widget">
+          <div class="chat-widget" ref="chatWidgetRef">
+            <div class="tilt-glare" aria-hidden="true"></div>
             <div class="chat-header">
               <div class="ch-dots">
                 <span class="ch-dot ch-dot-dim"></span>
@@ -295,6 +304,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   border: 1.5px solid rgba(10, 15, 30, 0.14);
   box-shadow: 0 16px 48px rgba(10, 15, 30, 0.12), 0 3px 10px rgba(var(--brand-rgb), 0.08);
   overflow: hidden;
+  position: relative;
 }
 
 /* Chat header */

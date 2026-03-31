@@ -20,7 +20,7 @@ useScrollReveal(() => [innerRef.value])
         Pick a time that works for you and let us show you exactly how NAP
         Solutions works for your business.
       </p>
-      <button class="btn-primary cta-btn" @click="$emit('open-booking')">
+      <button class="btn-primary btn-shine cta-btn" @click="$emit('open-booking')">
         Book a Demo
       </button>
       <div class="cta-trust">

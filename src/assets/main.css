@@ -236,6 +236,40 @@ h2 {
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
+/* Animated border shine — apply alongside btn-primary or btn-ghost */
+.btn-shine {
+  position: relative;
+  isolation: isolate;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background-image: radial-gradient(
+    transparent, transparent,
+    rgba(255, 255, 255, 0.34), rgb(255, 255, 255), rgb(190, 190, 190),
+    transparent, transparent
+  );
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: btn-border-shine 8s infinite linear;
+  will-change: background-position;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes btn-border-shine {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
 .btn-ghost:hover {
   background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.24) 0%, rgba(var(--brand-rgb), 0.18) 100%);
   border-color: rgba(var(--accent-rgb), 0.58);
@@ -284,6 +318,25 @@ h2 {
   to {
     opacity: 1;
   }
+}
+
+/* ===== Tilt card glare ===== */
+.tilt-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.22) 0%,
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+[data-tilting] .tilt-glare {
+  opacity: 1;
 }
 
 /* ===== Scrollbar ===== */

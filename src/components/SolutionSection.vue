@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { PhoneIncoming, CalendarCheck, Clock, Users } from 'lucide-vue-next'
 import { solutionCards } from '../data/solutionData'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { useTilt } from '../composables/useTilt'
 import LiquidHeading from './LiquidHeading.vue'
 
 const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
@@ -11,6 +12,7 @@ const headerRef = ref(null)
 const cardRefs = ref([])
 
 useScrollReveal(() => [headerRef.value, ...cardRefs.value])
+useTilt(() => cardRefs.value)
 </script>
 
 <template>
@@ -19,7 +21,7 @@ useScrollReveal(() => [headerRef.value, ...cardRefs.value])
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Solution</div>
         <LiquidHeading>
-          An AI Receptionist<br />That Never Clocks Out.
+          An AI receptionist<br />that never clocks out.
         </LiquidHeading>
         <p class="section-sub">
           NAP Solutions answers every call, qualifies the caller, and books the
@@ -34,6 +36,7 @@ useScrollReveal(() => [headerRef.value, ...cardRefs.value])
           class="feature-card"
           :ref="el => cardRefs[i] = el"
         >
+          <div class="tilt-glare" aria-hidden="true"></div>
           <div class="fc-icon" :class="`fc-icon--${card.iconVariant}`">
             <component :is="iconMap[card.icon]" :size="18" />
           </div>

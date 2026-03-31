@@ -92,7 +92,7 @@ async function submitForm() {
           <p v-if="error" class="form-error">{{ error }}</p>
           <button
             type="submit"
-            class="btn-primary"
+            class="btn-primary btn-shine"
             style="width: 100%"
             :disabled="sending"
           >
