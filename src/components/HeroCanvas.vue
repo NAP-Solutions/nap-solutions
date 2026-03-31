@@ -3,6 +3,12 @@ import { onMounted, onBeforeUnmount, ref } from 'vue'
 import * as THREE from 'three'
 
 const emit = defineEmits(['intro-done'])
+const props = defineProps({
+  intro: {
+    type: Boolean,
+    default: true,
+  },
+})
 const canvasRef = ref(null)
 
 let renderer, scene, camera, uniforms, ro, ioObserver
@@ -14,8 +20,13 @@ let lastTickMs = 0
 let lastFrameMs = 0
 let isVisible = true
 let introDone = false
-// -1 = not started  |  ≥0 = wall-clock second when IO fired  |  -2 = done
-let ringStartTime = -1
+const INTRO_NOT_STARTED = -1
+const INTRO_DONE = -2
+const INTRO_TRIGGER_THRESHOLD = 0.15
+const TARGET_FPS = 45
+const PIXEL_SIZE = 0
+// -1 = not started | >= 0 = simulation second when intro starts | -2 = done
+let ringStartTime = INTRO_NOT_STARTED
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Vertex shader — puts the PlaneGeometry(2,2) directly in clip space
@@ -83,11 +94,18 @@ const fragmentShader = /* glsl */`
     return 105.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
   }
 
+  // ── Small hash noise helper for final grain ──────────────────────────────
+  float hash12(vec2 p){
+    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+  }
+
   // ── Fluid surface height ─────────────────────────────────────────────────
   float getSurface(vec2 p){
     float c=cos(uAngle),s=sin(uAngle);
     vec2 rp=mat2(c,-s,s,c)*p;
-    float n1=snoise(vec3(rp*uNoiseScale*.25,              uTime*uSpeed*.7));
+    float n1=snoise(vec3(rp*uNoiseScale*.25,               uTime*uSpeed*.7));
     float n2=snoise(vec3(rp*uNoiseScale*.25+vec2(21.4,15.2),uTime*uSpeed*.9));
     vec2 flow=vec2(n1+sin(rp.x*uNoiseScale*.5+uTime*uSpeed)*.3,
                    n2+cos(rp.y*uNoiseScale*.5-uTime*uSpeed)*.3);
@@ -134,7 +152,6 @@ const fragmentShader = /* glsl */`
     vec3 fc = computeFluid(p);
 
     // ── Pure-fluid shortcut (active once sequence is done) ───────────────
-    // uBlend reaches 1.0 and stays there — skip ring work entirely.
     vec3 finalColor;
 
     if(uBlend >= 0.999){
@@ -142,9 +159,6 @@ const fragmentShader = /* glsl */`
     } else {
 
       // ── Ring animation ─────────────────────────────────────────────────
-      // Lorentzian glow: lw·fi²/(d²+ε) — no singularities, controllable
-      // width.  ε=0.018 → half-power radius ≈ 0.134; 5 staggered rings
-      // span ≈ 0.2 in r-space for a thick, explosive leading edge.
       float t  = uRingTime * 0.05;
       float lw = 0.003;
       vec3 rings = vec3(0.0);
@@ -155,20 +169,20 @@ const fragmentShader = /* glsl */`
           rings[j] += lw*fi*fi / (d*d + 0.007);
         }
       }
-      vec3 purple=vec3(0.659,0.773,0.992); // --brand    #a8c5fd
-      vec3 cyan  =vec3(0.600,0.894,1.000); // --accent   #99e4ff
-      vec3 indigo=vec3(0.525,0.671,0.973); // --brand-strong #86abf8
+
+      vec3 purple=vec3(0.659,0.773,0.992); // --brand
+      vec3 cyan  =vec3(0.600,0.894,1.000); // --accent
+      vec3 indigo=vec3(0.525,0.671,0.973); // --brand-strong
       vec3 ringGlow = clamp(rings.r,0.,1.)*purple
                     + clamp(rings.g,0.,1.)*cyan
                     + clamp(rings.b,0.,1.)*indigo;
       ringGlow = clamp(ringGlow, 0., 1.);
 
       // ── Circle mask ────────────────────────────────────────────────────
-      // Soft boundary — fluid inside, white outside
       float outside = smoothstep(uMaskR-0.04, uMaskR+0.04, r);
       vec3 masked = mix(fc, vec3(1.0), outside);
 
-      // Ring glow band — widened to match the thick Lorentzian falloff
+      // Ring glow band
       float edgeDist = abs(r - uMaskR);
       float edgeGlow = 1.0 - smoothstep(0.0, 0.20, edgeDist);
       masked = mix(masked, ringGlow, edgeGlow * 0.98);
@@ -177,10 +191,9 @@ const fragmentShader = /* glsl */`
       finalColor = mix(masked, fc, uBlend);
     }
 
-    // ── Dual-frequency film grain (applied to final composite) ───────────
-    float g1 = fract(sin(dot(st,      vec2(127.1,311.7)))*43758.5453);
-    float g2 = fract(sin(dot(st*.37,  vec2(269.5,183.3)))*17231.8473);
-    finalColor += (mix(g1,g2,.4)-.5)*.025;
+    // ── Pixel-blocked animated grain ─────────────────────────────────────
+    float grain = hash12(pxC) - 0.5;
+    finalColor += grain * 0.15;
 
     gl_FragColor = vec4(clamp(finalColor,0.,1.), 1.0);
   }
@@ -221,7 +234,7 @@ onMounted(() => {
   const getDpr = () => Math.min(window.devicePixelRatio || 1, getDprCap())
   const getCssSize = () => ({ w: el.clientWidth, h: el.clientHeight })
   const { w: W, h: H } = getCssSize()
-  const FRAME_MS = 1000 / 45
+  const frameMs = 1000 / TARGET_FPS
 
   scene = new THREE.Scene()
   camera = new THREE.Camera()
@@ -246,7 +259,12 @@ onMounted(() => {
     uAngle: { value: FLUID.angle },
     uConnections: { value: FLUID.connections },
     uShadowWidth: { value: FLUID.shadowWidth },
-    uPixelSize: { value: 9 * getDpr() },
+    uPixelSize: { value: PIXEL_SIZE * getDpr() },
+  }
+
+  if (!props.intro) {
+    introDone = true
+    ringStartTime = INTRO_DONE
   }
 
   shaderMaterial = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms })
@@ -278,7 +296,7 @@ onMounted(() => {
     renderer.setPixelRatio(dpr)
     renderer.setSize(w, h, false)
     uniforms.uResolution.value.set(renderer.domElement.width, renderer.domElement.height)
-    uniforms.uPixelSize.value = 9 * dpr
+    uniforms.uPixelSize.value = PIXEL_SIZE * dpr
   }
 
   function scheduleResize() {
@@ -304,7 +322,7 @@ onMounted(() => {
   function animate(nowMs) {
     animId = requestAnimationFrame(animate)
 
-    if (lastFrameMs && (nowMs - lastFrameMs) < FRAME_MS) return
+    if (lastFrameMs && (nowMs - lastFrameMs) < frameMs) return
     lastFrameMs = nowMs
 
     if (!lastTickMs) {
@@ -336,7 +354,7 @@ onMounted(() => {
           introDone = true
           emit('intro-done')
         }
-        ringStartTime = -2
+        ringStartTime = INTRO_DONE
         if (!isVisible) stopLoop()
       }
     }
@@ -349,7 +367,7 @@ onMounted(() => {
   ro = new ResizeObserver(scheduleResize)
   ro.observe(targetEl)
 
-  let fired = false
+  let fired = !props.intro
   ioObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       isVisible = entry.isIntersecting || entry.intersectionRatio > 0
@@ -357,16 +375,16 @@ onMounted(() => {
         startLoop()
       }
 
-      if (entry.intersectionRatio >= 0.15 && !fired) {
+      if (props.intro && entry.intersectionRatio >= INTRO_TRIGGER_THRESHOLD && !fired) {
         fired = true
         ringStartTime = simTime
       }
 
-      if (!isVisible && ringStartTime === -2) {
+      if (!isVisible && ringStartTime === INTRO_DONE) {
         stopLoop()
       }
     }
-  }, { threshold: [0, 0.15] })
+  }, { threshold: [0, INTRO_TRIGGER_THRESHOLD] })
 
   ioObserver.observe(targetEl)
 

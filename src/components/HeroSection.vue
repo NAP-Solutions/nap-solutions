@@ -2,60 +2,124 @@
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { Check } from 'lucide-vue-next'
 import { gsap } from 'gsap'
-import { TextPlugin } from 'gsap/TextPlugin'
 import HeroCanvas from './HeroCanvas.vue'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
-gsap.registerPlugin(TextPlugin)
-
-defineEmits(['open-booking'])
+const emit = defineEmits(['open-booking'])
 
 const revealed = ref(false)
 const headingRef = ref(null)
 const subRef = ref(null)
 const actionsRef = ref(null)
 const trustRef = ref(null)
-const cycleWordRef = ref(null)
 const { scrollToSection } = useScrollToSection()
 
-const cycleWords = ['call', 'lead', 'booking', 'client']
-let cycleIdx = 0
-let cycleTimer = null
+const HERO_TITLE_START = 'Never miss'
+const HERO_TITLE_END = 'again.'
+const CYCLE_DELAY_MS = 2200
+const CYCLE_MIN_DURATION = 0.22
+const CYCLE_DURATION_PER_CHAR = 0.055
+const SAFETY_REVEAL_MS = 3000
 
-let safetyTimer = null
+const titleLayers = [
+  { className: 'hero-title-layer hero-title-layer--stroke', ariaHidden: true },
+  { className: 'hero-title-layer hero-title-layer--stroke-shine', ariaHidden: true },
+  { className: 'hero-title-layer hero-title-layer--fill', ariaHidden: false },
+]
+
+const cycleWords = ['call', 'lead', 'booking', 'client']
+const trustItems = ['Setup included', 'Cancel anytime']
+
+let cycleIdx = 0
+let cycleTimer = 0
+let cycleTween = null
+const cycleWord = ref(cycleWords[0])
+
+let safetyTimer = 0
 let heroTimeline = null
 let cleanupHeroSplit = () => {}
 
+function clearSafetyTimer() {
+  if (!safetyTimer) return
+  clearTimeout(safetyTimer)
+  safetyTimer = 0
+}
+
+function clearCycleTimer() {
+  if (!cycleTimer) return
+  clearTimeout(cycleTimer)
+  cycleTimer = 0
+}
+
+function stopCycleAnimation() {
+  clearCycleTimer()
+  cycleTween?.kill()
+  cycleTween = null
+}
+
+function cleanupHeroAnimation() {
+  heroTimeline?.kill()
+  heroTimeline = null
+  cleanupHeroSplit()
+  cleanupHeroSplit = () => {}
+  stopCycleAnimation()
+}
+
+function animateCycleWord(nextWord, onDone) {
+  const currentWord = cycleWord.value
+  cycleTween?.kill()
+
+  const erase = { count: currentWord.length }
+  const type = { count: 0 }
+
+  cycleTween = gsap
+    .timeline({
+      onComplete: () => {
+        cycleTween = null
+        onDone?.()
+      },
+    })
+    .to(erase, {
+      duration: 0.18,
+      count: 0,
+      ease: 'sine.out',
+      onUpdate: () => {
+        cycleWord.value = currentWord.slice(0, Math.max(0, Math.round(erase.count)))
+      },
+    })
+    .to(type, {
+      duration: Math.max(CYCLE_MIN_DURATION, nextWord.length * CYCLE_DURATION_PER_CHAR),
+      count: nextWord.length,
+      ease: 'sine.out',
+      onUpdate: () => {
+        cycleWord.value = nextWord.slice(0, Math.max(0, Math.round(type.count)))
+      },
+    })
+}
+
 function scheduleCycle() {
-  cycleTimer = setTimeout(() => {
-    if (!cycleWordRef.value) return
+  clearCycleTimer()
+  cycleTimer = window.setTimeout(() => {
     cycleIdx = (cycleIdx + 1) % cycleWords.length
-    const next = cycleWords[cycleIdx]
-    gsap.timeline({ onComplete: scheduleCycle })
-      .to(cycleWordRef.value, {
-        duration: 0.18,
-        text: { value: '', delimiter: '' },
-        ease: 'none',
-      })
-      .to(cycleWordRef.value, {
-        duration: Math.max(0.22, next.length * 0.055),
-        text: { value: next, delimiter: '' },
-        ease: 'none',
-      })
-  }, 2200)
+    animateCycleWord(cycleWords[cycleIdx], scheduleCycle)
+  }, CYCLE_DELAY_MS)
+}
+
+function revealHero() {
+  if (revealed.value) return
+  revealed.value = true
+  clearSafetyTimer()
 }
 
 function onIntroDone() {
-  revealed.value = true
-  if (safetyTimer) clearTimeout(safetyTimer)
+  revealHero()
 }
 
 function playHeroAnimation() {
   if (!headingRef.value || !subRef.value || !actionsRef.value || !trustRef.value) return
 
-  cleanupHeroSplit()
-  heroTimeline?.kill()
+  cleanupHeroAnimation()
 
   const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (shouldReduceMotion) {
@@ -80,7 +144,8 @@ function playHeroAnimation() {
     },
   })
 
-  heroTimeline = gsap.timeline()
+  heroTimeline = gsap
+    .timeline()
     .to(headingRef.value, {
       autoAlpha: 1,
       y: 0,
@@ -119,20 +184,18 @@ function playHeroAnimation() {
 }
 
 onMounted(() => {
-  safetyTimer = setTimeout(() => { revealed.value = true }, 3000)
+  safetyTimer = window.setTimeout(revealHero, SAFETY_REVEAL_MS)
 })
 
-watch(revealed, async (isRevealed) => {
-  if (!isRevealed) return
+watch(revealed, async (isRevealed, wasRevealed) => {
+  if (!isRevealed || wasRevealed) return
   await nextTick()
   playHeroAnimation()
 })
 
 onBeforeUnmount(() => {
-  if (safetyTimer) clearTimeout(safetyTimer)
-  if (cycleTimer) clearTimeout(cycleTimer)
-  heroTimeline?.kill()
-  cleanupHeroSplit()
+  clearSafetyTimer()
+  cleanupHeroAnimation()
 })
 
 function scrollToHow() {
@@ -147,9 +210,16 @@ function scrollToHow() {
 
     <div v-if="revealed" class="hero-inner section-inner">
       <div class="hero-content">
-        <h1 ref="headingRef">
-          <span class="h1-light">Never miss</span>
-          <span class="h1-grad liquid-heading">a <span ref="cycleWordRef" class="cycle-word">call</span> again.</span>
+        <h1 ref="headingRef" class="hero-title-stack">
+          <span
+            v-for="layer in titleLayers"
+            :key="layer.className"
+            :class="layer.className"
+            :aria-hidden="layer.ariaHidden ? 'true' : null"
+          >
+            <span class="h1-light">{{ HERO_TITLE_START }}</span>
+            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> {{ HERO_TITLE_END }}</span>
+          </span>
         </h1>
 
         <p ref="subRef" class="hero-sub">
@@ -158,26 +228,18 @@ function scrollToHow() {
         </p>
 
         <div ref="actionsRef" class="hero-actions">
-          <button class="btn-primary" @click="$emit('open-booking')">
+          <button class="btn-primary hero-btn-shine" @click="emit('open-booking')">
             Book a Free Demo
           </button>
-          <button class="btn-ghost" @click="scrollToHow">
+          <button class="btn-primary hero-btn-shine" @click="scrollToHow">
             See how it works &rarr;
           </button>
         </div>
 
         <div ref="trustRef" class="hero-trust">
-          <div class="trust-item">
+          <div v-for="item in trustItems" :key="item" class="trust-item">
             <span class="trust-check"><Check :size="9" /></span>
-            No contracts
-          </div>
-          <div class="trust-item">
-            <span class="trust-check"><Check :size="9" /></span>
-            Setup included
-          </div>
-          <div class="trust-item">
-            <span class="trust-check"><Check :size="9" /></span>
-            Cancel anytime
+            {{ item }}
           </div>
         </div>
       </div>
@@ -230,13 +292,72 @@ function scrollToHow() {
   max-width: 680px;
 }
 
-h1 {
+.hero-title-stack {
+  --hero-stroke-color: #fff;
+  --hero-stroke-width: clamp(2.0px, 0.03em, 2.1px);
   font-size: clamp(2.6rem, 6.2vw, 5.4rem);
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: -0.03em;
   margin-bottom: 22px;
   text-wrap: balance;
+  position: relative;
+}
+
+.hero-title-layer {
+  display: block;
+}
+
+.hero-title-layer--stroke {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: var(--hero-stroke-width) var(--hero-stroke-color);
+  paint-order: stroke fill;
+  text-shadow: none;
+  filter: none;
+}
+
+.hero-title-layer--fill {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title-layer--stroke-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: var(--hero-stroke-width) var(--brand);
+  paint-order: stroke fill;
+  text-shadow: 0 0 2px rgba(var(--brand-rgb), 0.2);
+  filter: none;
+  opacity: 1;
+  -webkit-mask-image: radial-gradient(
+    transparent, transparent,
+    rgba(255, 255, 255, 0.72), #fff, rgba(255, 255, 255, 0.72),
+    transparent, transparent
+  );
+  mask-image: radial-gradient(
+    transparent, transparent,
+    rgba(255, 255, 255, 0.72), #fff, rgba(255, 255, 255, 0.72),
+    transparent, transparent
+  );
+  -webkit-mask-size: 300% 300%;
+  mask-size: 300% 300%;
+  -webkit-mask-position: 0% 0%;
+  mask-position: 0% 0%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: hero-shine-pulse 5s infinite linear, hero-stroke-shine-color 5s infinite linear;
+  will-change: -webkit-mask-position, mask-position, -webkit-text-stroke-color, text-shadow;
 }
 
 .h1-light {
@@ -249,15 +370,76 @@ h1 {
   padding-bottom: 0.12em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  mix-blend-mode: darken;
-  filter: saturate(1.2) contrast(1.22) brightness(0.84);
 }
 
+.hero-title-layer--stroke .h1-light,
+.hero-title-layer--stroke .h1-grad,
+.hero-title-layer--stroke-shine .h1-light,
+.hero-title-layer--stroke-shine .h1-grad {
+  color: transparent;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: transparent;
+  mix-blend-mode: normal;
+  text-shadow: none;
+  filter: none;
+}
+
+.hero-title-layer--fill .h1-light,
+.hero-title-layer--fill .h1-grad {
+  -webkit-text-stroke: 0;
+  background-image: var(--heading-gradient);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  mix-blend-mode: normal;
+  filter: none;
+  text-shadow: none;
+}
+
+@keyframes hero-shine-pulse {
+  0% {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+  50% {
+    -webkit-mask-position: 100% 100%;
+    mask-position: 100% 100%;
+  }
+  100% {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+}
+
+@keyframes hero-stroke-shine-color {
+  0% {
+    -webkit-text-stroke-color: var(--brand);
+    text-shadow: 0 0 2px rgba(var(--brand-rgb), 0.2);
+  }
+  50% {
+    -webkit-text-stroke-color: var(--accent);
+    text-shadow:
+      0 0 6px rgba(var(--accent-rgb), 0.35),
+      0 0 2px rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    -webkit-text-stroke-color: var(--brand-strong);
+    text-shadow:
+      0 0 6px rgba(var(--brand-rgb), 0.3),
+      0 0 2px rgba(255, 255, 255, 0.18);
+  }
+}
 
 .hero-sub {
   font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.2rem);
   line-height: 1.78;
-  color: #000000;
+  color: var(--text-main);
   max-width: 56ch;
   margin-bottom: 36px;
   text-wrap: pretty;
@@ -267,6 +449,45 @@ h1 {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
+}
+
+.hero-btn-shine {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background-image: radial-gradient(
+    transparent, transparent,
+    rgba(255, 255, 255, 0.34), rgb(255, 255, 255), rgb(190, 190, 190),
+    transparent, transparent
+  );
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: hero-button-border-shine 8s infinite linear;
+  will-change: background-position;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes hero-button-border-shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
 }
 
 .hero-trust {
@@ -283,7 +504,7 @@ h1 {
   gap: 6px;
   font-size: 14.5px;
   font-weight: 500;
-  color: #000000;
+  color: var(--text-main);
 }
 
 .trust-check {
@@ -296,7 +517,7 @@ h1 {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #000000;
+  color: var(--text-main);
 }
 
 .trust-check :deep(svg) {
@@ -338,6 +559,14 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   .hero {
     transition: none;
+  }
+
+  .hero-title-layer--stroke-shine {
+    animation: none;
+  }
+
+  .hero-btn-shine::after {
+    animation: none;
   }
 }
 </style>

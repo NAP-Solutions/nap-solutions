@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { Check } from 'lucide-vue-next'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import LiquidHeading from './LiquidHeading.vue'
 
 defineEmits(['open-booking'])
 
@@ -14,7 +15,7 @@ useScrollReveal(() => [innerRef.value])
     <div class="cta-bg"></div>
     <div class="cta-inner" ref="innerRef">
       <div class="section-eyebrow center">Get Started</div>
-      <h2 class="grad-text center">Ready to Stop<br />Missing Revenue?</h2>
+      <LiquidHeading class="cta-heading center">Ready to Stop<br />Missing Revenue?</LiquidHeading>
       <p class="cta-sub">
         Pick a time that works for you and let us show you exactly how NAP
         Solutions works for your business.
@@ -23,10 +24,6 @@ useScrollReveal(() => [innerRef.value])
         Book a Demo
       </button>
       <div class="cta-trust">
-        <div class="trust-item">
-          <span class="trust-check"><Check :size="9" /></span>
-          No contracts
-        </div>
         <div class="trust-item">
           <span class="trust-check"><Check :size="9" /></span>
           Setup included
@@ -56,7 +53,7 @@ useScrollReveal(() => [innerRef.value])
 .center {
   justify-content: center;
 }
-.grad-text.center {
+.cta-heading.center {
   margin-inline: auto;
   text-align: center;
 }

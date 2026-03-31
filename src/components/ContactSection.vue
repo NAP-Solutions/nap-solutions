@@ -95,7 +95,6 @@ async function submitForm() {
           >
             {{ sending ? 'Sending...' : 'Send Message' }}
           </button>
-          <p class="contact-disclaimer">NO CONTRACTS · CANCEL ANYTIME</p>
         </form>
       </div>
     </div>
@@ -121,7 +120,7 @@ async function submitForm() {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--brand);
+  color: var(--accent-ink);
   margin-bottom: 10px;
 }
 .contact-heading {
@@ -194,13 +193,7 @@ async function submitForm() {
   border-color: rgba(var(--brand-rgb), 0.4);
   background: #fff;
 }
-.contact-disclaimer {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-body);
-  text-align: center;
-  letter-spacing: 0.06em;
-}
+
 .form-success {
   background: rgba(var(--accent-rgb), 0.08);
   border: 1.5px solid rgba(var(--accent-rgb), 0.3);

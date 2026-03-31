@@ -1,8 +1,12 @@
+<script setup>
+import LiquidHeading from './LiquidHeading.vue'
+</script>
+
 <template>
   <section id="cost" class="section bg-alt">
     <div class="section-inner">
       <div class="section-eyebrow">Revenue Impact</div>
-      <h2 class="grad-text">What Silence Is<br />Costing You.</h2>
+      <LiquidHeading>What Silence Is<br />Costing You.</LiquidHeading>
       <p class="section-sub">
         Conservative monthly estimate for a mid-size business:
       </p>
@@ -78,15 +82,16 @@
 .cost-big {
   font-size: clamp(1.9rem, 1.6rem + 0.8vw, 2.4rem);
   font-weight: 800;
-  color: var(--brand);
+  color: var(--accent-ink);
   margin-bottom: 10px;
   line-height: 1;
 }
 .cost-big-highlight {
   background: linear-gradient(135deg, var(--brand), var(--accent));
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* -webkit-text-fill-color: transparent; */
   background-clip: text;
+  color: var(--text-body);
 }
 .cost-lbl {
   font-size: 15px;
@@ -109,7 +114,7 @@
   max-width: 62ch;
 }
 .cost-note strong {
-  color: var(--brand);
+  color: var(--accent-ink);
   font-weight: 700;
 }
 

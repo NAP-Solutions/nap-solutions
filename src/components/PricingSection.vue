@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { Check, X } from 'lucide-vue-next'
 import { pricingPlans } from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import LiquidHeading from './LiquidHeading.vue'
+import HeroCanvas from './HeroCanvas.vue'
 
 defineEmits(['open-booking'])
 
@@ -14,13 +16,15 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 </script>
 
 <template>
-  <section id="pricing" class="section bg-white" style="overflow: hidden">
+  <section id="pricing" class="section pricing-section">
+    <HeroCanvas :intro="false" />
+    <div class="pricing-scrim"></div>
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">Pricing</div>
-        <h2 class="grad-text">
+        <LiquidHeading>
           Simple. Transparent.<br />No Hidden Fees.
-        </h2>
+        </LiquidHeading>
         <p class="section-sub">
           All plans include full setup, onboarding, and calendar integration. Book
           a demo and we will walk you through everything.
@@ -117,6 +121,32 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 </template>
 
 <style scoped>
+.pricing-section {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-tint);
+}
+
+.pricing-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.032;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.pricing-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.42);
+}
+
 .reveal-header {
   opacity: 0;
   transform: translateY(18px);
@@ -218,7 +248,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   padding: 5px 16px;
   border-radius: 100px;
   background: #fff;
-  color: var(--brand-strong);
+  color: var(--accent-ink);
   border: 1.5px solid rgba(var(--brand-rgb), 0.3);
 }
 .plan-badge.badge-popular {
@@ -308,7 +338,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--brand-strong);
+  color: var(--accent-ink);
   margin-bottom: 4px;
 }
 .pricing-card.featured .pricing-tier {
@@ -434,7 +464,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   justify-content: center;
   flex-shrink: 0;
   background: rgba(var(--brand-rgb), 0.15);
-  color: var(--brand-strong);
+  color: var(--accent-ink);
 }
 .feat-row.feat-excluded .feat-icon {
   background: rgba(10, 15, 30, 0.06);

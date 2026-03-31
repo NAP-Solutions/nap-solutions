@@ -18,12 +18,13 @@
 
   --accent: #99e4ff;
   --accent-strong: #73d7ff;
-  --accent-ink: #2f7ce8;
+  --accent-ink: #6ba9ff;
   --accent-rgb: 153, 228, 255;
 
   --surface-tint: #f4f8ff;
   --surface-alt: #eef6ff;
   --surface-base: #f5f8fd;
+  --heading-gradient: linear-gradient(to top, #000000 49%, #a9c7ff 100%);
 }
 
 /* ===== Base Resets ===== */
@@ -101,7 +102,7 @@ section[id] {
   font-size: clamp(12px, 0.7rem + 0.3vw, 15px);
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: var(--brand);
+  color: var(--text-main);
   text-transform: uppercase;
   margin-bottom: 18px;
 }
@@ -110,7 +111,7 @@ section[id] {
   content: '';
   width: 24px;
   height: 2px;
-  background: linear-gradient(90deg, var(--brand), var(--accent));
+  background: var(--text-main);
   border-radius: 2px;
 }
 
@@ -126,27 +127,17 @@ h2 {
 
 .grad-text,
 .liquid-heading {
-  color: #201a3f;
-  background-image:
-    linear-gradient(
-      114deg,
-      rgba(24, 21, 46, 1) 0%,
-      rgba(52, 41, 103, 0.99) 32%,
-      rgba(var(--brand-rgb), 0.98) 58%,
-      rgba(94, 123, 198, 0.99) 100%
-    ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0.04) 36%, rgba(255, 255, 255, 0) 66%),
-    radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 40%),
-    radial-gradient(circle at 86% 68%, rgba(18, 15, 39, 0.14) 0%, rgba(18, 15, 39, 0) 46%);
-  background-size: 118% 118%;
+  color: var(--text-main);
+  background-image: var(--heading-gradient);
+  background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-position: 45% 34%;
+  background-position: 50% 50%;
   display: block;
   width: fit-content;
   max-width: 100%;
-  text-shadow:
-    0 -1px 1px rgba(255, 255, 255, 0.2),
-    0 1px 1px rgba(14, 12, 30, 0.2);
+  mix-blend-mode: normal;
+  filter: none;
+  text-shadow: none;
 }
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
@@ -155,7 +146,7 @@ h2 {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 0.34px rgba(9, 11, 24, 0.24);
+    color: transparent;
   }
 }
 
