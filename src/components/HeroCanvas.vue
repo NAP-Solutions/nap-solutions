@@ -14,8 +14,13 @@ let lastTickMs = 0
 let lastFrameMs = 0
 let isVisible = true
 let introDone = false
-// -1 = not started  |  ≥0 = wall-clock second when IO fired  |  -2 = done
-let ringStartTime = -1
+const INTRO_NOT_STARTED = -1
+const INTRO_DONE = -2
+const INTRO_TRIGGER_THRESHOLD = 0.15
+const TARGET_FPS = 45
+const PIXEL_SIZE = 0
+// -1 = not started | >= 0 = simulation second when intro starts | -2 = done
+let ringStartTime = INTRO_NOT_STARTED
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Vertex shader — puts the PlaneGeometry(2,2) directly in clip space
@@ -197,13 +202,6 @@ const FLUID = {
   foldFrequency:1.7, warpAmount:3.8, noiseScale:0.72, connections:0.87, shadowWidth:0.01,
 }
 
-// DEBUG TEST PALETTE
-// const FLUID = {
-//   color1:'#000000', color2:'#0a0a0a', color3:'#111111', color4:'#1a1a1a',
-//   depth:0.04, lightX:0.97, lightY:-0.36, speed:0.09, angle:1.5708,
-//   foldFrequency:1.7, warpAmount:3.8, noiseScale:0.72, connections:0.87, shadowWidth:0.01,
-// }
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Timing (seconds, relative to ringStartTime)
 //
@@ -230,7 +228,7 @@ onMounted(() => {
   const getDpr = () => Math.min(window.devicePixelRatio || 1, getDprCap())
   const getCssSize = () => ({ w: el.clientWidth, h: el.clientHeight })
   const { w: W, h: H } = getCssSize()
-  const FRAME_MS = 1000 / 45
+  const frameMs = 1000 / TARGET_FPS
 
   scene = new THREE.Scene()
   camera = new THREE.Camera()
@@ -255,7 +253,7 @@ onMounted(() => {
     uAngle: { value: FLUID.angle },
     uConnections: { value: FLUID.connections },
     uShadowWidth: { value: FLUID.shadowWidth },
-    uPixelSize: { value: 9 * getDpr() },
+    uPixelSize: { value: PIXEL_SIZE * getDpr() },
   }
 
   shaderMaterial = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms })
@@ -287,7 +285,7 @@ onMounted(() => {
     renderer.setPixelRatio(dpr)
     renderer.setSize(w, h, false)
     uniforms.uResolution.value.set(renderer.domElement.width, renderer.domElement.height)
-    uniforms.uPixelSize.value = 0 * dpr
+    uniforms.uPixelSize.value = PIXEL_SIZE * dpr
   }
 
   function scheduleResize() {
@@ -313,7 +311,7 @@ onMounted(() => {
   function animate(nowMs) {
     animId = requestAnimationFrame(animate)
 
-    if (lastFrameMs && (nowMs - lastFrameMs) < FRAME_MS) return
+    if (lastFrameMs && (nowMs - lastFrameMs) < frameMs) return
     lastFrameMs = nowMs
 
     if (!lastTickMs) {
@@ -345,7 +343,7 @@ onMounted(() => {
           introDone = true
           emit('intro-done')
         }
-        ringStartTime = -2
+        ringStartTime = INTRO_DONE
         if (!isVisible) stopLoop()
       }
     }
@@ -366,16 +364,16 @@ onMounted(() => {
         startLoop()
       }
 
-      if (entry.intersectionRatio >= 0.15 && !fired) {
+      if (entry.intersectionRatio >= INTRO_TRIGGER_THRESHOLD && !fired) {
         fired = true
         ringStartTime = simTime
       }
 
-      if (!isVisible && ringStartTime === -2) {
+      if (!isVisible && ringStartTime === INTRO_DONE) {
         stopLoop()
       }
     }
-  }, { threshold: [0, 0.15] })
+  }, { threshold: [0, INTRO_TRIGGER_THRESHOLD] })
 
   ioObserver.observe(targetEl)
 
@@ -422,3 +420,4 @@ onBeforeUnmount(() => {
   /* filter: blur(2px); */
 }
 </style>
+

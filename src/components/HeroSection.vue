@@ -6,7 +6,7 @@ import HeroCanvas from './HeroCanvas.vue'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
-defineEmits(['open-booking'])
+const emit = defineEmits(['open-booking'])
 
 const revealed = ref(false)
 const headingRef = ref(null)
@@ -15,15 +15,56 @@ const actionsRef = ref(null)
 const trustRef = ref(null)
 const { scrollToSection } = useScrollToSection()
 
+const HERO_TITLE_START = 'Never miss'
+const HERO_TITLE_END = 'again.'
+const CYCLE_DELAY_MS = 2200
+const CYCLE_MIN_DURATION = 0.22
+const CYCLE_DURATION_PER_CHAR = 0.055
+const SAFETY_REVEAL_MS = 3000
+
+const titleLayers = [
+  { className: 'hero-title-layer hero-title-layer--stroke', ariaHidden: true },
+  { className: 'hero-title-layer hero-title-layer--stroke-shine', ariaHidden: true },
+  { className: 'hero-title-layer hero-title-layer--fill', ariaHidden: false },
+]
+
 const cycleWords = ['call', 'lead', 'booking', 'client']
+const trustItems = ['No contracts', 'Setup included', 'Cancel anytime']
+
 let cycleIdx = 0
-let cycleTimer = null
+let cycleTimer = 0
 let cycleTween = null
 const cycleWord = ref(cycleWords[0])
 
-let safetyTimer = null
+let safetyTimer = 0
 let heroTimeline = null
 let cleanupHeroSplit = () => {}
+
+function clearSafetyTimer() {
+  if (!safetyTimer) return
+  clearTimeout(safetyTimer)
+  safetyTimer = 0
+}
+
+function clearCycleTimer() {
+  if (!cycleTimer) return
+  clearTimeout(cycleTimer)
+  cycleTimer = 0
+}
+
+function stopCycleAnimation() {
+  clearCycleTimer()
+  cycleTween?.kill()
+  cycleTween = null
+}
+
+function cleanupHeroAnimation() {
+  heroTimeline?.kill()
+  heroTimeline = null
+  cleanupHeroSplit()
+  cleanupHeroSplit = () => {}
+  stopCycleAnimation()
+}
 
 function animateCycleWord(nextWord, onDone) {
   const currentWord = cycleWord.value
@@ -32,12 +73,13 @@ function animateCycleWord(nextWord, onDone) {
   const erase = { count: currentWord.length }
   const type = { count: 0 }
 
-  cycleTween = gsap.timeline({
-    onComplete: () => {
-      cycleTween = null
-      onDone?.()
-    },
-  })
+  cycleTween = gsap
+    .timeline({
+      onComplete: () => {
+        cycleTween = null
+        onDone?.()
+      },
+    })
     .to(erase, {
       duration: 0.18,
       count: 0,
@@ -47,7 +89,7 @@ function animateCycleWord(nextWord, onDone) {
       },
     })
     .to(type, {
-      duration: Math.max(0.22, nextWord.length * 0.055),
+      duration: Math.max(CYCLE_MIN_DURATION, nextWord.length * CYCLE_DURATION_PER_CHAR),
       count: nextWord.length,
       ease: 'sine.out',
       onUpdate: () => {
@@ -57,22 +99,27 @@ function animateCycleWord(nextWord, onDone) {
 }
 
 function scheduleCycle() {
-  cycleTimer = setTimeout(() => {
+  clearCycleTimer()
+  cycleTimer = window.setTimeout(() => {
     cycleIdx = (cycleIdx + 1) % cycleWords.length
     animateCycleWord(cycleWords[cycleIdx], scheduleCycle)
-  }, 2200)
+  }, CYCLE_DELAY_MS)
+}
+
+function revealHero() {
+  if (revealed.value) return
+  revealed.value = true
+  clearSafetyTimer()
 }
 
 function onIntroDone() {
-  revealed.value = true
-  if (safetyTimer) clearTimeout(safetyTimer)
+  revealHero()
 }
 
 function playHeroAnimation() {
   if (!headingRef.value || !subRef.value || !actionsRef.value || !trustRef.value) return
 
-  cleanupHeroSplit()
-  heroTimeline?.kill()
+  cleanupHeroAnimation()
 
   const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (shouldReduceMotion) {
@@ -97,7 +144,8 @@ function playHeroAnimation() {
     },
   })
 
-  heroTimeline = gsap.timeline()
+  heroTimeline = gsap
+    .timeline()
     .to(headingRef.value, {
       autoAlpha: 1,
       y: 0,
@@ -136,21 +184,18 @@ function playHeroAnimation() {
 }
 
 onMounted(() => {
-  safetyTimer = setTimeout(() => { revealed.value = true }, 3000)
+  safetyTimer = window.setTimeout(revealHero, SAFETY_REVEAL_MS)
 })
 
-watch(revealed, async (isRevealed) => {
-  if (!isRevealed) return
+watch(revealed, async (isRevealed, wasRevealed) => {
+  if (!isRevealed || wasRevealed) return
   await nextTick()
   playHeroAnimation()
 })
 
 onBeforeUnmount(() => {
-  if (safetyTimer) clearTimeout(safetyTimer)
-  if (cycleTimer) clearTimeout(cycleTimer)
-  cycleTween?.kill()
-  heroTimeline?.kill()
-  cleanupHeroSplit()
+  clearSafetyTimer()
+  cleanupHeroAnimation()
 })
 
 function scrollToHow() {
@@ -166,17 +211,14 @@ function scrollToHow() {
     <div v-if="revealed" class="hero-inner section-inner">
       <div class="hero-content">
         <h1 ref="headingRef" class="hero-title-stack">
-          <span class="hero-title-layer hero-title-layer--stroke" aria-hidden="true">
-            <span class="h1-light">Never miss</span>
-            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> again.</span>
-          </span>
-          <span class="hero-title-layer hero-title-layer--stroke-shine" aria-hidden="true">
-            <span class="h1-light">Never miss</span>
-            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> again.</span>
-          </span>
-          <span class="hero-title-layer hero-title-layer--fill">
-            <span class="h1-light">Never miss</span>
-            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> again.</span>
+          <span
+            v-for="layer in titleLayers"
+            :key="layer.className"
+            :class="layer.className"
+            :aria-hidden="layer.ariaHidden ? 'true' : null"
+          >
+            <span class="h1-light">{{ HERO_TITLE_START }}</span>
+            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> {{ HERO_TITLE_END }}</span>
           </span>
         </h1>
 
@@ -186,26 +228,18 @@ function scrollToHow() {
         </p>
 
         <div ref="actionsRef" class="hero-actions">
-          <button class="btn-primary" @click="$emit('open-booking')">
+          <button class="btn-primary hero-btn-shine" @click="emit('open-booking')">
             Book a Free Demo
           </button>
-          <button class="btn-ghost" @click="scrollToHow">
+          <button class="btn-primary hero-btn-shine" @click="scrollToHow">
             See how it works &rarr;
           </button>
         </div>
 
         <div ref="trustRef" class="hero-trust">
-          <div class="trust-item">
+          <div v-for="item in trustItems" :key="item" class="trust-item">
             <span class="trust-check"><Check :size="9" /></span>
-            No contracts
-          </div>
-          <div class="trust-item">
-            <span class="trust-check"><Check :size="9" /></span>
-            Setup included
-          </div>
-          <div class="trust-item">
-            <span class="trust-check"><Check :size="9" /></span>
-            Cancel anytime
+            {{ item }}
           </div>
         </div>
       </div>
@@ -258,18 +292,15 @@ function scrollToHow() {
   max-width: 680px;
 }
 
-h1 {
+.hero-title-stack {
+  --hero-stroke-color: #fff;
+  --hero-stroke-width: clamp(2.0px, 0.03em, 2.1px);
   font-size: clamp(2.6rem, 6.2vw, 5.4rem);
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: -0.03em;
   margin-bottom: 22px;
   text-wrap: balance;
-}
-
-.hero-title-stack {
-  --hero-stroke-color: #fff;
-  --hero-stroke-width: clamp(2.0px, 0.03em, 2.1px);
   position: relative;
 }
 
@@ -355,6 +386,7 @@ h1 {
   filter: none;
 }
 
+.hero-title-layer--fill .h1-light,
 .hero-title-layer--fill .h1-grad {
   -webkit-text-stroke: 0;
   background-image: var(--heading-gradient);
@@ -404,11 +436,10 @@ h1 {
   }
 }
 
-
 .hero-sub {
   font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.2rem);
   line-height: 1.78;
-  color: #000000;
+  color: var(--text-main);
   max-width: 56ch;
   margin-bottom: 36px;
   text-wrap: pretty;
@@ -418,6 +449,45 @@ h1 {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
+}
+
+.hero-btn-shine {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background-image: radial-gradient(
+    transparent, transparent,
+    rgba(255, 255, 255, 0.34), rgb(255, 255, 255), rgb(190, 190, 190),
+    transparent, transparent
+  );
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: hero-button-border-shine 8s infinite linear;
+  will-change: background-position;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes hero-button-border-shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
 }
 
 .hero-trust {
@@ -434,7 +504,7 @@ h1 {
   gap: 6px;
   font-size: 14.5px;
   font-weight: 500;
-  color: #000000;
+  color: var(--text-main);
 }
 
 .trust-check {
@@ -447,7 +517,7 @@ h1 {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #000000;
+  color: var(--text-main);
 }
 
 .trust-check :deep(svg) {
@@ -492,6 +562,10 @@ h1 {
   }
 
   .hero-title-layer--stroke-shine {
+    animation: none;
+  }
+
+  .hero-btn-shine::after {
     animation: none;
   }
 }

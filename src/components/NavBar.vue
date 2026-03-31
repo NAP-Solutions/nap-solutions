@@ -105,6 +105,7 @@ onUnmounted(() => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
+  isolation: isolate;
   border-radius: 22px;
   border: 1px solid transparent;
   background: transparent;
@@ -113,17 +114,52 @@ onUnmounted(() => {
     background   0.3s ease,
     border-color 0.3s ease,
     box-shadow   0.3s ease;
+  box-shadow: none;
+}
+
+.nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.16) 42%, rgba(255, 255, 255, 0.46) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nav::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(140% 120% at 16% -18%, rgba(var(--brand-rgb), 0.28) 0%, rgba(255, 255, 255, 0) 52%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 /* Glass state — triggered once the user scrolls */
 .nav.scrolled {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-color: rgba(10, 15, 30, 0.1);
+  background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.26) 0%, rgba(var(--brand-rgb), 0.2) 48%, rgba(255, 255, 255, 0.62) 100%);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.84);
   box-shadow:
-    0 4px 32px rgba(0, 0, 0, 0.09),
-    0 1px 8px  rgba(var(--brand-rgb), 0.07);
+    0 10px 28px rgba(var(--brand-rgb), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    inset 0 -8px 16px rgba(255, 255, 255, 0.16);
+}
+
+.nav.scrolled::before {
+  opacity: 0.82;
+}
+
+.nav.scrolled::after {
+  opacity: 0.62;
 }
 
 /* ── Inner row ────────────────────────────────────────── */
@@ -155,10 +191,7 @@ onUnmounted(() => {
   font-size: 15px;
   letter-spacing: 0.18em;
   white-space: nowrap;
-  background: linear-gradient(90deg, var(--text-main) 0%, var(--brand) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #000;
 }
 
 /* ── Desktop links ────────────────────────────────────── */
@@ -264,12 +297,17 @@ onUnmounted(() => {
     top: 12px;
     transform: none;
     border-radius: 18px;
-    /* Always show a subtle glass so it's legible on any bg */
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-color: rgba(10, 15, 30, 0.1);
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .nav.scrolled {
+    background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.26) 0%, rgba(var(--brand-rgb), 0.2) 48%, rgba(255, 255, 255, 0.64) 100%);
+    border-color: rgba(255, 255, 255, 0.88);
+    box-shadow:
+      0 8px 24px rgba(var(--brand-rgb), 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.84),
+      inset 0 -7px 14px rgba(255, 255, 255, 0.14);
   }
   .nav-inner {
     min-height: 60px;
