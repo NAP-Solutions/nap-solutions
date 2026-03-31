@@ -147,13 +147,13 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 
 <style scoped>
 .bg-alt {
-  background: #f5f7fb;
+  background: var(--surface-base);
 }
 
 /* Layout */
 .hiw-layout {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 380px);
   gap: 36px;
   align-items: start;
   margin-top: clamp(1.8rem, 5vw, 3rem);
@@ -166,14 +166,19 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   gap: 12px;
 }
 .step-card {
-  background: #fff;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.58) 46%, rgba(var(--accent-rgb), 0.15) 100%);
   border-radius: 14px;
-  border: 1.5px solid rgba(10, 15, 30, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.74);
   padding: 20px 22px;
   display: flex;
   gap: 18px;
   align-items: flex-start;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 10px 24px rgba(12, 18, 38, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px) saturate(132%);
+  -webkit-backdrop-filter: blur(10px) saturate(132%);
   position: relative;
   overflow: hidden;
   opacity: 0;
@@ -187,14 +192,16 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, #7b2fff, #00d4c0);
+  background: linear-gradient(180deg, var(--brand), var(--accent));
   border-radius: 3px 0 0 3px;
   opacity: 0;
   transition: opacity 0.2s;
 }
 .step-card:hover {
-  border-color: rgba(123, 47, 255, 0.18);
-  box-shadow: 0 6px 24px rgba(123, 47, 255, 0.07);
+  border-color: rgba(var(--brand-rgb), 0.3);
+  box-shadow:
+    0 14px 30px rgba(var(--brand-rgb), 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
   transition-delay: 0s;
 }
 .step-card:hover::before {
@@ -219,19 +226,19 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   display: block;
 }
 .si-purple {
-  background: rgba(123, 47, 255, 0.08);
-  border: 1px solid rgba(123, 47, 255, 0.15);
-  color: #7b2fff;
+  background: rgba(var(--brand-rgb), 0.08);
+  border: 1px solid rgba(var(--brand-rgb), 0.15);
+  color: var(--brand);
 }
 .si-cyan {
-  background: rgba(0, 212, 192, 0.08);
-  border: 1px solid rgba(0, 212, 192, 0.2);
-  color: #00b8a6;
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  color: var(--accent-strong);
 }
 .step-num {
   font-size: 11px;
   font-weight: 700;
-  color: #00d4c0;
+  color: var(--accent);
   letter-spacing: 0.1em;
 }
 .step-content {
@@ -241,13 +248,13 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 .step-title {
   font-size: clamp(15px, 0.9rem + 0.2vw, 17px);
   font-weight: 700;
-  color: #0a0f1e;
+  color: var(--text-main);
   letter-spacing: -0.01em;
   margin-bottom: 5px;
 }
 .step-desc {
   font-size: clamp(14px, 0.85rem + 0.15vw, 15px);
-  color: #8892b0;
+  color: var(--text-body);
   line-height: 1.7;
 }
 
@@ -282,15 +289,16 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   transform: translateY(0);
 }
 .chat-widget {
+  width: 100%;
   border-radius: 18px;
   border: 1.5px solid rgba(10, 15, 30, 0.14);
-  box-shadow: 0 16px 48px rgba(10, 15, 30, 0.12), 0 3px 10px rgba(123, 47, 255, 0.08);
+  box-shadow: 0 16px 48px rgba(10, 15, 30, 0.12), 0 3px 10px rgba(var(--brand-rgb), 0.08);
   overflow: hidden;
 }
 
 /* Chat header */
 .chat-header {
-  background: #0a0f1e;
+  background: var(--text-main);
   padding: 14px 16px;
   display: flex;
   align-items: center;
@@ -307,12 +315,12 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   border-radius: 50%;
 }
 .ch-dot-dim { background: rgba(255, 255, 255, 0.12); }
-.ch-dot-cyan { background: rgba(0, 212, 192, 0.5); }
+.ch-dot-cyan { background: rgba(var(--accent-rgb), 0.5); }
 .ch-avatar {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -345,21 +353,21 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #00d4c0;
+  color: var(--accent);
   white-space: nowrap;
 }
 .ch-live-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #00d4c0;
-  box-shadow: 0 0 6px #00d4c0;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
   animation: pulse 2s infinite;
 }
 
 /* Chat body */
 .chat-body {
-  background: #f0f2f8;
+  background: var(--surface-alt);
   padding: 14px 12px;
   display: flex;
   flex-direction: column;
@@ -375,7 +383,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 .bubble-ai {
   background: #fff;
   border: 1px solid rgba(10, 15, 30, 0.08);
-  color: #0a0f1e;
+  color: var(--text-main);
   border-bottom-left-radius: 4px;
   align-self: flex-start;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
@@ -389,7 +397,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 }
 .bubble-meta {
   font-size: 11px;
-  color: #9aa0b8;
+  color: var(--text-muted);
   margin-top: 0;
   margin-bottom: 4px;
   font-weight: 500;
@@ -401,11 +409,11 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
 /* Confirmation card */
 .confirm-card {
   background: #fff;
-  border: 1.5px solid rgba(0, 212, 192, 0.3);
+  border: 1.5px solid rgba(var(--accent-rgb), 0.3);
   border-radius: 14px;
   padding: 12px 14px;
   margin-top: 4px;
-  box-shadow: 0 2px 10px rgba(0, 212, 192, 0.08);
+  box-shadow: 0 2px 10px rgba(var(--accent-rgb), 0.08);
 }
 .confirm-top {
   display: flex;
@@ -417,34 +425,34 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   width: 24px;
   height: 24px;
   border-radius: 7px;
-  background: rgba(0, 212, 192, 0.12);
-  border: 1px solid rgba(0, 212, 192, 0.25);
+  background: rgba(var(--accent-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #00b8a6;
+  color: var(--accent-strong);
 }
 .confirm-icon :deep(svg) { display: block; }
 .confirm-label {
   font-size: 12px;
   font-weight: 700;
-  color: #00897b;
+  color: var(--accent-ink);
   letter-spacing: 0.08em;
 }
 .confirm-detail {
   font-size: 13px;
-  color: #4a5580;
+  color: var(--text-body);
   line-height: 1.65;
 }
 .confirm-detail strong {
-  color: #0a0f1e;
+  color: var(--text-main);
   font-weight: 600;
 }
 
 /* Chat footer */
 .chat-footer {
-  background: #f8f9fc;
+  background: var(--surface-base);
   border-top: 1px solid rgba(10, 15, 30, 0.07);
   padding: 11px 14px;
   display: flex;
@@ -458,13 +466,13 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   border-radius: 10px;
   padding: 8px 12px;
   font-size: 13px;
-  color: #b0b8cc;
+  color: var(--text-muted);
 }
 .chat-send {
   width: 32px;
   height: 32px;
   border-radius: 9px;
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
   border: none;
   display: flex;
   align-items: center;
@@ -472,7 +480,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   flex-shrink: 0;
   color: #fff;
   cursor: default;
-  box-shadow: 0 3px 10px rgba(123, 47, 255, 0.3);
+  box-shadow: 0 3px 10px rgba(var(--brand-rgb), 0.3);
 }
 .chat-send :deep(svg) { display: block; }
 
@@ -495,3 +503,5 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   }
 }
 </style>
+
+

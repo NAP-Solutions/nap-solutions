@@ -1,13 +1,91 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { gsap } from 'gsap'
 import { problemItems, statCards } from '../data/problemData'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
 
 const headerRef = ref(null)
+const headingRef = ref(null)
+const subRef = ref(null)
 const itemRefs = ref([])
 const statRefs = ref([])
 
-useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
+let headerObserver
+let headerTimeline
+let cleanupHeaderSplit = () => {}
+
+useScrollReveal(() => [...itemRefs.value, ...statRefs.value])
+
+function playHeaderAnimation() {
+  if (!headingRef.value || !subRef.value) return
+
+  cleanupHeaderSplit()
+  headerTimeline?.kill()
+
+  gsap.set(headingRef.value, { autoAlpha: 0, y: 18 })
+  gsap.set(subRef.value, { opacity: 1 })
+
+  const splitControl = createSplitTextAnimation(subRef.value, {
+    type: 'words, lines',
+    autoSplit: true,
+    onSplit(self) {
+      return gsap.from(self.words, {
+        autoAlpha: 0,
+        y: 22,
+        duration: 0.8,
+        stagger: { amount: 0.68 },
+        ease: 'power2.out',
+      })
+    },
+  })
+
+  headerTimeline = gsap.timeline()
+    .to(headingRef.value, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.55,
+      ease: 'power2.out',
+    })
+
+  if (splitControl.animation) {
+    headerTimeline.add(splitControl.animation, '-=0.1')
+  }
+
+  cleanupHeaderSplit = splitControl.destroy
+}
+
+onMounted(() => {
+  headerObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+
+        entry.target.dataset.revealed = ''
+
+        const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (shouldReduceMotion) {
+          gsap.set([headingRef.value, subRef.value], { clearProps: 'all' })
+        } else {
+          playHeaderAnimation()
+        }
+
+        headerObserver?.unobserve(entry.target)
+      })
+    },
+    { threshold: 0.08 }
+  )
+
+  if (headerRef.value) {
+    headerObserver.observe(headerRef.value)
+  }
+})
+
+onBeforeUnmount(() => {
+  headerObserver?.disconnect()
+  headerTimeline?.kill()
+  cleanupHeaderSplit()
+})
 </script>
 
 <template>
@@ -15,10 +93,10 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Problem</div>
-        <h2 class="grad-text">
+        <h2 ref="headingRef" class="grad-text">
           Your Phone Stops Working<br />When Clients Need It Most.
         </h2>
-        <p class="section-sub">
+        <p ref="subRef" class="section-sub problem-sub">
           Businesses are losing bookings every night, every weekend, and most do
           not even realize it.
         </p>
@@ -62,6 +140,10 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
   transform: translateY(0);
 }
 
+.problem-sub {
+  opacity: 0;
+}
+
 .problem-item,
 .stat-card {
   opacity: 0;
@@ -102,27 +184,27 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
   cursor: default;
 }
 .problem-item:hover {
-  background: rgba(123, 47, 255, 0.03);
-  border-color: rgba(123, 47, 255, 0.1);
+  background: rgba(var(--brand-rgb), 0.03);
+  border-color: rgba(var(--brand-rgb), 0.1);
 }
 .problem-arrow {
   width: 34px;
   height: 34px;
   border-radius: 8px;
   flex-shrink: 0;
-  background: rgba(123, 47, 255, 0.08);
-  border: 1px solid rgba(123, 47, 255, 0.2);
+  background: rgba(var(--brand-rgb), 0.08);
+  border: 1px solid rgba(var(--brand-rgb), 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
-  color: #7b2fff;
+  color: var(--brand);
   font-weight: 700;
 }
 .problem-item p {
   font-size: 17px;
   line-height: 1.7;
-  color: #4a5580;
+  color: var(--text-body);
   text-wrap: pretty;
 }
 .stats-col {
@@ -133,9 +215,14 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
 .stat-card {
   padding: 30px 32px;
   border-radius: 16px;
-  background: #fff;
-  border: 1px solid rgba(10, 15, 30, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.58) 46%, rgba(var(--accent-rgb), 0.15) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  box-shadow:
+    0 10px 28px rgba(12, 18, 38, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -10px 16px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px) saturate(132%);
+  -webkit-backdrop-filter: blur(10px) saturate(132%);
   position: relative;
   overflow: hidden;
 }
@@ -146,7 +233,7 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #7b2fff, #00d4c0);
+  background: linear-gradient(90deg, var(--brand), var(--accent));
   border-radius: 3px 3px 0 0;
 }
 .stat-card .big {
@@ -154,14 +241,14 @@ useScrollReveal(() => [headerRef.value, ...itemRefs.value, ...statRefs.value])
   font-weight: 800;
   line-height: 1;
   margin-bottom: 8px;
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .stat-card .lbl {
   font-size: 16px;
-  color: #8892b0;
+  color: var(--text-body);
   line-height: 1.5;
 }
 

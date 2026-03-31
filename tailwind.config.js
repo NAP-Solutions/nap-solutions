@@ -7,7 +7,7 @@ export default {
         brand: {
           cyan: '#00D4C0',
           'cyan-dark': '#00b8a6',
-          purple: '#7B2FFF',
+          purple: '#a8c5fd',
           blue: '#00BFFF',
           dark: '#0a0f1e',
           'dark-2': '#1a2240',
@@ -19,7 +19,7 @@ export default {
         sans: ['Inter', 'sans-serif'],
       },
       borderColor: {
-        'brand-border': 'rgba(123,47,255,0.12)',
+        'brand-border': 'rgba(168,197,253,0.24)',
         'brand-border-2': 'rgba(10,15,30,0.08)',
       },
       screens: {

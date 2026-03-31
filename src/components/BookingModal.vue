@@ -51,7 +51,7 @@ onUnmounted(() => {
       <div class="modal-box">
         <div class="modal-header">
           <div class="modal-header-left">
-            <div class="modal-icon">&#128197;</div>
+            <div class="modal-icon">&var(--accent-ink);</div>
             <div>
               <span class="modal-title">BOOK A DEMO</span>
               <p class="modal-subtitle">
@@ -121,8 +121,8 @@ onUnmounted(() => {
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  background: linear-gradient(135deg, rgba(0, 212, 192, 0.15), rgba(123, 47, 255, 0.15));
-  border: 1px solid rgba(123, 47, 255, 0.2);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.15), rgba(var(--brand-rgb), 0.15));
+  border: 1px solid rgba(var(--brand-rgb), 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,11 +132,11 @@ onUnmounted(() => {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #0a0f1e;
+  color: var(--text-main);
 }
 .modal-subtitle {
   font-size: 12px;
-  color: #8892b0;
+  color: var(--text-body);
   margin-top: 2px;
 }
 .modal-close {
@@ -147,15 +147,15 @@ onUnmounted(() => {
   height: 36px;
   font-size: 20px;
   cursor: pointer;
-  color: #4a5580;
+  color: var(--text-body);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
 }
 .modal-close:hover {
-  background: #f5f7fb;
-  color: #0a0f1e;
+  background: var(--surface-base);
+  color: var(--text-main);
 }
 .modal-iframe {
   flex: 1;

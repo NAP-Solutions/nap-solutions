@@ -1,14 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { useScrollToSection } from '../composables/useScrollToSection'
 
 defineEmits(['open-booking'])
 
 const innerRef = ref(null)
+const { scrollToSection } = useScrollToSection()
 useScrollReveal(() => [innerRef.value], { threshold: 0.05 })
 
 function scrollTo(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  scrollToSection(id)
 }
 </script>
 
@@ -40,7 +42,7 @@ function scrollTo(id) {
           <ul>
             <li @click="scrollTo('hero')">About NAP</li>
             <li @click="$emit('open-booking')">Book a Demo</li>
-            <li @click="scrollTo('cta')">Contact</li>
+            <li @click="scrollTo('contact')">Contact</li>
           </ul>
         </div>
         <div class="footer-col">
@@ -92,7 +94,7 @@ function scrollTo(id) {
 
 <style scoped>
 .footer {
-  background: #0a0f1e;
+  background: var(--text-main);
   padding: clamp(3rem, 6vw, 4.2rem) 0 32px;
   color: rgba(255, 255, 255, 0.6);
 }
@@ -125,8 +127,8 @@ function scrollTo(id) {
   width: 36px;
   height: 36px;
   border-radius: 9px;
-  background: linear-gradient(135deg, rgba(0, 212, 192, 0.15), rgba(123, 47, 255, 0.15));
-  border: 1px solid rgba(0, 212, 192, 0.2);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.15), rgba(var(--brand-rgb), 0.15));
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,15 +137,15 @@ function scrollTo(id) {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #00d4c0;
-  box-shadow: 0 0 8px #00d4c0;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
 }
 .footer-wordmark {
   font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 17px;
   letter-spacing: 5px;
-  background: linear-gradient(90deg, #fff 0%, #00d4c0 100%);
+  background: linear-gradient(90deg, #fff 0%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -219,7 +221,7 @@ function scrollTo(id) {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: rgba(0, 212, 192, 0.4);
+  color: rgba(var(--accent-rgb), 0.4);
 }
 
 @media (max-width: 960px) {

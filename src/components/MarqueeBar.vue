@@ -15,7 +15,7 @@
   overflow: hidden;
   border-top: 1px solid rgba(10,15,30,0.08);
   border-bottom: 1px solid rgba(10,15,30,0.08);
-  background: #f5f7fb;
+  background: var(--surface-base);
   padding: 16px 0;
 }
 .marquee-track {
@@ -26,12 +26,12 @@
 .marquee-item {
   font-size: clamp(10px, 0.6rem + 0.35vw, 12px);
   letter-spacing: clamp(2px, 0.6vw, 5px);
-  color: #8892b0;
+  color: var(--text-body);
   padding: 0 clamp(18px, 2.8vw, 32px);
   white-space: nowrap;
 }
 .marquee-sep {
-  color: #00D4C0;
+  color: var(--accent);
 }
 
 @media (max-width: 640px) {

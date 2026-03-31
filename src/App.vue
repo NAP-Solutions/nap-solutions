@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import NavBar from './components/NavBar.vue'
 import HeroSection from './components/HeroSection.vue'
-import MarqueeBar from './components/MarqueeBar.vue'
 import SocialProofBar from './components/SocialProofBar.vue'
 import ProblemSection from './components/ProblemSection.vue'
 import CostSection from './components/CostSection.vue'
@@ -29,7 +28,6 @@ function closeBooking() {
   <NavBar @open-booking="openBooking" />
   <main>
     <HeroSection @open-booking="openBooking" />
-    <MarqueeBar />
     <SocialProofBar />
     <ProblemSection />
     <CostSection />

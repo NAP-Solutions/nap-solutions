@@ -98,7 +98,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 
 .base-plan-banner {
   background: #fff;
-  border: 1.5px solid rgba(123, 47, 255, 0.15);
+  border: 1.5px solid rgba(var(--brand-rgb), 0.15);
   border-radius: 14px;
   padding: 18px 24px;
   display: flex;
@@ -115,7 +115,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   transform: translateY(0);
 }
 .base-plan-pill {
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -127,16 +127,16 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 }
 .base-plan-text {
   font-size: 16px;
-  color: #4a5580;
+  color: var(--text-body);
 }
 .base-plan-text strong {
-  color: #0a0f1e;
+  color: var(--text-main);
 }
 .plans-label {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.18em;
-  color: #b0b8cc;
+  color: var(--text-muted);
   text-transform: uppercase;
   margin-top: 10px;
   margin-bottom: 16px;
@@ -161,12 +161,17 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   flex: 1;
   border-radius: 20px;
   padding: 36px 28px;
-  background: #fff;
-  border: 1.5px solid rgba(10, 15, 30, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.62) 46%, rgba(var(--accent-rgb), 0.16) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  box-shadow:
+    0 12px 30px rgba(12, 18, 38, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -10px 16px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px) saturate(132%);
+  -webkit-backdrop-filter: blur(10px) saturate(132%);
   opacity: 0;
   transform: translateY(18px);
-  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s;
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s, border-color 0.2s;
   position: relative;
   overflow: visible;
   display: flex;
@@ -178,17 +183,23 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 }
 .pricing-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 50px rgba(123, 47, 255, 0.1);
+  border-color: rgba(var(--brand-rgb), 0.34);
+  box-shadow:
+    0 18px 42px rgba(var(--brand-rgb), 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
   transition-delay: 0s;
 }
 .pricing-card[data-revealed]:hover {
   transform: translateY(-6px);
 }
 .pricing-card.featured {
-  background: linear-gradient(160deg, #faf8ff 0%, #f3f0ff 100%);
-  border-color: rgba(123, 47, 255, 0.35);
-  border-width: 2px;
-  box-shadow: 0 8px 24px rgba(123, 47, 255, 0.1);
+  background: linear-gradient(155deg, rgba(var(--brand-rgb), 0.24) 0%, rgba(255, 255, 255, 0.76) 52%, rgba(var(--accent-rgb), 0.2) 100%);
+  border-color: rgba(var(--brand-rgb), 0.46);
+  border-width: 1.5px;
+  box-shadow:
+    0 16px 34px rgba(var(--brand-rgb), 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -12px 18px rgba(255, 255, 255, 0.14);
 }
 .pricing-card[data-revealed] {
   opacity: 1;
@@ -216,21 +227,21 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   letter-spacing: 0.2em;
   padding: 5px 16px;
   border-radius: 100px;
-  background: rgba(123, 47, 255, 0.1);
-  color: #7b2fff;
-  border: 1px solid rgba(123, 47, 255, 0.2);
+  background: rgba(var(--brand-rgb), 0.1);
+  color: var(--brand);
+  border: 1px solid rgba(var(--brand-rgb), 0.2);
 }
 .plan-badge.badge-popular {
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
   color: #fff;
   border: none;
 }
 .badge-popular {
-  background: linear-gradient(135deg, #7b2fff, #5b1fd4);
+  background: linear-gradient(135deg, var(--brand), var(--brand-strong));
   color: #fff;
 }
 .badge-start {
-  background: linear-gradient(135deg, #7b2fff, #5b1fd4);
+  background: linear-gradient(135deg, var(--brand), var(--brand-strong));
   color: #fff;
 }
 
@@ -239,20 +250,20 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: #7b2fff;
+  color: var(--brand);
   margin-bottom: 0;
 }
 .pricing-head {
   min-height: 112px;
 }
 .pricing-card.featured .pricing-tier {
-  color: #00a896;
+  color: var(--accent-strong);
 }
 
 /* Minutes */
 .pricing-mins {
   font-size: 12px;
-  color: #8892b0;
+  color: var(--text-body);
   margin-bottom: 10px;
   letter-spacing: 1px;
 }
@@ -266,7 +277,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 }
 .pricing-old-price {
   font-size: 17px;
-  color: #8b94ad;
+  color: var(--text-muted);
   text-decoration: line-through;
   font-weight: 600;
 }
@@ -275,14 +286,14 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #fff;
-  background: #12a773;
+  background: var(--accent-strong);
   border-radius: 100px;
   padding: 4px 10px;
 }
 .pricing-price {
   font-size: 42px;
   font-weight: 800;
-  color: #0a0f1e;
+  color: var(--text-main);
   letter-spacing: -0.03em;
   line-height: 1;
   margin-bottom: 0;
@@ -292,7 +303,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   margin-left: 8px;
   font-size: 14px;
   font-weight: 400;
-  color: #8892b0;
+  color: var(--text-body);
   letter-spacing: 0;
 }
 .plan-sub-badge {
@@ -301,8 +312,8 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #0a0f1e;
-  background: #f3f6ff;
+  color: var(--text-main);
+  background: var(--surface-alt);
   border: 1px solid rgba(10, 15, 30, 0.12);
   border-radius: 100px;
   padding: 5px 12px;
@@ -312,7 +323,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   margin: 0 0 14px;
   font-size: 13px;
   line-height: 1.5;
-  color: #5b6688;
+  color: var(--text-body);
 }
 .pricing-note-outside {
   position: absolute;
@@ -332,7 +343,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   font-weight: 800;
   letter-spacing: 0.12em;
   color: #fff;
-  background: linear-gradient(135deg, #12a773, #00c7b5);
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong));
   border: 1px solid rgba(10, 15, 30, 0.08);
   border-top: none;
   border-radius: 0 0 20px 20px;
@@ -353,7 +364,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 }
 .pricing-features li {
   font-size: 15px;
-  color: #4a5580;
+  color: var(--text-body);
   padding: 11px 0;
   border-bottom: 1px solid rgba(10, 15, 30, 0.07);
   display: flex;
@@ -366,7 +377,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 .check-icon {
   width: 22px;
   height: 22px;
-  background: #00d4c0;
+  background: var(--accent);
   color: #fff;
   border-radius: 50%;
   display: flex;
@@ -383,7 +394,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
 .pricing-footer {
   text-align: center;
   font-size: 13px;
-  color: #8892b0;
+  color: var(--text-body);
   margin-top: 28px;
   letter-spacing: 0.5px;
 }
@@ -441,3 +452,4 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   }
 }
 </style>
+

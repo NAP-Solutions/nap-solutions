@@ -118,20 +118,20 @@ async function submitForm() {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #7b2fff;
+  color: var(--brand);
   margin-bottom: 10px;
 }
 .contact-heading {
   font-size: 26px;
   font-weight: 700;
-  color: #0a0f1e;
+  color: var(--text-main);
   letter-spacing: -0.02em;
   margin-bottom: 14px;
   line-height: 1.25;
 }
 .contact-body {
   font-size: 16px;
-  color: #8892b0;
+  color: var(--text-body);
   line-height: 1.65;
 }
 .contact-left {
@@ -162,17 +162,17 @@ async function submitForm() {
 }
 .form-input {
   width: 100%;
-  background: #f5f7fb;
+  background: var(--surface-base);
   border: 1.5px solid rgba(10, 15, 30, 0.08);
   border-radius: 10px;
   padding: 13px 16px;
   font-size: 15px;
-  color: #0a0f1e;
+  color: var(--text-main);
   outline: none;
   transition: border-color 0.2s;
 }
 .form-input:focus {
-  border-color: rgba(123, 47, 255, 0.4);
+  border-color: rgba(var(--brand-rgb), 0.4);
   background: #fff;
 }
 .form-textarea {
@@ -182,13 +182,13 @@ async function submitForm() {
 .contact-disclaimer {
   font-size: 12px;
   font-weight: 500;
-  color: #8892b0;
+  color: var(--text-body);
   text-align: center;
   letter-spacing: 0.06em;
 }
 .form-success {
-  background: rgba(0, 212, 192, 0.08);
-  border: 1.5px solid rgba(0, 212, 192, 0.3);
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1.5px solid rgba(var(--accent-rgb), 0.3);
   border-radius: 12px;
   padding: 22px 26px;
   text-align: center;
@@ -197,7 +197,7 @@ async function submitForm() {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
   color: #fff;
   display: flex;
   align-items: center;
@@ -210,12 +210,12 @@ async function submitForm() {
 .success-title {
   font-size: 17px;
   font-weight: 700;
-  color: #0a0f1e;
+  color: var(--text-main);
   margin-bottom: 4px;
 }
 .success-sub {
   font-size: 15px;
-  color: #4a5580;
+  color: var(--text-body);
 }
 
 @media (max-width: 960px) {

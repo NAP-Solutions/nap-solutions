@@ -71,7 +71,7 @@ useScrollReveal(() => [barRef.value])
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #b0b8cc;
+  color: var(--text-muted);
   margin-bottom: 18px;
 }
 .sp-logos {
@@ -92,7 +92,7 @@ useScrollReveal(() => [barRef.value])
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background: #0a0f1e;
+  background: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +105,7 @@ useScrollReveal(() => [barRef.value])
 .sp-name {
   font-size: 13px;
   font-weight: 700;
-  color: #0a0f1e;
+  color: var(--text-main);
   white-space: nowrap;
 }
 .sp-coming {
@@ -118,14 +118,14 @@ useScrollReveal(() => [barRef.value])
   margin-top: 20px;
   font-size: 13px;
   font-weight: 500;
-  color: #b0b8cc;
+  color: var(--text-muted);
 }
 .sp-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #00d4c0;
-  box-shadow: 0 0 5px #00d4c0;
+  background: var(--accent);
+  box-shadow: 0 0 5px var(--accent);
   flex-shrink: 0;
   animation: pulse 2s infinite;
 }
