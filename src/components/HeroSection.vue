@@ -2,12 +2,9 @@
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { Check } from 'lucide-vue-next'
 import { gsap } from 'gsap'
-import { TextPlugin } from 'gsap/TextPlugin'
 import HeroCanvas from './HeroCanvas.vue'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
 import { useScrollToSection } from '../composables/useScrollToSection'
-
-gsap.registerPlugin(TextPlugin)
 
 defineEmits(['open-booking'])
 
@@ -16,33 +13,53 @@ const headingRef = ref(null)
 const subRef = ref(null)
 const actionsRef = ref(null)
 const trustRef = ref(null)
-const cycleWordRef = ref(null)
 const { scrollToSection } = useScrollToSection()
 
 const cycleWords = ['call', 'lead', 'booking', 'client']
 let cycleIdx = 0
 let cycleTimer = null
+let cycleTween = null
+const cycleWord = ref(cycleWords[0])
 
 let safetyTimer = null
 let heroTimeline = null
 let cleanupHeroSplit = () => {}
 
+function animateCycleWord(nextWord, onDone) {
+  const currentWord = cycleWord.value
+  cycleTween?.kill()
+
+  const erase = { count: currentWord.length }
+  const type = { count: 0 }
+
+  cycleTween = gsap.timeline({
+    onComplete: () => {
+      cycleTween = null
+      onDone?.()
+    },
+  })
+    .to(erase, {
+      duration: 0.18,
+      count: 0,
+      ease: 'sine.out',
+      onUpdate: () => {
+        cycleWord.value = currentWord.slice(0, Math.max(0, Math.round(erase.count)))
+      },
+    })
+    .to(type, {
+      duration: Math.max(0.22, nextWord.length * 0.055),
+      count: nextWord.length,
+      ease: 'sine.out',
+      onUpdate: () => {
+        cycleWord.value = nextWord.slice(0, Math.max(0, Math.round(type.count)))
+      },
+    })
+}
+
 function scheduleCycle() {
   cycleTimer = setTimeout(() => {
-    if (!cycleWordRef.value) return
     cycleIdx = (cycleIdx + 1) % cycleWords.length
-    const next = cycleWords[cycleIdx]
-    gsap.timeline({ onComplete: scheduleCycle })
-      .to(cycleWordRef.value, {
-        duration: 0.18,
-        text: { value: '', delimiter: '' },
-        ease: 'none',
-      })
-      .to(cycleWordRef.value, {
-        duration: Math.max(0.22, next.length * 0.055),
-        text: { value: next, delimiter: '' },
-        ease: 'none',
-      })
+    animateCycleWord(cycleWords[cycleIdx], scheduleCycle)
   }, 2200)
 }
 
@@ -131,6 +148,7 @@ watch(revealed, async (isRevealed) => {
 onBeforeUnmount(() => {
   if (safetyTimer) clearTimeout(safetyTimer)
   if (cycleTimer) clearTimeout(cycleTimer)
+  cycleTween?.kill()
   heroTimeline?.kill()
   cleanupHeroSplit()
 })
@@ -147,9 +165,19 @@ function scrollToHow() {
 
     <div v-if="revealed" class="hero-inner section-inner">
       <div class="hero-content">
-        <h1 ref="headingRef">
-          <span class="h1-light">Never miss</span>
-          <span class="h1-grad liquid-heading">a <span ref="cycleWordRef" class="cycle-word">call</span> again.</span>
+        <h1 ref="headingRef" class="hero-title-stack">
+          <span class="hero-title-layer hero-title-layer--stroke" aria-hidden="true">
+            <span class="h1-light">Never miss</span>
+            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> again.</span>
+          </span>
+          <span class="hero-title-layer hero-title-layer--stroke-shine" aria-hidden="true">
+            <span class="h1-light">Never miss</span>
+            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> again.</span>
+          </span>
+          <span class="hero-title-layer hero-title-layer--fill">
+            <span class="h1-light">Never miss</span>
+            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> again.</span>
+          </span>
         </h1>
 
         <p ref="subRef" class="hero-sub">
@@ -239,6 +267,68 @@ h1 {
   text-wrap: balance;
 }
 
+.hero-title-stack {
+  --hero-stroke-color: #fff;
+  --hero-stroke-width: clamp(2.0px, 0.03em, 2.1px);
+  position: relative;
+}
+
+.hero-title-layer {
+  display: block;
+}
+
+.hero-title-layer--stroke {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: var(--hero-stroke-width) var(--hero-stroke-color);
+  paint-order: stroke fill;
+  text-shadow: none;
+  filter: none;
+}
+
+.hero-title-layer--fill {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title-layer--stroke-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: var(--hero-stroke-width) var(--brand);
+  paint-order: stroke fill;
+  text-shadow: 0 0 2px rgba(var(--brand-rgb), 0.2);
+  filter: none;
+  opacity: 1;
+  -webkit-mask-image: radial-gradient(
+    transparent, transparent,
+    rgba(255, 255, 255, 0.72), #fff, rgba(255, 255, 255, 0.72),
+    transparent, transparent
+  );
+  mask-image: radial-gradient(
+    transparent, transparent,
+    rgba(255, 255, 255, 0.72), #fff, rgba(255, 255, 255, 0.72),
+    transparent, transparent
+  );
+  -webkit-mask-size: 300% 300%;
+  mask-size: 300% 300%;
+  -webkit-mask-position: 0% 0%;
+  mask-position: 0% 0%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: hero-shine-pulse 5s infinite linear, hero-stroke-shine-color 5s infinite linear;
+  will-change: -webkit-mask-position, mask-position, -webkit-text-stroke-color, text-shadow;
+}
+
 .h1-light {
   display: block;
   color: var(--text-main);
@@ -249,8 +339,69 @@ h1 {
   padding-bottom: 0.12em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  mix-blend-mode: darken;
-  filter: saturate(1.2) contrast(1.22) brightness(0.84);
+}
+
+.hero-title-layer--stroke .h1-light,
+.hero-title-layer--stroke .h1-grad,
+.hero-title-layer--stroke-shine .h1-light,
+.hero-title-layer--stroke-shine .h1-grad {
+  color: transparent;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: transparent;
+  mix-blend-mode: normal;
+  text-shadow: none;
+  filter: none;
+}
+
+.hero-title-layer--fill .h1-grad {
+  -webkit-text-stroke: 0;
+  background-image: var(--heading-gradient);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  mix-blend-mode: normal;
+  filter: none;
+  text-shadow: none;
+}
+
+@keyframes hero-shine-pulse {
+  0% {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+  50% {
+    -webkit-mask-position: 100% 100%;
+    mask-position: 100% 100%;
+  }
+  100% {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+}
+
+@keyframes hero-stroke-shine-color {
+  0% {
+    -webkit-text-stroke-color: var(--brand);
+    text-shadow: 0 0 2px rgba(var(--brand-rgb), 0.2);
+  }
+  50% {
+    -webkit-text-stroke-color: var(--accent);
+    text-shadow:
+      0 0 6px rgba(var(--accent-rgb), 0.35),
+      0 0 2px rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    -webkit-text-stroke-color: var(--brand-strong);
+    text-shadow:
+      0 0 6px rgba(var(--brand-rgb), 0.3),
+      0 0 2px rgba(255, 255, 255, 0.18);
+  }
 }
 
 
@@ -338,6 +489,10 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   .hero {
     transition: none;
+  }
+
+  .hero-title-layer--stroke-shine {
+    animation: none;
   }
 }
 </style>
