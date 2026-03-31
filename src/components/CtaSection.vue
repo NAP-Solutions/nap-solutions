@@ -26,10 +26,6 @@ useScrollReveal(() => [innerRef.value])
       <div class="cta-trust">
         <div class="trust-item">
           <span class="trust-check"><Check :size="9" /></span>
-          No contracts
-        </div>
-        <div class="trust-item">
-          <span class="trust-check"><Check :size="9" /></span>
           Setup included
         </div>
         <div class="trust-item">

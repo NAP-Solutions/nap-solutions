@@ -3,6 +3,12 @@ import { onMounted, onBeforeUnmount, ref } from 'vue'
 import * as THREE from 'three'
 
 const emit = defineEmits(['intro-done'])
+const props = defineProps({
+  intro: {
+    type: Boolean,
+    default: true,
+  },
+})
 const canvasRef = ref(null)
 
 let renderer, scene, camera, uniforms, ro, ioObserver
@@ -256,6 +262,11 @@ onMounted(() => {
     uPixelSize: { value: PIXEL_SIZE * getDpr() },
   }
 
+  if (!props.intro) {
+    introDone = true
+    ringStartTime = INTRO_DONE
+  }
+
   shaderMaterial = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms })
   quadMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), shaderMaterial)
   quadMesh.frustumCulled = false
@@ -356,7 +367,7 @@ onMounted(() => {
   ro = new ResizeObserver(scheduleResize)
   ro.observe(targetEl)
 
-  let fired = false
+  let fired = !props.intro
   ioObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       isVisible = entry.isIntersecting || entry.intersectionRatio > 0
@@ -364,7 +375,7 @@ onMounted(() => {
         startLoop()
       }
 
-      if (entry.intersectionRatio >= INTRO_TRIGGER_THRESHOLD && !fired) {
+      if (props.intro && entry.intersectionRatio >= INTRO_TRIGGER_THRESHOLD && !fired) {
         fired = true
         ringStartTime = simTime
       }

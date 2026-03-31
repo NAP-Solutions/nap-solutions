@@ -207,7 +207,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   font-size: 15px;
-  color: var(--brand);
+  color: var(--accent-ink);
   font-weight: 700;
 }
 .problem-item p {
@@ -250,10 +250,7 @@ onBeforeUnmount(() => {
   font-weight: 800;
   line-height: 1;
   margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--brand), var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--accent-ink);
 }
 .stat-card .lbl {
   font-size: 16px;

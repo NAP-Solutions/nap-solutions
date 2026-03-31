@@ -29,7 +29,7 @@ const titleLayers = [
 ]
 
 const cycleWords = ['call', 'lead', 'booking', 'client']
-const trustItems = ['No contracts', 'Setup included', 'Cancel anytime']
+const trustItems = ['Setup included', 'Cancel anytime']
 
 let cycleIdx = 0
 let cycleTimer = 0

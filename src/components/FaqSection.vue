@@ -24,7 +24,7 @@ function toggle(i) {
     <div class="faq-inner">
 
       <div class="faq-header" ref="headerRef">
-        <LiquidHeading>Frequently asked questions</LiquidHeading>
+        <LiquidHeading class="faq-heading">Frequently asked questions</LiquidHeading>
         <p class="faq-subtitle">
           Answers to common questions about NAP Solutions and how it works.
           If you have anything else, don't hesitate to reach out.
@@ -70,7 +70,7 @@ function toggle(i) {
       <div class="faq-cta" ref="ctaRef">
         <div class="faq-cta-text">
           <p class="faq-cta-label">Still have questions?</p>
-          <p class="faq-cta-sub">Book a free demo and we'll walk you through everything in person.</p>
+          <p class="faq-cta-sub">Book a free demo and we'll walk you through everything online.</p>
         </div>
         <button class="btn-primary" @click="$emit('open-booking')">
           Book a Demo
@@ -103,6 +103,10 @@ function toggle(i) {
 .faq-header[data-revealed] {
   opacity: 1;
   transform: translateY(0);
+}
+.faq-heading {
+  margin-inline: auto;
+  text-align: center;
 }
 .faq-header h2 {
   font-size: clamp(1.8rem, 3.5vw, 2.6rem);
@@ -157,7 +161,7 @@ function toggle(i) {
   transition: color 0.2s;
 }
 .faq-q:hover {
-  color: var(--brand-strong);
+  color: var(--accent-ink);
 }
 
 /* Chevron */
@@ -170,7 +174,7 @@ function toggle(i) {
 }
 .faq-item.open .faq-chevron {
   transform: rotate(180deg);
-  color: var(--brand-strong);
+  color: var(--accent-ink);
 }
 
 /* Answer */
