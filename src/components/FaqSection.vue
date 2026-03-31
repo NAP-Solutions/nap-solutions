@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { faqItems } from '../data/faqData'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import LiquidHeading from './LiquidHeading.vue'
 
 defineEmits(['open-booking'])
 
@@ -23,7 +24,7 @@ function toggle(i) {
     <div class="faq-inner">
 
       <div class="faq-header" ref="headerRef">
-        <h2>Frequently asked questions</h2>
+        <LiquidHeading>Frequently asked questions</LiquidHeading>
         <p class="faq-subtitle">
           Answers to common questions about NAP Solutions and how it works.
           If you have anything else, don't hesitate to reach out.

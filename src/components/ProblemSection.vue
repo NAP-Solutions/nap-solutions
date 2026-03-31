@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 import { problemItems, statCards } from '../data/problemData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
+import LiquidHeading from './LiquidHeading.vue'
 
 const headerRef = ref(null)
 const headingRef = ref(null)
@@ -15,15 +16,20 @@ let headerObserver
 let headerTimeline
 let cleanupHeaderSplit = () => {}
 
+function getHeadingElement() {
+  return headingRef.value?.$el ?? null
+}
+
 useScrollReveal(() => [...itemRefs.value, ...statRefs.value])
 
 function playHeaderAnimation() {
-  if (!headingRef.value || !subRef.value) return
+  const headingEl = getHeadingElement()
+  if (!headingEl || !subRef.value) return
 
   cleanupHeaderSplit()
   headerTimeline?.kill()
 
-  gsap.set(headingRef.value, { autoAlpha: 0, y: 18 })
+  gsap.set(headingEl, { autoAlpha: 0, y: 18 })
   gsap.set(subRef.value, { opacity: 1 })
 
   const splitControl = createSplitTextAnimation(subRef.value, {
@@ -41,7 +47,7 @@ function playHeaderAnimation() {
   })
 
   headerTimeline = gsap.timeline()
-    .to(headingRef.value, {
+    .to(headingEl, {
       autoAlpha: 1,
       y: 0,
       duration: 0.55,
@@ -65,7 +71,10 @@ onMounted(() => {
 
         const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
         if (shouldReduceMotion) {
-          gsap.set([headingRef.value, subRef.value], { clearProps: 'all' })
+          const headingEl = getHeadingElement()
+          if (headingEl) {
+            gsap.set([headingEl, subRef.value], { clearProps: 'all' })
+          }
         } else {
           playHeaderAnimation()
         }
@@ -93,9 +102,9 @@ onBeforeUnmount(() => {
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Problem</div>
-        <h2 ref="headingRef" class="grad-text">
+        <LiquidHeading ref="headingRef">
           Your Phone Stops Working<br />When Clients Need It Most.
-        </h2>
+        </LiquidHeading>
         <p ref="subRef" class="section-sub problem-sub">
           Businesses are losing bookings every night, every weekend, and most do
           not even realize it.

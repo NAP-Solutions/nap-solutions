@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { Check, X } from 'lucide-vue-next'
 import { pricingPlans } from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import LiquidHeading from './LiquidHeading.vue'
 
 defineEmits(['open-booking'])
 
@@ -18,9 +19,9 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">Pricing</div>
-        <h2 class="grad-text">
+        <LiquidHeading>
           Simple. Transparent.<br />No Hidden Fees.
-        </h2>
+        </LiquidHeading>
         <p class="section-sub">
           All plans include full setup, onboarding, and calendar integration. Book
           a demo and we will walk you through everything.

@@ -1,8 +1,12 @@
+<script setup>
+import LiquidHeading from './LiquidHeading.vue'
+</script>
+
 <template>
   <section id="cost" class="section bg-alt">
     <div class="section-inner">
       <div class="section-eyebrow">Revenue Impact</div>
-      <h2 class="grad-text">What Silence Is<br />Costing You.</h2>
+      <LiquidHeading>What Silence Is<br />Costing You.</LiquidHeading>
       <p class="section-sub">
         Conservative monthly estimate for a mid-size business:
       </p>

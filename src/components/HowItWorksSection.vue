@@ -10,6 +10,7 @@ import {
 } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import LiquidHeading from './LiquidHeading.vue'
 
 const headerRef = ref(null)
 const stepRefs = ref([])
@@ -23,9 +24,9 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">How It Works</div>
-        <h2 class="grad-text">
+        <LiquidHeading>
           From First Ring<br />To Fully Booked.
-        </h2>
+        </LiquidHeading>
         <p class="section-sub">
           Every call handled end-to-end. Here's exactly what our AI takes care
           of so you don't have to.

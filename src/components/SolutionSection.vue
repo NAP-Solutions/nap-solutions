@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { PhoneIncoming, CalendarCheck, Clock, Users } from 'lucide-vue-next'
 import { solutionCards } from '../data/solutionData'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import LiquidHeading from './LiquidHeading.vue'
 
 const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
 
@@ -17,9 +18,9 @@ useScrollReveal(() => [headerRef.value, ...cardRefs.value])
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Solution</div>
-        <h2 class="grad-text">
+        <LiquidHeading>
           An AI Receptionist<br />That Never Clocks Out.
-        </h2>
+        </LiquidHeading>
         <p class="section-sub">
           NAP Solutions answers every call, qualifies the caller, and books the
           appointment — 24/7, 365 days a year.

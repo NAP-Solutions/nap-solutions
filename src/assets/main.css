@@ -102,7 +102,7 @@ section[id] {
   font-size: clamp(12px, 0.7rem + 0.3vw, 15px);
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: var(--brand);
+  color: var(--text-main);
   text-transform: uppercase;
   margin-bottom: 18px;
 }
@@ -111,7 +111,7 @@ section[id] {
   content: '';
   width: 24px;
   height: 2px;
-  background: linear-gradient(90deg, var(--brand), var(--accent));
+  background: var(--text-main);
   border-radius: 2px;
 }
 
