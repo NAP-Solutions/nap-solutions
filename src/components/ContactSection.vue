@@ -63,27 +63,30 @@ async function submitForm() {
           <div class="success-sub">We will get back to you within 24 hours.</div>
         </div>
         <form v-else class="contact-form" @submit.prevent="submitForm">
-          <input
-            v-model="name"
-            type="text"
-            placeholder="Your name"
-            class="form-input"
-            required
-          />
-          <input
-            v-model="email"
-            type="email"
-            placeholder="Your email"
-            class="form-input"
-            required
-          />
-          <textarea
-            v-model="message"
-            placeholder="Your question or message..."
-            rows="4"
-            class="form-input form-textarea"
-            required
-          ></textarea>
+          <div class="form-fields-grid">
+            <div class="form-fields-left">
+              <input
+                v-model="name"
+                type="text"
+                placeholder="Your name"
+                class="form-input"
+                required
+              />
+              <input
+                v-model="email"
+                type="email"
+                placeholder="Your email"
+                class="form-input"
+                required
+              />
+            </div>
+            <textarea
+              v-model="message"
+              placeholder="Your question or message..."
+              class="form-input form-textarea"
+              required
+            ></textarea>
+          </div>
           <button
             type="submit"
             class="btn-primary"
@@ -145,8 +148,8 @@ async function submitForm() {
   transform: translateY(0);
 }
 .contact-right {
-  width: 300px;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
@@ -159,6 +162,22 @@ async function submitForm() {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+.form-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 12px;
+  align-items: stretch;
+}
+.form-fields-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.form-textarea {
+  resize: none;
+  height: 100%;
+  min-height: 108px;
 }
 .form-input {
   width: 100%;
@@ -174,10 +193,6 @@ async function submitForm() {
 .form-input:focus {
   border-color: rgba(var(--brand-rgb), 0.4);
   background: #fff;
-}
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
 }
 .contact-disclaimer {
   font-size: 12px;
@@ -226,14 +241,18 @@ async function submitForm() {
   .contact-left {
     max-width: 100%;
   }
-  .contact-right {
-    width: 100%;
-  }
 }
 
 @media (max-width: 640px) {
   .contact-section {
     padding-block: clamp(2rem, 5vw, 3rem);
+  }
+  .form-fields-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-textarea {
+    min-height: 120px;
+    height: auto;
   }
   .form-input {
     font-size: 16px;

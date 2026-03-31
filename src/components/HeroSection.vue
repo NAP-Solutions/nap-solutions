@@ -2,9 +2,12 @@
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { Check } from 'lucide-vue-next'
 import { gsap } from 'gsap'
+import { TextPlugin } from 'gsap/TextPlugin'
 import HeroCanvas from './HeroCanvas.vue'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
 import { useScrollToSection } from '../composables/useScrollToSection'
+
+gsap.registerPlugin(TextPlugin)
 
 defineEmits(['open-booking'])
 
@@ -13,11 +16,35 @@ const headingRef = ref(null)
 const subRef = ref(null)
 const actionsRef = ref(null)
 const trustRef = ref(null)
+const cycleWordRef = ref(null)
 const { scrollToSection } = useScrollToSection()
+
+const cycleWords = ['call', 'lead', 'booking', 'client']
+let cycleIdx = 0
+let cycleTimer = null
 
 let safetyTimer = null
 let heroTimeline = null
 let cleanupHeroSplit = () => {}
+
+function scheduleCycle() {
+  cycleTimer = setTimeout(() => {
+    if (!cycleWordRef.value) return
+    cycleIdx = (cycleIdx + 1) % cycleWords.length
+    const next = cycleWords[cycleIdx]
+    gsap.timeline({ onComplete: scheduleCycle })
+      .to(cycleWordRef.value, {
+        duration: 0.18,
+        text: { value: '', delimiter: '' },
+        ease: 'none',
+      })
+      .to(cycleWordRef.value, {
+        duration: Math.max(0.22, next.length * 0.055),
+        text: { value: next, delimiter: '' },
+        ease: 'none',
+      })
+  }, 2200)
+}
 
 function onIntroDone() {
   revealed.value = true
@@ -86,6 +113,7 @@ function playHeroAnimation() {
       },
       '-=0.22'
     )
+    .call(scheduleCycle)
 
   cleanupHeroSplit = splitControl.destroy
 }
@@ -102,6 +130,7 @@ watch(revealed, async (isRevealed) => {
 
 onBeforeUnmount(() => {
   if (safetyTimer) clearTimeout(safetyTimer)
+  if (cycleTimer) clearTimeout(cycleTimer)
   heroTimeline?.kill()
   cleanupHeroSplit()
 })
@@ -120,7 +149,7 @@ function scrollToHow() {
       <div class="hero-content">
         <h1 ref="headingRef">
           <span class="h1-light">Never miss</span>
-          <span class="h1-grad liquid-heading">a call again.</span>
+          <span class="h1-grad liquid-heading">a <span ref="cycleWordRef" class="cycle-word">call</span> again.</span>
         </h1>
 
         <p ref="subRef" class="hero-sub">
@@ -133,7 +162,7 @@ function scrollToHow() {
             Book a Free Demo
           </button>
           <button class="btn-ghost" @click="scrollToHow">
-            See how it works ->
+            See how it works &rarr;
           </button>
         </div>
 
@@ -223,6 +252,7 @@ h1 {
   mix-blend-mode: darken;
   filter: saturate(1.2) contrast(1.22) brightness(0.84);
 }
+
 
 .hero-sub {
   font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.2rem);

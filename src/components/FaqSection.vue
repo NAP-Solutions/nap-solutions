@@ -141,9 +141,6 @@ function toggleItem(i) {
 }
 
 /* Collapse / fade */
-.faq-collapse.collapsed {
-  /* items beyond index 2 hidden via v-show */
-}
 .faq-fade {
   position: absolute;
   bottom: 0;

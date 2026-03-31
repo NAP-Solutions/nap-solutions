@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
 defineEmits(['open-booking'])
 
 const innerRef = ref(null)
+const router = useRouter()
 const { scrollToSection } = useScrollToSection()
 useScrollReveal(() => [innerRef.value], { threshold: 0.05 })
 
@@ -86,6 +88,9 @@ function scrollTo(id) {
 
       <div class="footer-bottom">
         <span>&copy; 2026 NAP SOLUTIONS · ALL RIGHTS RESERVED</span>
+        <div class="footer-legal">
+          <button class="footer-legal-link" @click="router.push('/privacy-policy')">Privacy Policy</button>
+        </div>
         <span class="footer-tagline">BOOK · ANSWER · AUTOMATE</span>
       </div>
     </div>
@@ -216,6 +221,26 @@ function scrollTo(id) {
   color: rgba(255, 255, 255, 0.2);
   flex-wrap: wrap;
   gap: 10px;
+}
+.footer-legal {
+  display: flex;
+  gap: 20px;
+}
+.footer-legal-link {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.12);
+  transition: color 0.2s, text-decoration-color 0.2s;
+  padding: 0;
+}
+.footer-legal-link:hover {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration-color: rgba(255, 255, 255, 0.3);
 }
 .footer-tagline {
   font-size: 11px;

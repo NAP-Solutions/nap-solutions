@@ -51,7 +51,7 @@ onUnmounted(() => {
       <div class="modal-box">
         <div class="modal-header">
           <div class="modal-header-left">
-            <div class="modal-icon">&var(--accent-ink);</div>
+            <div class="modal-icon"></div>
             <div>
               <span class="modal-title">BOOK A DEMO</span>
               <p class="modal-subtitle">

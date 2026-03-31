@@ -126,8 +126,8 @@ const fragmentShader = /* glsl */`
     vec2  p   = (pxC / uResolution) * 2.0 - 1.0;
     p.x      *= uResolution.x / uResolution.y;
 
-    // ring space (pixelated) — ruv.x used for vertical-line modulation
-    vec2  ruv = (pxC * 2.0 - uResolution) / min(uResolution.x, uResolution.y);
+    // ring space — real (non-pixelated) coords for a smooth circular edge
+    vec2  ruv = (gl_FragCoord.xy * 2.0 - uResolution) / min(uResolution.x, uResolution.y);
     float r   = length(ruv);
 
     // ── Fluid (pixelated) ─────────────────────────────────────────────────
@@ -142,23 +142,22 @@ const fragmentShader = /* glsl */`
     } else {
 
       // ── Ring animation ─────────────────────────────────────────────────
-      // uRingTime = 4 × uMaskR, so the leading ring (i=0, j=0) sits at:
-      //   fract(uRingTime × 0.05) × 5 = fract(0.2 × uMaskR) × 5 ≈ uMaskR
-      // — exactly on the mask boundary.
+      // Lorentzian glow: lw·fi²/(d²+ε) — no singularities, controllable
+      // width.  ε=0.018 → half-power radius ≈ 0.134; 5 staggered rings
+      // span ≈ 0.2 in r-space for a thick, explosive leading edge.
       float t  = uRingTime * 0.05;
       float lw = 0.003;
       vec3 rings = vec3(0.0);
       for(int j=0;j<3;j++){
         for(int i=0;i<5;i++){
           float fi=float(i), fj=float(j);
-          rings[j] += lw*fi*fi / abs(
-            fract(t - 0.01*fj + fi*0.01)*5.0 - r + mod(abs(ruv.x), 0.18)
-          );
+          float d = fract(t - 0.01*fj + fi*0.01)*5.0 - r;
+          rings[j] += lw*fi*fi / (d*d + 0.007);
         }
       }
-      vec3 purple=vec3(.482,.188,1.);
-      vec3 cyan  =vec3(0.,.831,.753);
-      vec3 indigo=vec3(.22,.43,.96);
+      vec3 purple=vec3(0.659,0.773,0.992); // --brand    #a8c5fd
+      vec3 cyan  =vec3(0.600,0.894,1.000); // --accent   #99e4ff
+      vec3 indigo=vec3(0.525,0.671,0.973); // --brand-strong #86abf8
       vec3 ringGlow = clamp(rings.r,0.,1.)*purple
                     + clamp(rings.g,0.,1.)*cyan
                     + clamp(rings.b,0.,1.)*indigo;
@@ -169,10 +168,9 @@ const fragmentShader = /* glsl */`
       float outside = smoothstep(uMaskR-0.04, uMaskR+0.04, r);
       vec3 masked = mix(fc, vec3(1.0), outside);
 
-      // Ring glow confined to a band around the mask edge so no ring
-      // artifacts bleed into the fluid area or far into the white area
+      // Ring glow band — widened to match the thick Lorentzian falloff
       float edgeDist = abs(r - uMaskR);
-      float edgeGlow = 1.0 - smoothstep(0.0, 0.15, edgeDist);
+      float edgeGlow = 1.0 - smoothstep(0.0, 0.20, edgeDist);
       masked = mix(masked, ringGlow, edgeGlow * 0.98);
 
       // ── Cross-fade back to pure fluid ──────────────────────────────────

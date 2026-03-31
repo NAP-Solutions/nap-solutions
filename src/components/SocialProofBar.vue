@@ -1,3 +1,12 @@
+<script setup>
+import { ref } from 'vue'
+import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
+const barRef = ref(null)
+useScrollReveal(() => [barRef.value])
+</script>
+
 <template>
   <div class="sp-bar" ref="barRef">
     <div class="sp-inner">
@@ -41,15 +50,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
-import { useScrollReveal } from '../composables/useScrollReveal'
-
-const barRef = ref(null)
-useScrollReveal(() => [barRef.value])
-</script>
 
 <style scoped>
 .sp-bar {
