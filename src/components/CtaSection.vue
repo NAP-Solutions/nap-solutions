@@ -90,7 +90,7 @@ useScrollReveal(() => [innerRef.value])
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-body);
+  color: #000000;
 }
 .trust-check {
   width: 16px;
@@ -102,7 +102,7 @@ useScrollReveal(() => [innerRef.value])
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--accent-strong);
+  color: #000000;
 }
 .trust-check :deep(svg) {
   display: block;

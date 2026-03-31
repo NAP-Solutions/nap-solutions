@@ -22,9 +22,6 @@ function scrollTo(id) {
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="brand-row">
-            <div class="footer-mark">
-              <span class="footer-mark-dot"></span>
-            </div>
             <span class="footer-wordmark">NAP SOLUTIONS</span>
           </div>
           <p>
@@ -87,11 +84,10 @@ function scrollTo(id) {
       </div>
 
       <div class="footer-bottom">
-        <span>&copy; 2026 NAP SOLUTIONS · ALL RIGHTS RESERVED</span>
-        <div class="footer-legal">
-          <button class="footer-legal-link" @click="router.push('/privacy-policy')">Privacy Policy</button>
-        </div>
-        <span class="footer-tagline">BOOK · ANSWER · AUTOMATE</span>
+        <span>&copy; 2026 NAP SOLUTIONS &middot; ALL RIGHTS RESERVED</span>
+        <button class="footer-tagline-link" @click="router.push('/privacy-policy')">
+          Privacy Policy
+        </button>
       </div>
     </div>
   </footer>
@@ -127,23 +123,6 @@ function scrollTo(id) {
   color: rgba(255, 255, 255, 0.35);
   margin-top: 16px;
   max-width: 290px;
-}
-.footer-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.15), rgba(var(--brand-rgb), 0.15));
-  border: 1px solid rgba(var(--accent-rgb), 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.footer-mark-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
 }
 .footer-wordmark {
   font-family: 'Inter', sans-serif;
@@ -222,31 +201,23 @@ function scrollTo(id) {
   flex-wrap: wrap;
   gap: 10px;
 }
-.footer-legal {
-  display: flex;
-  gap: 20px;
-}
-.footer-legal-link {
+.footer-tagline-link {
   background: none;
   border: none;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.25);
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(255, 255, 255, 0.12);
-  transition: color 0.2s, text-decoration-color 0.2s;
-  padding: 0;
-}
-.footer-legal-link:hover {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration-color: rgba(255, 255, 255, 0.3);
-}
-.footer-tagline {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: rgba(var(--accent-rgb), 0.4);
+  color: rgba(var(--accent-rgb), 0.42);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(var(--accent-rgb), 0.2);
+  transition: color 0.2s, text-decoration-color 0.2s;
+  padding: 0;
+}
+.footer-tagline-link:hover {
+  color: rgba(var(--accent-rgb), 0.72);
+  text-decoration-color: rgba(var(--accent-rgb), 0.45);
 }
 
 @media (max-width: 960px) {
@@ -290,7 +261,7 @@ function scrollTo(id) {
     text-align: center;
   }
 
-  .footer-tagline {
+  .footer-tagline-link {
     letter-spacing: 0.16em;
   }
 }

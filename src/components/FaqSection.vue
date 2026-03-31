@@ -1,131 +1,231 @@
 <script setup>
 import { ref } from 'vue'
-import { Plus } from 'lucide-vue-next'
 import { faqItems } from '../data/faqData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
 defineEmits(['open-booking'])
 
-const openIndex = ref(-1)
+const openIndex = ref(null)
 const showAll = ref(false)
 const headerRef = ref(null)
-const faqListRef = ref(null)
+const listRef = ref(null)
 const ctaRef = ref(null)
 
-useScrollReveal(() => [headerRef.value, faqListRef.value, ctaRef.value])
+useScrollReveal(() => [headerRef.value, listRef.value, ctaRef.value])
 
-function toggleItem(i) {
-  openIndex.value = openIndex.value === i ? -1 : i
+function toggle(i) {
+  openIndex.value = openIndex.value === i ? null : i
 }
 </script>
 
 <template>
-  <section id="faq" class="section bg-alt">
-    <div class="section-inner">
-      <div class="faq-layout">
-        <!-- Left: questions -->
-        <div class="faq-left">
-          <div class="reveal-header" ref="headerRef">
-            <div class="section-eyebrow">FAQ</div>
-            <h2 class="grad-text">Got Questions?<br />We Have Answers.</h2>
-            <p class="section-sub">
-              Everything you need to know about NAP Solutions.
-            </p>
-          </div>
+  <section id="faq" class="faq-section">
+    <div class="faq-inner">
 
-          <div class="faq-collapse" :class="{ collapsed: !showAll }" ref="faqListRef">
-            <div class="faq-list">
-              <div
-                v-for="(item, i) in faqItems"
-                :key="i"
-                v-show="showAll || i < 3"
-                class="faq-item"
-                :class="{ open: openIndex === i }"
-              >
-                <button
-                  class="faq-q"
-                  :aria-expanded="openIndex === i"
-                  @click="toggleItem(i)"
-                >
-                  {{ item.q }}
-                  <span class="faq-icon" aria-hidden="true">
-                    <Plus :size="13" />
-                  </span>
-                </button>
-                <div class="faq-a">{{ item.a }}</div>
-              </div>
-            </div>
-            <div v-if="!showAll" class="faq-fade"></div>
-          </div>
+      <div class="faq-header" ref="headerRef">
+        <h2>Frequently asked questions</h2>
+        <p class="faq-subtitle">
+          Answers to common questions about NAP Solutions and how it works.
+          If you have anything else, don't hesitate to reach out.
+        </p>
+      </div>
 
-          <button class="faq-toggle" @click="showAll = !showAll">
-            {{ showAll ? 'See less ↑' : 'See all questions ↓' }}
+      <div class="faq-list" ref="listRef">
+        <div
+          v-for="(item, i) in (showAll ? faqItems : faqItems.slice(0, 6))"
+          :key="i"
+          class="faq-item"
+          :class="{ open: openIndex === i }"
+        >
+          <button
+            class="faq-q"
+            :aria-expanded="openIndex === i"
+            @click="toggle(i)"
+          >
+            <span>{{ item.q }}</span>
+            <svg
+              class="faq-chevron"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path d="M5 7.5l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </button>
-
-          <div class="faq-cta" ref="ctaRef">
-            <div class="faq-cta-text">
-              <h3>STILL HAVE QUESTIONS?</h3>
-              <p>Book a free demo and we will walk you through everything in person.</p>
-            </div>
-            <button class="btn-primary" @click="$emit('open-booking')">
-              Book a Demo
-            </button>
+          <div class="faq-a-wrap">
+            <p class="faq-a">{{ item.a }}</p>
           </div>
-        </div>
-
-        <!-- Right: decorative graphic -->
-        <div class="faq-right" aria-hidden="true">
-          <span class="faq-q1">?</span>
-          <span class="faq-q2">?</span>
-          <span class="faq-q3">?</span>
         </div>
       </div>
+
+      <div class="faq-controls">
+        <button class="faq-show-more" @click="showAll = !showAll">
+          {{ showAll ? 'Show fewer questions' : `Show all ${faqItems.length} questions` }}
+        </button>
+      </div>
+
+      <div class="faq-cta" ref="ctaRef">
+        <div class="faq-cta-text">
+          <p class="faq-cta-label">Still have questions?</p>
+          <p class="faq-cta-sub">Book a free demo and we'll walk you through everything in person.</p>
+        </div>
+        <button class="btn-primary" @click="$emit('open-booking')">
+          Book a Demo
+        </button>
+      </div>
+
     </div>
   </section>
 </template>
 
 <style scoped>
-.bg-alt {
-  background: var(--surface-base);
+.faq-section {
+  background: #fff;
+  padding-block: var(--section-space);
 }
 
-/* Two-column layout */
-.faq-layout {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: start;
-}
-.faq-left {
-  min-width: 0;
+.faq-inner {
+  width: min(760px, calc(100% - (var(--gutter) * 2)));
+  margin-inline: auto;
 }
 
-/* Reveal animations */
-.reveal-header {
+/* Header */
+.faq-header {
+  text-align: center;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.reveal-header[data-revealed] {
+.faq-header[data-revealed] {
   opacity: 1;
   transform: translateY(0);
 }
-.faq-collapse {
-  position: relative;
+.faq-header h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.faq-subtitle {
+  font-size: 16px;
+  color: var(--text-body);
+  line-height: 1.7;
+  max-width: 52ch;
+  margin-inline: auto;
+}
+
+/* List */
+.faq-list {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
 }
-.faq-collapse[data-revealed] {
+.faq-list[data-revealed] {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Item */
+.faq-item {
+  border-bottom: 1px solid #e5e7eb;
+}
+.faq-item:first-child {
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Question button */
+.faq-q {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  transition: color 0.2s;
+}
+.faq-q:hover {
+  color: var(--brand-strong);
+}
+
+/* Chevron */
+.faq-chevron {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.25s ease, color 0.2s;
+}
+.faq-item.open .faq-chevron {
+  transform: rotate(180deg);
+  color: var(--brand-strong);
+}
+
+/* Answer */
+.faq-a-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.faq-item.open .faq-a-wrap {
+  grid-template-rows: 1fr;
+}
+.faq-a {
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--accent-ink);
+  padding-bottom: 0;
+  transition: padding-bottom 0.3s ease;
+}
+.faq-item.open .faq-a {
+  padding-bottom: 20px;
+}
+
+/* Show more */
+.faq-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+.faq-show-more {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: transparent;
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+.faq-show-more:hover {
+  color: var(--text-main);
+  text-decoration-color: rgba(10, 15, 30, 0.25);
+}
+
+/* CTA */
 .faq-cta {
-  margin-top: 48px;
-  padding: 34px 36px;
-  background: linear-gradient(135deg, rgba(var(--brand-rgb), 0.06), rgba(var(--accent-rgb), 0.06));
-  border: 1.5px solid rgba(var(--brand-rgb), 0.15);
-  border-radius: 20px;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding: 32px 36px;
+  background: var(--surface-base);
+  border: 1.5px solid rgba(var(--brand-rgb), 0.12);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -139,198 +239,31 @@ function toggleItem(i) {
   opacity: 1;
   transform: translateY(0);
 }
-
-/* Collapse / fade */
-.faq-fade {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background: linear-gradient(to bottom, transparent 50%, var(--surface-base) 85%);
-  pointer-events: none;
-}
-.faq-toggle {
-  margin-top: 12px;
-  background: none;
-  border: 1.5px solid rgba(var(--brand-rgb), 0.2);
-  border-radius: 10px;
-  padding: 10px 24px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--brand);
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-}
-.faq-toggle:hover {
-  background: rgba(var(--brand-rgb), 0.05);
-  border-color: rgba(var(--brand-rgb), 0.35);
-}
-
-/* FAQ list */
-.faq-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.faq-item {
-  background: #fff;
-  border: 1.5px solid rgba(10, 15, 30, 0.08);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.faq-item.open {
-  border-color: rgba(var(--brand-rgb), 0.25);
-  box-shadow: 0 6px 24px rgba(var(--brand-rgb), 0.08);
-}
-.faq-q {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  cursor: pointer;
-  text-align: left;
-  font-size: clamp(16px, 0.95rem + 0.3vw, 18px);
-  font-weight: 600;
-  color: var(--text-main);
-  transition: color 0.2s;
-}
-.faq-item.open .faq-q {
-  color: var(--brand);
-}
-.faq-icon {
-  flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--surface-base);
-  border: 1px solid rgba(10, 15, 30, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-body);
-  transition: all 0.3s, transform 0.3s;
-}
-.faq-icon :deep(svg) {
-  display: block;
-}
-.faq-item.open .faq-icon {
-  background: linear-gradient(135deg, var(--brand), var(--accent));
-  border-color: transparent;
-  color: #fff;
-  transform: rotate(45deg);
-}
-.faq-a {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease, padding 0.3s ease;
-  font-size: clamp(15px, 0.9rem + 0.25vw, 16px);
-  line-height: 1.8;
-  color: var(--text-body);
-  padding: 0 24px;
-}
-.faq-item.open .faq-a {
-  max-height: 340px;
-  padding: 0 24px 20px;
-}
-
-.faq-cta-text h3 {
-  font-size: 18px;
+.faq-cta-label {
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 8px;
-  letter-spacing: 0.04em;
+  margin-bottom: 4px;
 }
-.faq-cta-text p {
-  font-size: 16px;
+.faq-cta-sub {
+  font-size: 15px;
   color: var(--text-body);
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
-/* Right decorative graphic */
-.faq-right {
-  position: sticky;
-  top: 120px;
-  min-height: 300px;
-  pointer-events: none;
-  user-select: none;
-  /* establish containing block for absolute children */
-  transform: translateZ(0);
-}
-.faq-right span {
-  position: absolute;
-  font-family: 'Inter', sans-serif;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--brand-strong);
-  letter-spacing: -0.05em;
-}
-.faq-q1 {
-  font-size: 220px;
-  opacity: 0.12;
-  top: 20px;
-  left: 30px;
-  transform: rotate(-12deg);
-}
-.faq-q2 {
-  font-size: 130px;
-  opacity: 0.15;
-  top: 140px;
-  left: 190px;
-  transform: rotate(8deg);
-}
-.faq-q3 {
-  font-size: 80px;
-  opacity: 0.13;
-  top: 60px;
-  left: 220px;
-  transform: rotate(-6deg);
-}
-
-/* Responsive */
-@media (max-width: 960px) {
-  .faq-layout {
-    grid-template-columns: 1fr;
-  }
-  .faq-right {
-    display: none;
-  }
-  .faq-cta {
-    flex-direction: column;
-    text-align: center;
-  }
-}
 @media (max-width: 640px) {
   .faq-q {
-    padding: 0 16px;
-    min-height: 56px;
-    font-size: clamp(14px, 0.88rem + 0.2vw, 15px);
-    line-height: 1.45;
+    padding: 18px 0;
+    font-size: 14px;
   }
   .faq-a {
     font-size: 14px;
-    line-height: 1.7;
-    padding: 0 16px;
-  }
-  .faq-item.open .faq-a {
-    padding: 0 16px 16px;
   }
   .faq-cta {
-    margin-top: 34px;
-    padding: 24px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 20px;
     gap: 16px;
-    align-items: stretch;
-  }
-  .faq-cta-text h3 {
-    font-size: 16px;
-  }
-  .faq-cta-text p {
-    font-size: 15px;
   }
 }
 </style>
