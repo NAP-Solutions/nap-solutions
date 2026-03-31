@@ -41,7 +41,7 @@
 
 <style scoped>
 .bg-alt {
-  background: #f5f7fb;
+  background: var(--surface-base);
 }
 .cost-scroll {
   overflow-x: auto;
@@ -53,57 +53,63 @@
   align-items: stretch;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(10, 15, 30, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.76);
   margin: clamp(2rem, 5vw, 3rem) 0 28px;
-  background: #fff;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 46%, rgba(var(--accent-rgb), 0.16) 100%);
+  box-shadow:
+    0 10px 28px rgba(12, 18, 38, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -10px 16px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px) saturate(132%);
+  -webkit-backdrop-filter: blur(10px) saturate(132%);
 }
 .cost-cell {
   flex: 1;
   min-width: 180px;
   padding: 32px 22px;
   text-align: center;
-  border-right: 1px solid rgba(10, 15, 30, 0.08);
-  border-left: 1px solid rgba(10, 15, 30, 0.08);
+  background: rgba(255, 255, 255, 0.22);
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+  border-left: 1px solid rgba(255, 255, 255, 0.6);
 }
 .cost-cell-highlight {
-  background: linear-gradient(135deg, rgba(123, 47, 255, 0.04), rgba(0, 212, 192, 0.04));
+  background: linear-gradient(135deg, rgba(var(--brand-rgb), 0.2), rgba(var(--accent-rgb), 0.18));
 }
 .cost-big {
   font-size: clamp(1.9rem, 1.6rem + 0.8vw, 2.4rem);
   font-weight: 800;
-  color: #7b2fff;
+  color: var(--brand);
   margin-bottom: 10px;
   line-height: 1;
 }
 .cost-big-highlight {
-  background: linear-gradient(135deg, #7b2fff, #00d4c0);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .cost-lbl {
   font-size: 15px;
-  color: #8892b0;
+  color: var(--text-body);
   letter-spacing: 1px;
   line-height: 1.6;
 }
 .cost-op {
   font-size: 24px;
   font-weight: 800;
-  color: rgba(123, 47, 255, 0.2);
+  color: rgba(var(--brand-rgb), 0.2);
   display: flex;
   align-items: center;
   padding: 0 4px;
 }
 .cost-note {
   font-size: 18px;
-  color: #4a5580;
+  color: var(--text-body);
   line-height: 1.8;
   max-width: 62ch;
 }
 .cost-note strong {
-  color: #7b2fff;
+  color: var(--brand);
   font-weight: 700;
 }
 

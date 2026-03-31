@@ -42,7 +42,7 @@ useScrollReveal(() => [innerRef.value])
 
 <style scoped>
 .cta-section {
-  background: linear-gradient(135deg, #faf8ff 0%, #f0faff 100%);
+  background: linear-gradient(135deg, var(--surface-tint) 0%, var(--surface-alt) 100%);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -50,15 +50,19 @@ useScrollReveal(() => [innerRef.value])
 .cta-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(123, 47, 255, 0.06) 0%, transparent 65%);
+  background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(var(--brand-rgb), 0.06) 0%, transparent 65%);
   pointer-events: none;
 }
 .center {
   justify-content: center;
 }
+.grad-text.center {
+  margin-inline: auto;
+  text-align: center;
+}
 .cta-sub {
   font-size: 19px;
-  color: #4a5580;
+  color: var(--text-body);
   margin-bottom: 44px;
   max-width: 560px;
   margin-left: auto;
@@ -86,19 +90,19 @@ useScrollReveal(() => [innerRef.value])
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: #8892b0;
+  color: #000000;
 }
 .trust-check {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: rgba(0, 212, 192, 0.12);
-  border: 1px solid rgba(0, 212, 192, 0.3);
+  background: rgba(var(--accent-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #00b8a6;
+  color: #000000;
 }
 .trust-check :deep(svg) {
   display: block;

@@ -1,55 +1,64 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import logoImg from '../assets/logo.png'
+import { useScrollToSection } from '../composables/useScrollToSection'
 
 defineEmits(['open-booking'])
 
 const mobileOpen = ref(false)
+const scrolled   = ref(false)
+let scrollRaf = 0
+const { scrollToSection } = useScrollToSection()
 
-function toggleMobileMenu() {
-  mobileOpen.value = !mobileOpen.value
+function toggleMobileMenu() { mobileOpen.value = !mobileOpen.value }
+function closeMobileMenu()  { mobileOpen.value = false }
+
+function onKeydown(e) { if (e.key === 'Escape') closeMobileMenu() }
+function onResize()   { if (window.innerWidth > 960) closeMobileMenu() }
+function onScroll() {
+  if (scrollRaf) return
+  scrollRaf = requestAnimationFrame(() => {
+    scrollRaf = 0
+    const next = window.scrollY > 40
+    if (next !== scrolled.value) {
+      scrolled.value = next
+    }
+  })
 }
-
-function closeMobileMenu() {
-  mobileOpen.value = false
-}
-
-function onKeydown(e) {
-  if (e.key === 'Escape') {
-    closeMobileMenu()
-  }
-}
-
-function onResize() {
-  if (window.innerWidth > 960) {
-    closeMobileMenu()
-  }
+function goTo(hash, e) {
+  scrollToSection(hash, e)
+  closeMobileMenu()
 }
 
 onMounted(() => {
   document.addEventListener('keydown', onKeydown)
-  window.addEventListener('resize', onResize)
+  window.addEventListener('resize',   onResize)
+  window.addEventListener('scroll',   onScroll, { passive: true })
+  onScroll() // sync on first render
 })
 onUnmounted(() => {
   document.removeEventListener('keydown', onKeydown)
-  window.removeEventListener('resize', onResize)
+  window.removeEventListener('resize',   onResize)
+  window.removeEventListener('scroll',   onScroll)
+  cancelAnimationFrame(scrollRaf)
+  scrollRaf = 0
 })
 </script>
 
 <template>
-  <nav class="nav">
+  <nav class="nav" :class="{ scrolled, 'mobile-open': mobileOpen }">
     <div class="nav-inner">
-      <a class="nav-logo" href="#" @click="closeMobileMenu">
+      <a class="nav-logo" href="#hero" @click.prevent="goTo('#hero', $event)">
         <img :src="logoImg" alt="NAP Solutions" class="nav-logo-img" />
         <span class="nav-wordmark">NAP SOLUTIONS</span>
       </a>
 
       <ul class="nav-links">
-        <li><a href="#problem">The Problem</a></li>
-        <li><a href="#solution">The Solution</a></li>
-        <li><a href="#how">How It Works</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a></li>
+        <li><a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a></li>
+        <li><a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a></li>
+        <li><a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a></li>
+        <li><a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a></li>
         <li>
           <a href="#" class="nav-cta" @click.prevent="$emit('open-booking')">
             Book a Demo
@@ -72,11 +81,11 @@ onUnmounted(() => {
     </div>
 
     <div id="mobile-nav" class="mobile-menu" :class="{ open: mobileOpen }">
-      <a href="#problem" @click="closeMobileMenu">The Problem</a>
-      <a href="#solution" @click="closeMobileMenu">The Solution</a>
-      <a href="#how" @click="closeMobileMenu">How It Works</a>
-      <a href="#pricing" @click="closeMobileMenu">Pricing</a>
-      <a href="#faq" @click="closeMobileMenu">FAQ</a>
+      <a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a>
+      <a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a>
+      <a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a>
+      <a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a>
+      <a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a>
       <button
         class="nav-mobile-cta"
         type="button"
@@ -89,207 +98,248 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* ── Floating pill container ──────────────────────────── */
 .nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 100;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(10, 15, 30, 0.08);
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.06);
-  padding-top: env(safe-area-inset-top);
+  border-radius: 22px;
+  border: 1px solid transparent;
+  background: transparent;
   overflow: visible;
+  transition:
+    background   0.3s ease,
+    border-color 0.3s ease,
+    box-shadow   0.3s ease;
 }
-.nav::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(env(safe-area-inset-top) * -1);
-  height: env(safe-area-inset-top);
-  background: rgba(255, 255, 255, 0.92);
-  pointer-events: none;
+
+/* Glass state — triggered once the user scrolls */
+.nav.scrolled {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-color: rgba(10, 15, 30, 0.1);
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.09),
+    0 1px 8px  rgba(var(--brand-rgb), 0.07);
 }
+
+/* ── Inner row ────────────────────────────────────────── */
 .nav-inner {
-  width: min(var(--content-max), calc(100% - (var(--gutter) * 2)));
-  margin-inline: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  min-height: 76px;
+  gap: 8px;
+  padding: 0 10px 0 18px;
+  min-height: 62px;
 }
+
+/* ── Logo ─────────────────────────────────────────────── */
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
-  min-width: 0;
+  margin-right: 12px;
 }
 .nav-logo-img {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   object-fit: cover;
 }
 .nav-wordmark {
   font-family: 'Inter', sans-serif;
   font-weight: 800;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.18em;
   white-space: nowrap;
-  background: linear-gradient(90deg, #0a0f1e 0%, #7B2FFF 100%);
+  background: linear-gradient(90deg, var(--text-main) 0%, var(--brand) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ── Desktop links ────────────────────────────────────── */
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 4px;
   list-style: none;
+  margin-right: 12px;
 }
 .nav-links a {
-  color: #4a5580;
+  color: var(--text-body);
   text-decoration: none;
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 500;
-  transition: color 0.2s, opacity 0.2s;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: color 0.18s, background 0.18s;
+  white-space: nowrap;
 }
 .nav-links a:hover {
-  color: #0a0f1e;
+  color: var(--text-main);
+  background: rgba(var(--brand-rgb), 0.06);
 }
+
+/* ── CTA button ───────────────────────────────────────── */
 .nav-cta {
-  background: linear-gradient(135deg, #7B2FFF, #00D4C0) !important;
-  color: #fff !important;
-  padding: 11px 26px;
-  border-radius: 9px;
+  background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.44) 0%, rgba(var(--brand-rgb), 0.34) 48%, rgba(255, 255, 255, 0.4) 100%) !important;
+  color: #000 !important;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  padding: 10px 22px;
+  border-radius: 12px;
   font-weight: 700 !important;
-  font-size: 16px !important;
-  box-shadow: 0 4px 15px rgba(123, 47, 255, 0.3);
-  transition: all 0.2s !important;
+  font-size: 14.5px !important;
+  white-space: nowrap;
+  box-shadow:
+    0 8px 20px rgba(var(--brand-rgb), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s, border-color 0.18s !important;
 }
 .nav-cta:hover {
-  opacity: 0.9;
+  opacity: 0.96;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(123, 47, 255, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 10px 24px rgba(var(--brand-rgb), 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.24) !important;
 }
+
+/* ── Hamburger ────────────────────────────────────────── */
 .nav-toggle {
   display: none;
-  border: 1px solid rgba(10, 15, 30, 0.12);
+  border: 1px solid rgba(10, 15, 30, 0.14);
   border-radius: 10px;
-  width: 42px;
-  height: 42px;
-  background: #fff;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.7);
   align-items: center;
   justify-content: center;
   gap: 5px;
   flex-direction: column;
   cursor: pointer;
+  flex-shrink: 0;
 }
 .nav-toggle span {
-  width: 18px;
+  width: 17px;
   height: 2px;
   border-radius: 2px;
-  background: #0a0f1e;
+  background: var(--text-main);
+  transition: opacity 0.18s;
 }
+
+/* ── Mobile dropdown ──────────────────────────────────── */
 .mobile-menu {
   display: none;
 }
 .nav-mobile-cta {
-  background: linear-gradient(135deg, #7B2FFF, #00D4C0);
-  color: #fff;
-  border: none;
+  background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.42) 0%, rgba(var(--brand-rgb), 0.32) 50%, rgba(255, 255, 255, 0.38) 100%);
+  color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   font-size: 15px;
   font-weight: 700;
   padding: 12px 16px;
+  cursor: pointer;
+  box-shadow:
+    0 8px 18px rgba(var(--brand-rgb), 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(9px) saturate(140%);
+  -webkit-backdrop-filter: blur(9px) saturate(140%);
 }
 
+/* ── Responsive: tablet / mobile ─────────────────────── */
 @media (max-width: 960px) {
+  /* On mobile the pill stretches edge-to-edge with a gap */
+  .nav {
+    left: 14px;
+    right: 14px;
+    top: 12px;
+    transform: none;
+    border-radius: 18px;
+    /* Always show a subtle glass so it's legible on any bg */
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-color: rgba(10, 15, 30, 0.1);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  }
   .nav-inner {
-    min-height: 68px;
+    min-height: 60px;
+    padding: 0 10px 0 14px;
+    justify-content: space-between;
   }
-  .nav-links {
-    display: none;
-  }
-  .nav-wordmark {
-    font-size: 14px;
-    letter-spacing: 0.14em;
-  }
-  .nav-toggle {
-    display: inline-flex;
-  }
+  .nav-links { display: none; }
+  .nav-wordmark { font-size: 13px; letter-spacing: 0.14em; }
+  .nav-toggle { display: inline-flex; }
+
   .mobile-menu {
     display: flex;
     flex-direction: column;
     gap: 0;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 6px);
     left: 0;
     right: 0;
-    padding: 0 var(--gutter);
-    border-top: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.98);
-    transform-origin: top;
-    transform: translateY(-8px);
+    padding: 0 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(10, 15, 30, 0.08);
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transform-origin: top center;
+    transform: scale(0.97) translateY(-6px);
     opacity: 0;
     max-height: 0;
     overflow: hidden;
     pointer-events: none;
-    transition: transform 0.2s ease, opacity 0.2s ease, max-height 0.25s ease, padding 0.2s ease, border-color 0.2s ease;
+    transition:
+      transform 0.22s ease,
+      opacity   0.22s ease,
+      max-height 0.28s ease,
+      padding   0.22s ease;
   }
   .mobile-menu.open {
-    gap: 14px;
-    padding: 8px var(--gutter) 16px;
-    border-top-color: rgba(10, 15, 30, 0.08);
-    transform: translateY(0);
+    gap: 2px;
+    padding: 8px 14px 14px;
+    transform: scale(1) translateY(0);
     opacity: 1;
-    max-height: calc(100vh - 68px - env(safe-area-inset-top));
+    max-height: 80vh;
     overflow-y: auto;
     pointer-events: auto;
   }
   .mobile-menu a {
     text-decoration: none;
-    color: #4a5580;
-    font-size: 16px;
+    color: var(--text-body);
+    font-size: 15px;
     font-weight: 500;
-    line-height: 1.4;
-    padding: 0 2px;
-    min-height: 48px;
+    padding: 0 4px;
+    min-height: 46px;
     display: flex;
     align-items: center;
+    border-bottom: 1px solid rgba(10, 15, 30, 0.05);
+  }
+  .mobile-menu a:last-of-type {
+    border-bottom: none;
   }
 }
 
 @media (max-width: 640px) {
-  .nav-wordmark {
-    font-size: 12px;
-    letter-spacing: 0.1em;
-  }
-
-  .nav-logo {
-    gap: 9px;
-  }
-
-  .nav-logo-img {
-    width: 34px;
-    height: 34px;
-  }
-
-  .nav-inner {
-    min-height: 64px;
-  }
-
-  .mobile-menu {
-    max-height: calc(100vh - 64px - env(safe-area-inset-top));
-  }
+  .nav-wordmark { font-size: 12px; letter-spacing: 0.1em; }
+  .nav-logo { gap: 8px; }
+  .nav-logo-img { width: 32px; height: 32px; }
+  .nav-inner { min-height: 56px; }
 }
 
 @media (max-width: 390px) {
-  .nav-wordmark {
-    display: none;
-  }
+  .nav-wordmark { display: none; }
 }
 </style>
