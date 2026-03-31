@@ -227,19 +227,19 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   display: block;
 }
 .si-purple {
-  background: rgba(var(--brand-rgb), 0.08);
-  border: 1px solid rgba(var(--brand-rgb), 0.15);
-  color: var(--brand);
+  background: rgba(var(--accent-ink-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.24);
+  color: var(--accent-ink);
 }
 .si-cyan {
-  background: rgba(var(--accent-rgb), 0.08);
-  border: 1px solid rgba(var(--accent-rgb), 0.2);
-  color: var(--accent-strong);
+  background: rgba(var(--accent-ink-rgb), 0.16);
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.32);
+  color: var(--accent-ink);
 }
 .step-num {
   font-size: 11px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-ink);
   letter-spacing: 0.1em;
 }
 .step-content {
@@ -316,12 +316,12 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   border-radius: 50%;
 }
 .ch-dot-dim { background: rgba(255, 255, 255, 0.12); }
-.ch-dot-cyan { background: rgba(var(--accent-rgb), 0.5); }
+.ch-dot-cyan { background: rgba(var(--accent-ink-rgb), 0.5); }
 .ch-avatar {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--brand), var(--accent));
+  background: linear-gradient(135deg, rgba(var(--accent-ink-rgb), 0.88), var(--accent-ink));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -354,15 +354,15 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--accent);
+  color: var(--accent-ink);
   white-space: nowrap;
 }
 .ch-live-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent);
+  background: var(--accent-ink);
+  box-shadow: 0 0 6px var(--accent-ink);
   animation: pulse 2s infinite;
 }
 
@@ -426,13 +426,13 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   width: 24px;
   height: 24px;
   border-radius: 7px;
-  background: rgba(var(--accent-rgb), 0.12);
-  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  background: rgba(var(--accent-ink-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--accent-strong);
+  color: var(--accent-ink);
 }
 .confirm-icon :deep(svg) { display: block; }
 .confirm-label {
@@ -473,7 +473,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   width: 32px;
   height: 32px;
   border-radius: 9px;
-  background: linear-gradient(135deg, var(--brand), var(--accent));
+  background: var(--accent-ink);
   border: none;
   display: flex;
   align-items: center;
@@ -481,7 +481,7 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   flex-shrink: 0;
   color: #fff;
   cursor: default;
-  box-shadow: 0 3px 10px rgba(var(--brand-rgb), 0.3);
+  box-shadow: 0 3px 10px rgba(var(--accent-ink-rgb), 0.32);
 }
 .chat-send :deep(svg) { display: block; }
 
@@ -504,5 +504,3 @@ useScrollReveal(() => [headerRef.value, ...stepRefs.value, chatRef.value])
   }
 }
 </style>
-
-

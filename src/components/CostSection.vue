@@ -87,11 +87,7 @@ import LiquidHeading from './LiquidHeading.vue'
   line-height: 1;
 }
 .cost-big-highlight {
-  background: linear-gradient(135deg, var(--brand), var(--accent));
-  -webkit-background-clip: text;
-  /* -webkit-text-fill-color: transparent; */
-  background-clip: text;
-  color: var(--text-body);
+  color: var(--accent-ink);
 }
 .cost-lbl {
   font-size: 15px;

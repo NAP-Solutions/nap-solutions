@@ -364,6 +364,12 @@ onMounted(() => {
 
   resizeRenderer()
 
+  // Pre-compile the shader program now, at mount time, so the first
+  // renderer.render() call in the animation loop is stutter-free.
+  // Without this, GLSL compilation is deferred to the first visible frame —
+  // which causes a hitch when the section scrolls into view.
+  renderer.compile(scene, camera)
+
   ro = new ResizeObserver(scheduleResize)
   ro.observe(targetEl)
 
@@ -428,7 +434,6 @@ onBeforeUnmount(() => {
   height: calc(100% + 80px);
   display: block;
   z-index: 0;
-  /* filter: blur(2px); */
 }
 </style>
 
