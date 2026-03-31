@@ -60,7 +60,7 @@ onUnmounted(() => {
         <li><a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a></li>
         <li><a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a></li>
         <li>
-          <a href="#" class="nav-cta" @click.prevent="$emit('open-booking')">
+          <a href="#" class="nav-cta btn-shine" @click.prevent="$emit('open-booking')">
             Book a Demo
           </a>
         </li>
@@ -87,7 +87,7 @@ onUnmounted(() => {
       <a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a>
       <a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a>
       <button
-        class="nav-mobile-cta"
+        class="nav-mobile-cta btn-shine"
         type="button"
         @click="$emit('open-booking'); closeMobileMenu()"
       >

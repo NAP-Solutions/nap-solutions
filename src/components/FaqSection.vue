@@ -72,7 +72,7 @@ function toggle(i) {
           <p class="faq-cta-label">Still have questions?</p>
           <p class="faq-cta-sub">Book a free demo and we'll walk you through everything online.</p>
         </div>
-        <button class="btn-primary" @click="$emit('open-booking')">
+        <button class="btn-primary btn-shine" @click="$emit('open-booking')">
           Book a Demo
         </button>
       </div>

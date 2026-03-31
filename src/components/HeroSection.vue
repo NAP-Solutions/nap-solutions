@@ -228,10 +228,10 @@ function scrollToHow() {
         </p>
 
         <div ref="actionsRef" class="hero-actions">
-          <button class="btn-primary hero-btn-shine" @click="emit('open-booking')">
+          <button class="btn-primary btn-shine" @click="emit('open-booking')">
             Book a Free Demo
           </button>
-          <button class="btn-primary hero-btn-shine" @click="scrollToHow">
+          <button class="btn-primary btn-shine" @click="scrollToHow">
             See how it works &rarr;
           </button>
         </div>
@@ -447,44 +447,6 @@ function scrollToHow() {
   flex-wrap: wrap;
 }
 
-.hero-btn-shine {
-  position: relative;
-  isolation: isolate;
-}
-
-.hero-btn-shine::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background-image: radial-gradient(
-    transparent, transparent,
-    rgba(255, 255, 255, 0.34), rgb(255, 255, 255), rgb(190, 190, 190),
-    transparent, transparent
-  );
-  background-size: 300% 300%;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: hero-button-border-shine 8s infinite linear;
-  will-change: background-position;
-  pointer-events: none;
-  z-index: 2;
-}
-
-@keyframes hero-button-border-shine {
-  0% {
-    background-position: 0% 0%;
-  }
-  50% {
-    background-position: 100% 100%;
-  }
-  100% {
-    background-position: 0% 0%;
-  }
-}
 
 .hero-trust {
   display: flex;
@@ -558,10 +520,6 @@ function scrollToHow() {
   }
 
   .hero-title-layer--stroke-shine {
-    animation: none;
-  }
-
-  .hero-btn-shine::after {
     animation: none;
   }
 }

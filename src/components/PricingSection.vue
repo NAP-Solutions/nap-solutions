@@ -115,7 +115,7 @@ onBeforeUnmount(() => {
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">Pricing</div>
         <LiquidHeading class="pricing-heading">
-          Simple. Transparent.<br />No Hidden Fees.
+          Simple. Transparent.<br />No hidden fees.
         </LiquidHeading>
         <p class="section-sub">
           All plans include full setup, onboarding, and calendar integration. Book
@@ -193,7 +193,7 @@ onBeforeUnmount(() => {
 
             <!-- CTA -->
             <button
-              :class="plan.featured ? 'btn-primary' : 'btn-ghost'"
+              :class="plan.featured ? 'btn-primary' : ['btn-ghost', 'btn-shine']"
               class="pricing-cta"
               @click="$emit('open-booking')"
             >

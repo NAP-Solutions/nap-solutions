@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 import { problemItems, statCards } from '../data/problemData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
+import { useTilt } from '../composables/useTilt'
 import LiquidHeading from './LiquidHeading.vue'
 
 const headerRef = ref(null)
@@ -21,6 +22,7 @@ function getHeadingElement() {
 }
 
 useScrollReveal(() => [...itemRefs.value, ...statRefs.value])
+useTilt(() => statRefs.value)
 
 function playHeaderAnimation() {
   const headingEl = getHeadingElement()
@@ -103,7 +105,7 @@ onBeforeUnmount(() => {
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Problem</div>
         <LiquidHeading ref="headingRef">
-          Your Phone Stops Working<br />When Clients Need It Most.
+          Your phone stops working<br />when clients need it most.
         </LiquidHeading>
         <p ref="subRef" class="section-sub problem-sub">
           Businesses are losing bookings every night, every weekend, and most do
@@ -129,6 +131,7 @@ onBeforeUnmount(() => {
             class="stat-card"
             :ref="el => statRefs[i] = el"
           >
+            <div class="tilt-glare" aria-hidden="true"></div>
             <div class="big">{{ stat.big }}</div>
             <div class="lbl">{{ stat.label }}</div>
           </div>

@@ -6,7 +6,7 @@ import LiquidHeading from './LiquidHeading.vue'
   <section id="cost" class="section bg-alt">
     <div class="section-inner">
       <div class="section-eyebrow">Revenue Impact</div>
-      <LiquidHeading>What Silence Is<br />Costing You.</LiquidHeading>
+      <LiquidHeading>What silence is<br />costing you.</LiquidHeading>
       <p class="section-sub">
         Conservative monthly estimate for a mid-size business:
       </p>
