@@ -103,14 +103,14 @@ useScrollReveal(() => [headerRef.value, ...cardRefs.value])
   display: block;
 }
 .fc-icon--purple {
-  background: rgba(var(--brand-rgb), 0.08);
-  border: 1px solid rgba(var(--brand-rgb), 0.15);
-  color: var(--brand);
+  background: rgba(var(--accent-ink-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.24);
+  color: var(--accent-ink);
 }
 .fc-icon--cyan {
-  background: rgba(var(--accent-rgb), 0.08);
-  border: 1px solid rgba(var(--accent-rgb), 0.2);
-  color: var(--accent-strong);
+  background: rgba(var(--accent-ink-rgb), 0.16);
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.32);
+  color: var(--accent-ink);
 }
 .reveal-header {
   opacity: 0;

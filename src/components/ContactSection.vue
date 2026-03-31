@@ -8,6 +8,7 @@ const email = ref('')
 const message = ref('')
 const sending = ref(false)
 const sent = ref(false)
+const error = ref('')
 
 const leftRef = ref(null)
 const rightRef = ref(null)
@@ -15,8 +16,9 @@ const rightRef = ref(null)
 useScrollReveal(() => [leftRef.value, rightRef.value])
 
 async function submitForm() {
+  error.value = ''
   if (!name.value.trim() || !email.value.trim() || !message.value.trim()) {
-    alert('Please fill in all fields before sending.')
+    error.value = 'Please fill in all fields before sending.'
     return
   }
   sending.value = true
@@ -40,7 +42,7 @@ async function submitForm() {
     }
   } catch {
     sending.value = false
-    alert('Something went wrong. Please try again.')
+    error.value = 'Something went wrong. Please try again.'
   }
 }
 </script>
@@ -87,6 +89,7 @@ async function submitForm() {
               required
             ></textarea>
           </div>
+          <p v-if="error" class="form-error">{{ error }}</p>
           <button
             type="submit"
             class="btn-primary"
@@ -192,6 +195,12 @@ async function submitForm() {
 .form-input:focus {
   border-color: rgba(var(--brand-rgb), 0.4);
   background: #fff;
+}
+
+.form-error {
+  font-size: 14px;
+  color: #c0392b;
+  margin: 0;
 }
 
 .form-success {

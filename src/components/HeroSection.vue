@@ -295,6 +295,7 @@ function scrollToHow() {
 .hero-title-stack {
   --hero-stroke-color: #fff;
   --hero-stroke-width: clamp(2.0px, 0.03em, 2.1px);
+  --hero-fill-color: #07090f;
   font-size: clamp(2.6rem, 6.2vw, 5.4rem);
   font-weight: 800;
   line-height: 1.06;
@@ -389,14 +390,9 @@ function scrollToHow() {
 .hero-title-layer--fill .h1-light,
 .hero-title-layer--fill .h1-grad {
   -webkit-text-stroke: 0;
-  background-image: var(--heading-gradient);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  background: none;
+  -webkit-text-fill-color: var(--hero-fill-color);
+  color: var(--hero-fill-color);
   mix-blend-mode: normal;
   filter: none;
   text-shadow: none;

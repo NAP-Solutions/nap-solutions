@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Check, X } from 'lucide-vue-next'
 import { pricingPlans } from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
@@ -11,18 +11,110 @@ defineEmits(['open-booking'])
 const headerRef = ref(null)
 const bannerRef = ref(null)
 const cardRefs = ref([])
+const pricingSectionRef = ref(null)
+const shouldRenderCanvas = ref(false)
 
 useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
+
+let canvasWarmupObserver = null
+let idleWarmupHandle = 0
+let idleWarmupTimeout = 0
+let deferredMountTimeout = 0
+
+function mountCanvas() {
+  if (shouldRenderCanvas.value) return
+  shouldRenderCanvas.value = true
+  canvasWarmupObserver?.disconnect()
+  canvasWarmupObserver = null
+
+  if (idleWarmupHandle && 'cancelIdleCallback' in window) {
+    window.cancelIdleCallback(idleWarmupHandle)
+  }
+  idleWarmupHandle = 0
+
+  if (idleWarmupTimeout) {
+    clearTimeout(idleWarmupTimeout)
+    idleWarmupTimeout = 0
+  }
+
+  if (deferredMountTimeout) {
+    clearTimeout(deferredMountTimeout)
+    deferredMountTimeout = 0
+  }
+}
+
+function scheduleMountCanvas() {
+  if (shouldRenderCanvas.value || deferredMountTimeout) return
+  // Defer past any in-progress scroll animation frame so WebGL init
+  // doesn't compete with GSAP tween updates.
+  deferredMountTimeout = window.setTimeout(mountCanvas, 150)
+}
+
+onMounted(() => {
+  const sectionEl = pricingSectionRef.value
+  if (!sectionEl) {
+    mountCanvas()
+    return
+  }
+
+  // Large margin so the canvas warms up well before the section is in view,
+  // reducing the chance the IO fires while a scroll animation is active.
+  const WARMUP_MARGIN_PX = 2500
+  canvasWarmupObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting || entry.intersectionRatio > 0) {
+          scheduleMountCanvas()
+          return
+        }
+      }
+    },
+    {
+      rootMargin: `${WARMUP_MARGIN_PX}px 0px`,
+      threshold: 0,
+    }
+  )
+
+  canvasWarmupObserver.observe(sectionEl)
+
+  if ('requestIdleCallback' in window) {
+    idleWarmupHandle = window.requestIdleCallback(() => {
+      mountCanvas()
+    }, { timeout: 3500 })
+  } else {
+    idleWarmupTimeout = window.setTimeout(mountCanvas, 2000)
+  }
+})
+
+onBeforeUnmount(() => {
+  canvasWarmupObserver?.disconnect()
+  canvasWarmupObserver = null
+
+  if (idleWarmupHandle && 'cancelIdleCallback' in window) {
+    window.cancelIdleCallback(idleWarmupHandle)
+  }
+  idleWarmupHandle = 0
+
+  if (idleWarmupTimeout) {
+    clearTimeout(idleWarmupTimeout)
+    idleWarmupTimeout = 0
+  }
+
+  if (deferredMountTimeout) {
+    clearTimeout(deferredMountTimeout)
+    deferredMountTimeout = 0
+  }
+})
 </script>
 
 <template>
-  <section id="pricing" class="section pricing-section">
-    <HeroCanvas :intro="false" />
+  <section id="pricing" ref="pricingSectionRef" class="section pricing-section">
+    <HeroCanvas v-if="shouldRenderCanvas" :intro="false" />
     <div class="pricing-scrim"></div>
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">Pricing</div>
-        <LiquidHeading>
+        <LiquidHeading class="pricing-heading">
           Simple. Transparent.<br />No Hidden Fees.
         </LiquidHeading>
         <p class="section-sub">
@@ -157,9 +249,16 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   transform: translateY(0);
 }
 
+.pricing-heading :deep(.liquid-heading-layer--fill .liquid-heading-content) {
+  background: none;
+  -webkit-text-fill-color: var(--text-main);
+  color: var(--text-main);
+  text-shadow: none;
+}
+
 .base-plan-banner {
   background: #fff;
-  border: 1.5px solid rgba(var(--brand-rgb), 0.15);
+  border: 1.5px solid rgba(var(--accent-ink-rgb), 0.2);
   border-radius: 14px;
   padding: 18px 24px;
   display: flex;
@@ -176,7 +275,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   transform: translateY(0);
 }
 .base-plan-pill {
-  background: linear-gradient(135deg, var(--brand), var(--accent));
+  background: linear-gradient(135deg, rgba(var(--accent-ink-rgb), 0.9), var(--accent-ink));
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -249,11 +348,11 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   border-radius: 100px;
   background: #fff;
   color: var(--accent-ink);
-  border: 1.5px solid rgba(var(--brand-rgb), 0.3);
+  border: 1.5px solid rgba(var(--accent-ink-rgb), 0.38);
 }
 .plan-badge.badge-popular {
-  background: linear-gradient(135deg, var(--brand), var(--accent));
-  color: #000;
+  background: var(--accent-ink);
+  color: #fff;
   border: none;
 }
 
@@ -269,14 +368,14 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   transition: border-color 0.2s, box-shadow 0.25s, transform 0.25s;
 }
 .pricing-card:hover {
-  border-color: rgba(var(--brand-rgb), 0.35);
-  box-shadow: 0 12px 36px rgba(var(--brand-rgb), 0.12);
+  border-color: rgba(var(--accent-ink-rgb), 0.38);
+  box-shadow: 0 12px 36px rgba(var(--accent-ink-rgb), 0.16);
   transform: translateY(-4px);
 }
 .pricing-card.featured {
   border-color: transparent;
   border-width: 1.5px;
-  box-shadow: 0 8px 28px rgba(var(--brand-rgb), 0.14);
+  box-shadow: 0 8px 28px rgba(var(--accent-ink-rgb), 0.2);
 }
 
 .pricing-card.featured::before {
@@ -287,7 +386,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   padding: 1.5px;
   background-image: radial-gradient(
     transparent, transparent,
-    var(--brand), var(--accent), var(--brand-strong),
+    rgba(var(--accent-ink-rgb), 0.84), var(--accent-ink), rgba(var(--accent-ink-rgb), 0.92),
     transparent, transparent
   );
   background-size: 300% 300%;
@@ -315,7 +414,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   padding: 1.5px;
   background-image: radial-gradient(
     transparent, transparent,
-    var(--brand), var(--accent), var(--brand-strong),
+    rgba(var(--accent-ink-rgb), 0.84), var(--accent-ink), rgba(var(--accent-ink-rgb), 0.92),
     transparent, transparent
   );
   background-size: 300% 300%;
@@ -406,7 +505,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--brand), var(--accent));
+  background: var(--accent-ink);
   flex-shrink: 0;
 }
 .mins-label {
@@ -421,7 +520,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--accent-ink);
-  background: rgba(var(--accent-rgb), 0.15);
+  background: rgba(var(--accent-ink-rgb), 0.15);
   border-radius: 100px;
   padding: 3px 10px;
 }
@@ -463,7 +562,7 @@ useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: rgba(var(--brand-rgb), 0.15);
+  background: rgba(var(--accent-ink-rgb), 0.15);
   color: var(--accent-ink);
 }
 .feat-row.feat-excluded .feat-icon {
