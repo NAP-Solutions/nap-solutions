@@ -57,6 +57,16 @@ useScrollReveal(() => [innerRef.value])
   margin-inline: auto;
   text-align: center;
 }
+.cta-heading :deep(.liquid-heading-layer--fill .liquid-heading-content) {
+  background-image: var(--heading-gradient);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 .cta-sub {
   font-size: 19px;
   color: var(--text-body);
