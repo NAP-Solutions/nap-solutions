@@ -439,7 +439,7 @@ function scrollToHow() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-main);
 }
@@ -448,17 +448,20 @@ function scrollToHow() {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: rgba(var(--accent-rgb), 0.12);
-  border: 1px solid rgba(0, 0, 0, 0.28);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--text-main);
+  border: 1px solid var(--text-main);
+  display: grid;
+  place-items: center;
+  line-height: 0;
   flex-shrink: 0;
-  color: var(--text-main);
+  color: #ffffff;
 }
 
 .trust-check :deep(svg) {
   display: block;
+  width: 10px;
+  height: 10px;
+  stroke-width: 5;
 }
 
 @media (max-width: 960px) {
