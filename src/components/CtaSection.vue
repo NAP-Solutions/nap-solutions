@@ -57,6 +57,16 @@ useScrollReveal(() => [innerRef.value])
   margin-inline: auto;
   text-align: center;
 }
+.cta-heading :deep(.liquid-heading-layer--fill .liquid-heading-content) {
+  background-image: var(--heading-gradient);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 .cta-sub {
   font-size: 19px;
   color: var(--text-body);
@@ -93,16 +103,19 @@ useScrollReveal(() => [innerRef.value])
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: rgba(var(--accent-rgb), 0.12);
-  border: 1px solid rgba(var(--accent-rgb), 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--text-main);
+  border: 1px solid var(--text-main);
+  display: grid;
+  place-items: center;
+  line-height: 0;
   flex-shrink: 0;
-  color: #000000;
+  color: #ffffff;
 }
 .trust-check :deep(svg) {
   display: block;
+  width: 10px;
+  height: 10px;
+  stroke-width: 5;
 }
 
 .cta-inner {

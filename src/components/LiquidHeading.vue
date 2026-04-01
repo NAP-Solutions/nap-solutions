@@ -58,26 +58,28 @@ const layers = [
 
 .liquid-heading-layer--shine {
   z-index: 1;
-  -webkit-text-stroke: var(--liquid-stroke-width) var(--brand);
-  text-shadow: 0 0 2px rgba(var(--brand-rgb), 0.2);
-  -webkit-mask-image: radial-gradient(
-    transparent, transparent,
-    rgba(255, 255, 255, 0.72), #fff, rgba(255, 255, 255, 0.72),
-    transparent, transparent
+  -webkit-text-stroke: var(--liquid-stroke-width) rgba(var(--brand-rgb), 0.76);
+  text-shadow: 0 0 1px rgba(var(--brand-rgb), 0.18);
+  -webkit-mask-image: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.94) 50%,
+    transparent 62%
   );
-  mask-image: radial-gradient(
-    transparent, transparent,
-    rgba(255, 255, 255, 0.72), #fff, rgba(255, 255, 255, 0.72),
-    transparent, transparent
+  mask-image: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.94) 50%,
+    transparent 62%
   );
-  -webkit-mask-size: 300% 300%;
-  mask-size: 300% 300%;
-  -webkit-mask-position: 0% 0%;
-  mask-position: 0% 0%;
+  -webkit-mask-size: 220% 100%;
+  mask-size: 220% 100%;
+  -webkit-mask-position: -120% 0%;
+  mask-position: -120% 0%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  animation: liquid-heading-shine-pulse 5s infinite linear, liquid-heading-shine-color 5s infinite linear;
-  will-change: -webkit-mask-position, mask-position, -webkit-text-stroke-color, text-shadow;
+  animation: liquid-heading-shine-sweep 9s infinite linear;
+  will-change: -webkit-mask-position, mask-position;
 }
 
 .liquid-heading-layer--fill {
@@ -105,54 +107,36 @@ const layers = [
 
 .liquid-heading-layer--fill .liquid-heading-content {
   -webkit-text-stroke: 0;
-  background-image: var(--heading-gradient);
-  background-size: 100% 100%;
-  background-repeat: repeat;
-  background-position: 50% 50%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: var(--text-main);
+  color: var(--text-main);
   text-shadow: none;
 }
 
-@keyframes liquid-heading-shine-pulse {
+@keyframes liquid-heading-shine-sweep {
   0% {
-    -webkit-mask-position: 0% 0%;
-    mask-position: 0% 0%;
-  }
-  50% {
-    -webkit-mask-position: 100% 100%;
-    mask-position: 100% 100%;
+    -webkit-mask-position: -120% 0%;
+    mask-position: -120% 0%;
   }
   100% {
-    -webkit-mask-position: 0% 0%;
-    mask-position: 0% 0%;
-  }
-}
-
-@keyframes liquid-heading-shine-color {
-  0% {
-    -webkit-text-stroke-color: var(--brand);
-    text-shadow: 0 0 2px rgba(var(--brand-rgb), 0.2);
-  }
-  50% {
-    -webkit-text-stroke-color: var(--accent);
-    text-shadow:
-      0 0 6px rgba(var(--accent-rgb), 0.35),
-      0 0 2px rgba(255, 255, 255, 0.2);
-  }
-  100% {
-    -webkit-text-stroke-color: var(--brand-strong);
-    text-shadow:
-      0 0 6px rgba(var(--brand-rgb), 0.3),
-      0 0 2px rgba(255, 255, 255, 0.18);
+    -webkit-mask-position: 120% 0%;
+    mask-position: 120% 0%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .liquid-heading-layer--shine {
     animation: none;
+    opacity: 0.26;
+  }
+}
+
+@media (max-width: 768px) {
+  .liquid-heading-layer--shine {
+    animation: none;
+    opacity: 0.32;
   }
 }
 </style>

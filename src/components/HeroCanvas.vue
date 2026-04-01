@@ -8,6 +8,18 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  staticOnMobile: {
+    type: Boolean,
+    default: true,
+  },
+  mobileBreakpoint: {
+    type: Number,
+    default: 768,
+  },
+  forceStatic: {
+    type: Boolean,
+    default: false,
+  },
 })
 const canvasRef = ref(null)
 
@@ -23,7 +35,9 @@ let introDone = false
 const INTRO_NOT_STARTED = -1
 const INTRO_DONE = -2
 const INTRO_TRIGGER_THRESHOLD = 0.15
-const TARGET_FPS = 45
+const TARGET_FPS_DESKTOP = 45
+const TARGET_FPS_LOW_POWER = 30
+const TARGET_FPS_MOBILE = 24
 const PIXEL_SIZE = 0
 // -1 = not started | >= 0 = simulation second when intro starts | -2 = done
 let ringStartTime = INTRO_NOT_STARTED
@@ -118,12 +132,13 @@ const fragmentShader = /* glsl */`
 
   // ── Fluid colour ─────────────────────────────────────────────────────────
   vec3 computeFluid(vec2 p){
-    vec2 e=vec2(.09,0.);
-    float dx=(getSurface(p+e.xy)-getSurface(p-e.xy))/(2.*e.x);
-    float dy=(getSurface(p+e.yx)-getSurface(p-e.yx))/(2.*e.x);
+    float e = 0.09;
+    float h0 = getSurface(p);
+    float dx = (getSurface(p + vec2(e, 0.0)) - h0) / e;
+    float dy = (getSurface(p + vec2(0.0, e)) - h0) / e;
     vec3  N=normalize(vec3(-dx,-dy,max(uDepth,.02)));
     float diff=dot(N,normalize(uLightPos))*.5+.5;
-    float t=clamp(diff+getSurface(p)*.04,0.,1.); t=t*t*(3.-2.*t);
+    float t=clamp(diff+h0*.04,0.,1.); t=t*t*(3.-2.*t);
     vec3 col=mix(uColor1,uColor2,smoothstep(0.,          uShadowWidth+.15,t));
     col     =mix(col,    uColor3,smoothstep(uShadowWidth+.05,.65,         t));
     col     =mix(col,    uColor4,smoothstep(.55,1.05,t));
@@ -225,16 +240,32 @@ function ease(x){ return x*x*(3-2*x) }   // Hermite smoothstep
 
 onMounted(() => {
   const el = canvasRef.value
+  if (!el) return
   const targetEl = el.parentElement || el
+  const mobileMq = window.matchMedia(`(max-width: ${props.mobileBreakpoint}px)`)
+  const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const isLowMemoryDevice = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4
+  const isLowCpuDevice = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4
+  const isMobileViewport = mobileMq.matches
+  const useStaticFrame =
+    props.forceStatic ||
+    reduceMotionMq.matches ||
+    (props.staticOnMobile && isMobileViewport)
+  const shouldRunIntro = props.intro && !useStaticFrame
+  const targetFps = isMobileViewport
+    ? TARGET_FPS_MOBILE
+    : (isLowMemoryDevice || isLowCpuDevice ? TARGET_FPS_LOW_POWER : TARGET_FPS_DESKTOP)
+
   const getDprCap = () => {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches
-    const isLowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4
-    return (isMobile || isLowMemory) ? 1.25 : 1.5
+    if (useStaticFrame) return 1
+    if (isMobileViewport) return 1
+    if (isLowMemoryDevice || isLowCpuDevice) return 1.25
+    return 1.5
   }
   const getDpr = () => Math.min(window.devicePixelRatio || 1, getDprCap())
   const getCssSize = () => ({ w: el.clientWidth, h: el.clientHeight })
   const { w: W, h: H } = getCssSize()
-  const frameMs = 1000 / TARGET_FPS
+  const frameMs = 1000 / targetFps
 
   scene = new THREE.Scene()
   camera = new THREE.Camera()
@@ -262,9 +293,12 @@ onMounted(() => {
     uPixelSize: { value: PIXEL_SIZE * getDpr() },
   }
 
-  if (!props.intro) {
+  if (!shouldRunIntro) {
     introDone = true
     ringStartTime = INTRO_DONE
+    uniforms.uBlend.value = 1
+    uniforms.uMaskR.value = MAX_R
+    uniforms.uRingTime.value = 0
   }
 
   shaderMaterial = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms })
@@ -275,7 +309,7 @@ onMounted(() => {
   renderer = new THREE.WebGLRenderer({
     canvas: el,
     antialias: false,
-    powerPreference: 'high-performance',
+    powerPreference: (useStaticFrame || isLowMemoryDevice || isLowCpuDevice) ? 'low-power' : 'high-performance',
   })
 
   let lastW = 0
@@ -297,6 +331,9 @@ onMounted(() => {
     renderer.setSize(w, h, false)
     uniforms.uResolution.value.set(renderer.domElement.width, renderer.domElement.height)
     uniforms.uPixelSize.value = PIXEL_SIZE * dpr
+    if (useStaticFrame) {
+      renderer.render(scene, camera)
+    }
   }
 
   function scheduleResize() {
@@ -373,7 +410,16 @@ onMounted(() => {
   ro = new ResizeObserver(scheduleResize)
   ro.observe(targetEl)
 
-  let fired = !props.intro
+  if (useStaticFrame) {
+    uniforms.uTime.value = 0
+    renderer.render(scene, camera)
+    if (props.intro) {
+      emit('intro-done')
+    }
+    return
+  }
+
+  let fired = !shouldRunIntro
   ioObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       isVisible = entry.isIntersecting || entry.intersectionRatio > 0
@@ -381,7 +427,7 @@ onMounted(() => {
         startLoop()
       }
 
-      if (props.intro && entry.intersectionRatio >= INTRO_TRIGGER_THRESHOLD && !fired) {
+      if (shouldRunIntro && entry.intersectionRatio >= INTRO_TRIGGER_THRESHOLD && !fired) {
         fired = true
         ringStartTime = simTime
       }
