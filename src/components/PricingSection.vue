@@ -111,6 +111,8 @@ onBeforeUnmount(() => {
   <section id="pricing" ref="pricingSectionRef" class="section pricing-section">
     <HeroCanvas v-if="shouldRenderCanvas" :intro="false" />
     <div class="pricing-scrim"></div>
+    <div class="pricing-edge-fade pricing-edge-fade--top" aria-hidden="true"></div>
+    <div class="pricing-edge-fade pricing-edge-fade--bottom" aria-hidden="true"></div>
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">Pricing</div>
@@ -237,6 +239,40 @@ onBeforeUnmount(() => {
   z-index: 1;
   pointer-events: none;
   background: rgba(255, 255, 255, 0.42);
+}
+
+.pricing-edge-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: clamp(56px, 9vw, 132px);
+  pointer-events: none;
+}
+
+.pricing-edge-fade--top {
+  top: 0;
+  background: linear-gradient(
+    180deg,
+    var(--surface-base) 0%,
+    rgba(245, 248, 253, 0.86) 28%,
+    rgba(244, 248, 255, 0) 100%
+  );
+}
+
+.pricing-edge-fade--bottom {
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 248, 255, 0) 0%,
+    rgba(248, 251, 255, 0.74) 60%,
+    #fff 100%
+  );
+}
+
+.pricing-section .section-inner {
+  position: relative;
+  z-index: 3;
 }
 
 .reveal-header {
