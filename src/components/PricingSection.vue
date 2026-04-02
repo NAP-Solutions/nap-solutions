@@ -11,10 +11,11 @@ defineEmits(['open-booking'])
 const headerRef = ref(null)
 const bannerRef = ref(null)
 const cardRefs = ref([])
+const referralRef = ref(null)
 const pricingSectionRef = ref(null)
 const shouldRenderCanvas = ref(false)
 
-useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value])
+useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value, referralRef.value])
 
 let canvasWarmupObserver = null
 let idleWarmupHandle = 0
@@ -199,7 +200,7 @@ onBeforeUnmount(() => {
               class="pricing-cta"
               @click="$emit('open-booking')"
             >
-              Book a Demo
+              {{ plan.ctaLabel || 'Book a Demo' }}
             </button>
           </div>
 
@@ -210,6 +211,18 @@ onBeforeUnmount(() => {
       <p class="pricing-footer">
         All plans include full setup, onboarding, and calendar integration. Prices + tax. No hidden fees.
       </p>
+
+      <div class="referral-callout" ref="referralRef">
+        <span class="referral-pill">Referral Bonus</span>
+        <h3 class="referral-title">Refer a friend. Get a $200 cheque.</h3>
+        <p class="referral-copy">
+          If someone you refer becomes a NAP client, we send you a $200 cheque as a thank-you.
+        </p>
+        <p class="referral-note">Offer applies after your referral signs and completes onboarding.</p>
+        <button class="btn-primary btn-shine referral-cta" @click="$emit('open-booking')">
+          Refer a Friend
+        </button>
+      </div>
     </div>
   </section>
 </template>
@@ -374,6 +387,10 @@ onBeforeUnmount(() => {
   transform: translateX(-50%);
   z-index: 2;
   white-space: nowrap;
+  transition: transform 0.25s ease;
+}
+.pricing-plan:hover .plan-badge-wrap {
+  transform: translateX(-50%) translateY(-4px);
 }
 .plan-badge {
   display: inline-block;
@@ -642,6 +659,68 @@ onBeforeUnmount(() => {
   letter-spacing: 0.3px;
 }
 
+.referral-callout {
+  margin: 24px auto 0;
+  max-width: 760px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(var(--accent-ink-rgb), 0.08), rgba(255, 255, 255, 0.96));
+  border: 1.5px solid rgba(var(--accent-ink-rgb), 0.28);
+  border-radius: 16px;
+  padding: clamp(24px, 4vw, 34px);
+  box-shadow: 0 14px 32px rgba(var(--accent-ink-rgb), 0.1);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.referral-callout[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.referral-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  background: #fff;
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.22);
+  border-radius: 100px;
+  padding: 5px 12px;
+  margin-bottom: 14px;
+}
+
+.referral-title {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 34px);
+  line-height: 1.14;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.referral-copy {
+  margin: 12px auto 0;
+  max-width: 54ch;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--text-body);
+}
+
+.referral-note {
+  margin: 12px auto 0;
+  max-width: 58ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.referral-cta {
+  margin: 18px auto 0;
+  min-width: 210px;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .pricing-grid {
@@ -662,6 +741,18 @@ onBeforeUnmount(() => {
   .card-header,
   .pricing-head {
     min-height: 0;
+  }
+  .referral-callout {
+    text-align: left;
+  }
+  .referral-copy,
+  .referral-note {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .referral-cta {
+    width: 100%;
+    min-width: 0;
   }
 }
 

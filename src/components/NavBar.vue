@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import logoImg from '../assets/logo.png'
+import logoImg from '../assets/NAP-BLACK-BOX-LOGO-WHITE.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
 defineEmits(['open-booking'])
@@ -178,6 +178,7 @@ onUnmounted(() => {
   gap: 10px;
   text-decoration: none;
   margin-right: 12px;
+  flex-shrink: 0;
 }
 .nav-logo-img {
   width: 36px;
@@ -186,9 +187,12 @@ onUnmounted(() => {
   object-fit: cover;
 }
 .nav-wordmark {
+  display: inline-flex;
+  align-items: center;
   font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 15px;
+  line-height: 1;
   letter-spacing: 0.18em;
   white-space: nowrap;
   color: #000;
@@ -200,13 +204,17 @@ onUnmounted(() => {
   align-items: center;
   gap: 4px;
   list-style: none;
-  margin-right: 12px;
+  padding: 0;
+  margin: 0 12px 0 0;
 }
 .nav-links a {
+  display: inline-flex;
+  align-items: center;
   color: var(--text-body);
   text-decoration: none;
   font-size: 14.5px;
   font-weight: 500;
+  line-height: 1;
   padding: 6px 12px;
   border-radius: 10px;
   transition: color 0.18s, background 0.18s;
@@ -226,6 +234,7 @@ onUnmounted(() => {
   border-radius: 12px;
   font-weight: 700 !important;
   font-size: 14.5px !important;
+  line-height: 1;
   white-space: nowrap;
   box-shadow:
     0 8px 20px rgba(var(--brand-rgb), 0.2),
