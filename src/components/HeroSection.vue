@@ -476,17 +476,56 @@ function scrollToHow() {
   }
 }
 
+@media (max-width: 640px) {
+  .hero-inner {
+    align-items: stretch;
+  }
+
+  .hero-content {
+    width: 100%;
+  }
+
+  .hero-title-stack {
+    font-size: clamp(2.78rem, 10.9vw, 3.42rem);
+    line-height: 1.02;
+  }
+}
+
 @media (max-width: 520px) {
   .hero-actions {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    align-self: center;
     gap: 12px;
+  }
+  .hero-actions .btn-primary {
+    width: min(100%, 340px);
+    display: grid;
+    place-items: center;
+    height: 52px;
+    min-height: 52px;
+    padding: 0 20px !important;
+    margin-inline: auto;
+    line-height: 1;
+    text-align: center;
+    border-bottom-width: 1px;
   }
 
   .hero-trust {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: 100%;
+    gap: 14px;
+  }
+
+  .trust-item {
+    min-height: 20px;
+    line-height: 1.2;
+    justify-content: center;
   }
 }
 
