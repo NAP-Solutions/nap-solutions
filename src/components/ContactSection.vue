@@ -238,10 +238,14 @@ async function submitForm() {
 @media (max-width: 960px) {
   .contact-inner {
     flex-direction: column;
+    align-items: stretch;
     gap: 32px;
   }
   .contact-left {
     max-width: 100%;
+  }
+  .contact-right {
+    width: 100%;
   }
 }
 

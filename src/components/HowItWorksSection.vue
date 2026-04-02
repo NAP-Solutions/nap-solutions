@@ -505,6 +505,16 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
   }
 }
 @media (max-width: 640px) {
+  .reveal-header {
+    width: min(100%, 24rem);
+    margin-inline: auto;
+  }
+
+  .reveal-header :deep(.liquid-heading-stack),
+  .reveal-header .section-sub {
+    margin-inline: 0;
+  }
+
   .chat-col {
     display: none;
   }

@@ -104,6 +104,8 @@ onUnmounted(() => {
   top: 14px;
   left: 50%;
   transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 24px);
   z-index: 100;
   isolation: isolate;
   border-radius: 22px;
@@ -166,6 +168,7 @@ onUnmounted(() => {
 .nav-inner {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 8px;
   padding: 0 10px 0 18px;
   min-height: 62px;
@@ -205,7 +208,8 @@ onUnmounted(() => {
   gap: 4px;
   list-style: none;
   padding: 0;
-  margin: 0 12px 0 0;
+  margin: 0 12px 0 auto;
+  min-width: 0;
 }
 .nav-links a {
   display: inline-flex;
@@ -298,6 +302,38 @@ onUnmounted(() => {
 }
 
 /* ── Responsive: tablet / mobile ─────────────────────── */
+@media (max-width: 1200px) and (min-width: 961px) {
+  .nav-inner {
+    min-height: 58px;
+    padding: 0 8px 0 14px;
+    gap: 6px;
+  }
+  .nav-logo {
+    gap: 8px;
+    margin-right: 6px;
+  }
+  .nav-logo-img {
+    width: 33px;
+    height: 33px;
+  }
+  .nav-wordmark {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+  }
+  .nav-links {
+    gap: 2px;
+    margin-right: 6px;
+  }
+  .nav-links a {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+  .nav-cta {
+    font-size: 13px !important;
+    padding: 9px 14px;
+  }
+}
+
 @media (max-width: 960px) {
   /* On mobile the pill stretches edge-to-edge with a gap */
   .nav {

@@ -48,9 +48,7 @@ function scrollTo(id) {
           <h4>Contact</h4>
           <ul>
             <li class="no-hover">
-              <a href="mailto:info@getnapsolutions.com" class="footer-email">
-                info@getnapsolutions.com
-              </a>
+              <a href="mailto:info@getnapsolutions.com" class="footer-email">info@getnapsolutions.com</a>
             </li>
           </ul>
         </div>
@@ -145,6 +143,7 @@ function scrollTo(id) {
 .footer-col ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 .footer-col li {
   font-size: 16px;
@@ -162,9 +161,11 @@ function scrollTo(id) {
   cursor: default;
 }
 .footer-email {
+  display: inline-block;
   color: rgba(255, 255, 255, 0.4);
   text-decoration: none;
   transition: color 0.2s;
+  line-height: 1.4;
 }
 .footer-email:hover {
   color: rgba(255, 255, 255, 0.85);
