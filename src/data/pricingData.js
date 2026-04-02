@@ -2,13 +2,13 @@ const allFeatures = [
   '24/7 AI receptionist',
   'Calendar integration',
   'Setup & onboarding',
+  'Custom integrations',
   'CRM integration',
   'Appointment management',
   'OTP verification',
   'Call summaries',
   'Multiple locations',
   'Dedicated support',
-  'Custom integrations',
 ]
 
 export const pricingPlans = [
@@ -17,7 +17,7 @@ export const pricingPlans = [
     description: 'For businesses just getting started',
     minutes: '2,000 min / mo',
     price: '$479',
-    badge: 'START HERE',
+    badge: null,
     subBadge: '7-DAY TRIAL',
     featured: false,
     features: allFeatures.map((f, i) => ({ label: f, included: i < 3 })),
@@ -27,7 +27,8 @@ export const pricingPlans = [
     description: 'For growing practices with higher volume',
     minutes: '2,000 min / mo',
     price: '$1,199',
-    badge: null,
+    badge: 'START HERE',
+    ctaLabel: 'Start Here',
     subBadge: null,
     featured: false,
     features: allFeatures.map((f, i) => ({ label: f, included: i < 7 })),
