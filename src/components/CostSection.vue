@@ -117,29 +117,72 @@ import LiquidHeading from './LiquidHeading.vue'
 @media (max-width: 960px) {
   .cost-row {
     flex-direction: column;
+    margin: clamp(1.5rem, 4vw, 2.25rem) 0 22px;
   }
   .cost-cell {
     min-width: 0;
+    padding: 20px 16px;
   }
   .cost-op {
-    padding: 10px 0;
+    font-size: 20px;
+    padding: 6px 0;
     justify-content: center;
   }
 }
 
 @media (max-width: 640px) {
+  .cost-scroll {
+    display: flex;
+    justify-content: center;
+  }
+
+  .cost-row {
+    width: min(100%, 320px);
+    border-radius: 14px;
+    margin: 18px 0 16px;
+    margin-inline: auto;
+  }
+
   .cost-cell {
-    padding: 24px 14px;
+    display: grid;
+    grid-template-columns: minmax(76px, auto) auto;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    text-align: initial;
+    padding: 12px 10px;
+  }
+
+  .cost-big {
+    font-size: clamp(1.55rem, 7.4vw, 1.95rem);
+    margin-bottom: 0;
+    white-space: nowrap;
+    justify-self: end;
+    text-align: right;
   }
 
   .cost-lbl {
-    font-size: 13px;
-    letter-spacing: 0.04em;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .cost-op {
+    font-size: 17px;
+    line-height: 1;
+    padding: 2px 0;
   }
 
   .cost-note {
-    font-size: 16px;
-    line-height: 1.7;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 420px) {
+  .cost-row {
+    width: min(100%, 286px);
   }
 }
 </style>
