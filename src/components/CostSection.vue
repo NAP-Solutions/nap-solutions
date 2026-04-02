@@ -177,6 +177,8 @@ import LiquidHeading from './LiquidHeading.vue'
   .cost-note {
     font-size: 15px;
     line-height: 1.6;
+    text-align: center;
+    margin-inline: auto;
   }
 }
 
