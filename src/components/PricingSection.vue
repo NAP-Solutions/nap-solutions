@@ -349,7 +349,7 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
   text-transform: uppercase;
   margin-top: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 /* Grid */
@@ -357,16 +357,16 @@ onBeforeUnmount(() => {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  margin-top: clamp(0.5rem, 1.4vw, 0.9rem);
   align-items: start;
-  padding-top: 36px; /* room for floating badges */
+  padding-top: 24px; /* room for floating badges */
 }
 
 .pricing-plan {
   display: flex;
   flex-direction: column;
   position: relative;
-  padding-top: 22px; /* space above card for badge */
+  padding-top: 18px; /* space above card for badge */
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.5s ease, transform 0.5s ease;

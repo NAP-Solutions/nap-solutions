@@ -224,7 +224,7 @@ function scrollToHow() {
 
         <p ref="subRef" class="hero-sub">
           Your AI receptionist answers every call, books appointments, and
-          handles your front desk - around the clock, at a fraction of the cost.
+          handles your front desk - around the clock, at a <span class="hero-sub-fraction-break">fraction of the cost.</span>
         </p>
 
         <div ref="actionsRef" class="hero-actions">
@@ -420,6 +420,10 @@ function scrollToHow() {
   text-wrap: pretty;
 }
 
+.hero-sub-fraction-break {
+  display: inline;
+}
+
 .hero-actions {
   display: flex;
   gap: 14px;
@@ -477,17 +481,44 @@ function scrollToHow() {
 }
 
 @media (max-width: 640px) {
+  .hero {
+    min-height: 100svh;
+    padding-block: 0;
+  }
+
   .hero-inner {
-    align-items: stretch;
+    min-height: 100svh;
+    align-items: center;
+    justify-content: center;
   }
 
   .hero-content {
-    width: 100%;
+    width: min(100%, 36rem);
+    margin-inline: auto;
+  }
+
+  .hero-title-stack {
+    text-align: center;
+  }
+
+  .hero-sub {
+    text-align: left;
+    width: min(100%, 340px);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .hero-sub-fraction-break {
+    display: block;
   }
 
   .hero-title-stack {
     font-size: clamp(2.78rem, 10.9vw, 3.42rem);
     line-height: 1.02;
+  }
+
+  .hero-title-stack .h1-light {
+    font-size: 1.35em;
   }
 }
 
