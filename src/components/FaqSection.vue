@@ -190,7 +190,7 @@ function toggle(i) {
   overflow: hidden;
   font-size: 15px;
   line-height: 1.75;
-  color: var(--accent-ink);
+  color: var(--text-main);
   padding-bottom: 0;
   transition: padding-bottom 0.3s ease;
 }

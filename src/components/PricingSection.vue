@@ -728,6 +728,22 @@ onBeforeUnmount(() => {
   }
 }
 
+@media (max-width: 640px) {
+  .reveal-header {
+    width: min(100%, 24rem);
+    margin-inline: auto;
+  }
+
+  .reveal-header :deep(.liquid-heading-stack),
+  .reveal-header .section-sub {
+    margin-inline: 0;
+  }
+
+  .reveal-header .section-sub {
+    width: min(100%, 24rem);
+  }
+}
+
 @media (max-width: 560px) {
   .pricing-grid {
     grid-template-columns: 1fr;

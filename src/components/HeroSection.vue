@@ -503,8 +503,8 @@ function scrollToHow() {
 
   .hero-sub {
     text-align: left;
-    width: min(100%, 340px);
-    max-width: 100%;
+    width: fit-content;
+    max-width: min(100%, 33ch);
     margin-inline: auto;
   }
 
