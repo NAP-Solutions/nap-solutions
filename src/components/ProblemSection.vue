@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Problem</div>
         <LiquidHeading ref="headingRef">
-          Your phone stops working<br />when clients need it most.
+          Your phone stops working <br class="problem-heading-break" />when clients need it most.
         </LiquidHeading>
         <p ref="subRef" class="section-sub problem-sub">
           Businesses are losing bookings every night, every weekend, and most do
@@ -268,6 +268,10 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
+  .problem-heading-break {
+    display: none;
+  }
+
   .problem-item {
     padding: 16px 16px;
     gap: 12px;
