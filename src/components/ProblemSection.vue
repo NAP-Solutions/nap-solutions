@@ -105,7 +105,8 @@ onBeforeUnmount(() => {
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Problem</div>
         <LiquidHeading ref="headingRef">
-          Your phone stops working <br class="problem-heading-break" />when clients need it most.
+          Your phone stops <br class="problem-heading-break-mobile" />working
+          <br class="problem-heading-break" />when clients <br class="problem-heading-break-mobile" />need it most.
         </LiquidHeading>
         <p ref="subRef" class="section-sub problem-sub">
           Businesses are losing bookings every night, every weekend, and most do
@@ -173,6 +174,10 @@ onBeforeUnmount(() => {
 .problem-item:nth-child(3) { transition-delay: 0.16s; }
 .problem-item:nth-child(4) { transition-delay: 0.24s; }
 .stat-card:nth-child(2) { transition-delay: 0.1s; }
+
+.problem-heading-break-mobile {
+  display: none;
+}
 
 .problem-layout {
   display: grid;
@@ -268,8 +273,22 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
+  .reveal-header {
+    width: min(100%, 24rem);
+    margin-inline: auto;
+  }
+
+  .reveal-header :deep(.liquid-heading-stack),
+  .problem-sub {
+    margin-inline: 0;
+  }
+
   .problem-heading-break {
     display: none;
+  }
+
+  .problem-heading-break-mobile {
+    display: block;
   }
 
   .problem-item {
