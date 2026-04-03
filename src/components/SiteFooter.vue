@@ -4,6 +4,13 @@ import { useRouter } from 'vue-router'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
+const props = defineProps({
+  minimal: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 defineEmits(['open-booking'])
 
 const innerRef = ref(null)
@@ -12,31 +19,36 @@ const { scrollToSection } = useScrollToSection()
 useScrollReveal(() => [innerRef.value], { threshold: 0.05 })
 
 function scrollTo(id) {
-  scrollToSection(id)
+  const target = document.querySelector(`#${id}`)
+  if (target) {
+    scrollToSection(id)
+    return
+  }
+  router.push(`/ai-receptionist#${id}`)
 }
 </script>
 
 <template>
-  <footer class="footer">
+  <footer class="footer" :class="{ 'footer--minimal': props.minimal }">
     <div class="footer-inner" ref="innerRef">
-      <div class="footer-grid">
+      <div class="footer-grid" :class="{ 'footer-grid--minimal': props.minimal }">
         <div class="footer-brand">
           <div class="brand-row">
             <span class="footer-wordmark">NAP SOLUTIONS</span>
           </div>
-          <p>
+          <p v-if="!props.minimal">
             AI-powered receptionists that answer every call, book every
             appointment, and never clock out.
           </p>
         </div>
-        <div class="footer-col">
+        <div v-if="!props.minimal" class="footer-col">
           <h4>Product</h4>
           <ul>
             <li @click="scrollTo('pricing')">Pricing</li>
             <li @click="scrollTo('faq')">FAQ</li>
           </ul>
         </div>
-        <div class="footer-col">
+        <div v-if="!props.minimal" class="footer-col">
           <h4>Company</h4>
           <ul>
             <li @click="scrollTo('hero')">About NAP</li>
@@ -44,7 +56,7 @@ function scrollTo(id) {
             <li @click="scrollTo('contact')">Contact</li>
           </ul>
         </div>
-        <div class="footer-col">
+        <div v-if="!props.minimal" class="footer-col">
           <h4>Contact</h4>
           <ul>
             <li class="no-hover">
@@ -79,6 +91,13 @@ function scrollTo(id) {
           </svg>
           napsolutions
         </a>
+        <a
+          v-if="props.minimal"
+          href="mailto:info@getnapsolutions.com"
+          class="social-link social-link--email"
+        >
+          info@getnapsolutions.com
+        </a>
       </div>
 
       <div class="footer-bottom">
@@ -97,6 +116,9 @@ function scrollTo(id) {
   padding: clamp(3rem, 6vw, 4.2rem) 0 32px;
   color: rgba(255, 255, 255, 0.6);
 }
+.footer--minimal {
+  padding: clamp(1.4rem, 3vw, 2rem) 0 14px;
+}
 .footer-inner {
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -109,6 +131,18 @@ function scrollTo(id) {
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: clamp(1.5rem, 4vw, 3.2rem);
   margin-bottom: 48px;
+}
+.footer-grid--minimal {
+  grid-template-columns: 2fr 1fr;
+}
+.footer--minimal .footer-grid {
+  gap: clamp(1rem, 2.2vw, 1.8rem);
+  margin-bottom: 16px;
+  align-items: center;
+}
+.footer--minimal .footer-brand {
+  display: flex;
+  align-items: center;
 }
 .footer-brand .brand-row {
   display: flex;
@@ -179,6 +213,10 @@ function scrollTo(id) {
   gap: 28px;
   flex-wrap: wrap;
 }
+.footer--minimal .social-row {
+  padding-top: 12px;
+  margin-bottom: 12px;
+}
 .social-link {
   display: flex;
   align-items: center;
@@ -201,6 +239,9 @@ function scrollTo(id) {
   color: rgba(255, 255, 255, 0.2);
   flex-wrap: wrap;
   gap: 10px;
+}
+.footer--minimal .footer-bottom {
+  padding-top: 12px;
 }
 .footer-tagline-link {
   background: none;

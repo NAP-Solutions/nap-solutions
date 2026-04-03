@@ -1,10 +1,18 @@
 <script setup>
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { Check } from 'lucide-vue-next'
 import { gsap } from 'gsap'
 import HeroCanvas from './HeroCanvas.vue'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
 import { useScrollToSection } from '../composables/useScrollToSection'
+
+const props = defineProps({
+  minimal: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const emit = defineEmits(['open-booking'])
 
@@ -13,6 +21,7 @@ const headingRef = ref(null)
 const subRef = ref(null)
 const actionsRef = ref(null)
 const trustRef = ref(null)
+const router = useRouter()
 const { scrollToSection } = useScrollToSection()
 
 const HERO_TITLE_START = 'Never miss'
@@ -117,17 +126,20 @@ function onIntroDone() {
 }
 
 function playHeroAnimation() {
-  if (!headingRef.value || !subRef.value || !actionsRef.value || !trustRef.value) return
+  if (!headingRef.value || !subRef.value || !actionsRef.value) return
+  if (!props.minimal && !trustRef.value) return
 
   cleanupHeroAnimation()
 
   const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const revealTargets = [headingRef.value, subRef.value, actionsRef.value, trustRef.value].filter(Boolean)
+
   if (shouldReduceMotion) {
-    gsap.set([headingRef.value, subRef.value, actionsRef.value, trustRef.value], { clearProps: 'all' })
+    gsap.set(revealTargets, { clearProps: 'all' })
     return
   }
 
-  gsap.set([headingRef.value, actionsRef.value, trustRef.value], { autoAlpha: 0, y: 18 })
+  gsap.set([headingRef.value, actionsRef.value, trustRef.value].filter(Boolean), { autoAlpha: 0, y: 18 })
   gsap.set(subRef.value, { opacity: 1 })
 
   const splitControl = createSplitTextAnimation(subRef.value, {
@@ -168,17 +180,20 @@ function playHeroAnimation() {
       },
       '-=0.2'
     )
-    .to(
-      trustRef.value,
-      {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.45,
-        ease: 'power2.out',
-      },
-      '-=0.22'
-    )
-    .call(scheduleCycle)
+  if (!props.minimal && trustRef.value) {
+    heroTimeline
+      .to(
+        trustRef.value,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.45,
+          ease: 'power2.out',
+        },
+        '-=0.22'
+      )
+      .call(scheduleCycle)
+  }
 
   cleanupHeroSplit = splitControl.destroy
 }
@@ -199,7 +214,16 @@ onBeforeUnmount(() => {
 })
 
 function scrollToHow() {
-  scrollToSection('how')
+  const target = document.querySelector('#how')
+  if (target) {
+    scrollToSection('how')
+    return
+  }
+  router.push('/ai-receptionist#how')
+}
+
+function goToAIReceptionist() {
+  router.push('/ai-receptionist')
 }
 </script>
 
@@ -211,32 +235,61 @@ function scrollToHow() {
     <div v-if="revealed" class="hero-inner section-inner">
       <div class="hero-content">
         <h1 ref="headingRef" class="hero-title-stack">
-          <span
-            v-for="layer in titleLayers"
-            :key="layer.className"
-            :class="layer.className"
-            :aria-hidden="layer.ariaHidden ? 'true' : null"
-          >
-            <span class="h1-light">{{ HERO_TITLE_START }}</span>
-            <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> {{ HERO_TITLE_END }}</span>
-          </span>
+          <template v-if="props.minimal">
+            <span class="hero-title-simple">NAP Solutions</span>
+          </template>
+          <template v-else>
+            <span
+              v-for="layer in titleLayers"
+              :key="layer.className"
+              :class="layer.className"
+              :aria-hidden="layer.ariaHidden ? 'true' : null"
+            >
+              <span class="h1-light">{{ HERO_TITLE_START }}</span>
+              <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> {{ HERO_TITLE_END }}</span>
+            </span>
+          </template>
         </h1>
 
         <p ref="subRef" class="hero-sub">
-          Your AI receptionist answers every call, books appointments, and
-          handles your front desk - around the clock, at a <span class="hero-sub-fraction-break">fraction of the cost.</span>
+          <template v-if="props.minimal">
+            Providing AI integrations for your business.
+          </template>
+          <template v-else>
+            Your AI receptionist answers every call, books appointments, and
+            handles your front desk - around the clock, at a <span class="hero-sub-fraction-break">fraction of the cost.</span>
+          </template>
         </p>
 
         <div ref="actionsRef" class="hero-actions">
-          <button class="btn-primary btn-shine" @click="emit('open-booking')">
-            Book a Free Demo
-          </button>
-          <button class="btn-primary btn-shine" @click="scrollToHow">
-            See how it works &rarr;
-          </button>
+          <template v-if="props.minimal">
+            <button class="btn-primary btn-shine" @click="goToAIReceptionist">
+              AI Receptionist
+            </button>
+            <span
+              class="wip-button-wrap"
+              tabindex="0"
+              role="note"
+              aria-label="Outbound Agent is a work in progress and coming soon."
+            >
+              <button class="btn-primary btn-disabled btn-wip" type="button" disabled aria-disabled="true">
+                Outbound Agent
+              </button>
+              <span class="wip-hangtag" aria-hidden="true">Construction</span>
+              <span class="wip-tooltip" role="tooltip">Work in progress, coming soon.</span>
+            </span>
+          </template>
+          <template v-else>
+            <button class="btn-primary btn-shine" @click="emit('open-booking')">
+              Book a Free Demo
+            </button>
+            <button class="btn-primary btn-shine" @click="scrollToHow">
+              See how it works &rarr;
+            </button>
+          </template>
         </div>
 
-        <div ref="trustRef" class="hero-trust">
+        <div v-if="!props.minimal" ref="trustRef" class="hero-trust">
           <div v-for="item in trustItems" :key="item" class="trust-item">
             <span class="trust-check"><Check :size="9" /></span>
             {{ item }}
@@ -326,6 +379,11 @@ function scrollToHow() {
 .hero-title-layer--fill {
   position: relative;
   z-index: 2;
+}
+
+.hero-title-simple {
+  display: block;
+  color: var(--text-main);
 }
 
 .hero-title-layer--stroke-shine {
@@ -428,6 +486,129 @@ function scrollToHow() {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
+}
+
+.btn-disabled {
+  background: linear-gradient(160deg, rgba(176, 183, 196, 0.38) 0%, rgba(149, 157, 171, 0.34) 52%, rgba(235, 239, 246, 0.4) 100%) !important;
+  border-color: rgba(245, 248, 255, 0.62) !important;
+  color: rgba(72, 79, 91, 0.92) !important;
+  box-shadow:
+    0 8px 18px rgba(96, 106, 123, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(12px) saturate(118%);
+  -webkit-backdrop-filter: blur(12px) saturate(118%);
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+.btn-wip {
+  position: relative;
+}
+
+.btn-wip::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: -8%;
+  width: 116%;
+  height: 7px;
+  transform: rotate(-6deg);
+  transform-origin: center;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #ffea00 0 8px,
+    #111 8px 12px,
+    #ff9b00 12px 20px,
+    #111 20px 24px
+  );
+  opacity: 0.98;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(255, 165, 0, 0.32);
+  pointer-events: none;
+}
+
+.wip-button-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.wip-hangtag {
+  position: absolute;
+  top: calc(100% + 4.5px);
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: linear-gradient(180deg, #ffd84a 0%, #ffbf00 100%);
+  color: #111;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: rotate(3deg);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.wip-hangtag::before,
+.wip-hangtag::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  width: 1.5px;
+  height: 8px;
+  background: linear-gradient(180deg, rgba(70, 70, 70, 0.92) 0%, rgba(20, 20, 20, 0.7) 100%);
+}
+
+.wip-hangtag::before {
+  left: 9px;
+}
+
+.wip-hangtag::after {
+  right: 9px;
+}
+
+.wip-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(12, 16, 24, 0.94);
+  color: #f4f7ff;
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: nowrap;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 12;
+}
+
+.wip-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(12, 16, 24, 0.94);
+}
+
+.wip-button-wrap:hover .wip-tooltip,
+.wip-button-wrap:focus-visible .wip-tooltip,
+.wip-button-wrap:focus-within .wip-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 
@@ -584,3 +765,4 @@ function scrollToHow() {
   }
 }
 </style>
+
