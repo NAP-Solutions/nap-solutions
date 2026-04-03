@@ -24,7 +24,7 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
 </script>
 
 <template>
-  <section id="how" class="section bg-alt">
+  <section id="how" class="section bg-alt noise-bg noise-bg--fade-bottom">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">How It Works</div>

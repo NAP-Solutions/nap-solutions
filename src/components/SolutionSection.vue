@@ -16,7 +16,7 @@ useTilt(() => cardRefs.value)
 </script>
 
 <template>
-  <section id="solution" class="section bg-solution">
+  <section id="solution" class="section bg-solution noise-bg">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Solution</div>

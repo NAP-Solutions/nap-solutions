@@ -48,7 +48,7 @@ async function submitForm() {
 </script>
 
 <template>
-  <section id="contact" class="contact-section">
+  <section id="contact" class="contact-section noise-bg">
     <div class="contact-inner">
       <div class="contact-left" ref="leftRef">
         <div class="contact-eyebrow">Have a question?</div>
@@ -113,6 +113,8 @@ async function submitForm() {
 .contact-inner {
   width: min(var(--content-max), calc(100% - (var(--gutter) * 2)));
   margin-inline: auto;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;

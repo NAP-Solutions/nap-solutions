@@ -3,7 +3,7 @@ import LiquidHeading from './LiquidHeading.vue'
 </script>
 
 <template>
-  <section id="cost" class="section bg-alt">
+  <section id="cost" class="section bg-alt noise-bg">
     <div class="section-inner">
       <div class="cost-header">
         <div class="section-eyebrow">Revenue Impact</div>

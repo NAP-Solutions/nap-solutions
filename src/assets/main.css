@@ -26,6 +26,10 @@
   --surface-alt: #eef6ff;
   --surface-base: #f5f8fd;
   --heading-gradient: linear-gradient(to top, #000000 49%, #a9c7ff 100%);
+  --noise-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.26' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  --noise-size: 100px 100px;
+  --noise-opacity: 0.15;
+  --noise-transition-depth: clamp(3rem, 7vw, 5.5rem);
 }
 
 /* ===== Base Resets ===== */
@@ -83,6 +87,55 @@ section[id] {
 
 .section {
   padding-block: var(--section-space);
+}
+
+.noise-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.noise-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--noise-texture);
+  background-size: var(--noise-size);
+  opacity: var(--noise-opacity);
+  mix-blend-mode: multiply;
+}
+
+.noise-bg--fade-top::before {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent clamp(0.5rem, 1.4vw, 1rem),
+    #000 var(--noise-transition-depth),
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent clamp(0.5rem, 1.4vw, 1rem),
+    #000 var(--noise-transition-depth),
+    #000 100%
+  );
+}
+
+.noise-bg--fade-bottom::before {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 calc(100% - var(--noise-transition-depth)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 calc(100% - var(--noise-transition-depth)),
+    transparent 100%
+  );
 }
 
 .section-inner,
