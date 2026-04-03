@@ -199,6 +199,10 @@ function playHeroAnimation() {
 }
 
 onMounted(() => {
+  if (props.minimal) {
+    revealHero()
+    return
+  }
   safetyTimer = window.setTimeout(revealHero, SAFETY_REVEAL_MS)
 })
 
@@ -229,14 +233,23 @@ function goToAIReceptionist() {
 
 <template>
   <section id="hero" class="hero" :class="{ 'hero--intro': !revealed }">
-    <HeroCanvas @intro-done="onIntroDone" />
+    <HeroCanvas
+      :intro="!props.minimal"
+      :palette-variant="props.minimal ? 'home' : 'ai-receptionist'"
+      @intro-done="onIntroDone"
+    />
     <div class="hero-scrim"></div>
 
     <div v-if="revealed" class="hero-inner section-inner">
       <div class="hero-content">
         <h1 ref="headingRef" class="hero-title-stack">
           <template v-if="props.minimal">
-            <span class="hero-title-simple">NAP Solutions</span>
+            <span class="hero-title-simple-layer hero-title-simple-layer--stroke" aria-hidden="true">
+              NAP Solutions
+            </span>
+            <span class="hero-title-simple-layer hero-title-simple-layer--fill">
+              NAP Solutions
+            </span>
           </template>
           <template v-else>
             <span
@@ -381,9 +394,27 @@ function goToAIReceptionist() {
   z-index: 2;
 }
 
-.hero-title-simple {
+.hero-title-simple-layer {
   display: block;
-  color: var(--text-main);
+}
+
+.hero-title-simple-layer--stroke {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: var(--hero-stroke-width) var(--hero-stroke-color);
+  paint-order: stroke fill;
+}
+
+.hero-title-simple-layer--fill {
+  position: relative;
+  z-index: 2;
+  -webkit-text-fill-color: var(--hero-fill-color);
+  color: var(--hero-fill-color);
 }
 
 .hero-title-layer--stroke-shine {
