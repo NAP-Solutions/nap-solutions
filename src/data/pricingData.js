@@ -28,7 +28,6 @@ export const pricingPlans = [
     minutes: '2,000 min / mo',
     price: '$1,199',
     badge: 'START HERE',
-    ctaLabel: 'Start Here',
     subBadge: null,
     featured: false,
     features: allFeatures.map((f, i) => ({ label: f, included: i < 7 })),
