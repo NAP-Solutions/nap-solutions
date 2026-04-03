@@ -157,7 +157,14 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
 
 <style scoped>
 .bg-alt {
-  background: var(--surface-base);
+  --solution-how-blend: clamp(3rem, 7vw, 5.5rem);
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0,
+    #ffffff clamp(0.75rem, 1.6vw, 1.25rem),
+    var(--surface-base) var(--solution-how-blend),
+    var(--surface-base) 100%
+  );
 }
 
 /* Layout */
