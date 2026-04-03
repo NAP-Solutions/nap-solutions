@@ -39,7 +39,16 @@ useScrollReveal(() => [innerRef.value])
 
 <style scoped>
 .cta-section {
-  background: linear-gradient(135deg, var(--surface-tint) 0%, var(--surface-alt) 100%);
+  --faq-cta-blend: clamp(3rem, 7vw, 5.5rem);
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff 0,
+      #ffffff clamp(0.75rem, 1.6vw, 1.25rem),
+      var(--surface-tint) var(--faq-cta-blend),
+      var(--surface-tint) 100%
+    ),
+    linear-gradient(135deg, var(--surface-tint) 0%, var(--surface-alt) 100%);
   text-align: center;
   position: relative;
   overflow: hidden;
