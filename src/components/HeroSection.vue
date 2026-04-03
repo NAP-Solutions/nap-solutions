@@ -207,6 +207,7 @@ function scrollToHow() {
   <section id="hero" class="hero" :class="{ 'hero--intro': !revealed }">
     <HeroCanvas @intro-done="onIntroDone" />
     <div class="hero-scrim"></div>
+    <div class="hero-edge-fade hero-edge-fade--bottom" aria-hidden="true"></div>
 
     <div v-if="revealed" class="hero-inner section-inner">
       <div class="hero-content">
@@ -277,6 +278,25 @@ function scrollToHow() {
   z-index: 1;
   background: rgba(255, 255, 255, 0.42);
   pointer-events: none;
+}
+
+.hero-edge-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: clamp(56px, 9vw, 132px);
+  pointer-events: none;
+}
+
+.hero-edge-fade--bottom {
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 248, 255, 0) 0%,
+    rgba(248, 251, 255, 0.74) 60%,
+    #fff 100%
+  );
 }
 
 .hero-inner {

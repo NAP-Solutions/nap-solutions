@@ -16,7 +16,7 @@ useTilt(() => cardRefs.value)
 </script>
 
 <template>
-  <section id="solution" class="section bg-white">
+  <section id="solution" class="section bg-solution noise-bg">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Solution</div>
@@ -49,6 +49,17 @@ useTilt(() => cardRefs.value)
 </template>
 
 <style scoped>
+.bg-solution {
+  --cost-solution-blend: clamp(3rem, 7vw, 5.5rem);
+  background: linear-gradient(
+    to bottom,
+    var(--surface-base) 0,
+    var(--surface-base) clamp(0.75rem, 1.6vw, 1.25rem),
+    #ffffff var(--cost-solution-blend),
+    #ffffff 100%
+  );
+}
+
 .feature-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

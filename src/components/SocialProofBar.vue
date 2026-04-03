@@ -54,8 +54,6 @@ useScrollReveal(() => [barRef.value])
 <style scoped>
 .sp-bar {
   background: #ffffff;
-  border-top: 1px solid rgba(10, 15, 30, 0.08);
-  border-bottom: 1px solid rgba(10, 15, 30, 0.08);
   padding-block: 28px;
   opacity: 0;
   transform: translateY(14px);
@@ -113,7 +111,6 @@ useScrollReveal(() => [barRef.value])
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border-top: 1px solid rgba(10, 15, 30, 0.06);
   padding-top: 18px;
   margin-top: 20px;
   font-size: 13px;

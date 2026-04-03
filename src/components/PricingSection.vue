@@ -214,9 +214,11 @@ onBeforeUnmount(() => {
 
       <div class="referral-callout" ref="referralRef">
         <span class="referral-pill">Referral Bonus</span>
-        <h3 class="referral-title">Refer a friend. Get a $200 cheque.</h3>
+        <h3 class="referral-title">Refer a friend. Get up to $200.</h3>
         <p class="referral-copy">
-          If someone you refer becomes a NAP client, we send you a $200 cheque as a thank-you.
+          If someone you refer becomes a NAP client,
+          <br> 
+          we send you up to $200 as a thank-you.
         </p>
         <p class="referral-note">Offer applies after your referral signs and completes onboarding.</p>
         <button class="btn-primary btn-shine referral-cta" @click="$emit('open-booking')">

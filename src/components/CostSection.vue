@@ -3,7 +3,7 @@ import LiquidHeading from './LiquidHeading.vue'
 </script>
 
 <template>
-  <section id="cost" class="section bg-alt">
+  <section id="cost" class="section bg-alt noise-bg">
     <div class="section-inner">
       <div class="cost-header">
         <div class="section-eyebrow">Revenue Impact</div>
@@ -47,7 +47,14 @@ import LiquidHeading from './LiquidHeading.vue'
 
 <style scoped>
 .bg-alt {
-  background: var(--surface-base);
+  --problem-cost-blend: clamp(3rem, 7vw, 5.5rem);
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0,
+    #ffffff clamp(0.75rem, 1.6vw, 1.25rem),
+    var(--surface-base) var(--problem-cost-blend),
+    var(--surface-base) 100%
+  );
 }
 
 .cost-header {

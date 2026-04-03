@@ -20,7 +20,7 @@ function toggle(i) {
 </script>
 
 <template>
-  <section id="faq" class="faq-section">
+  <section id="faq" class="faq-section noise-bg noise-bg--fade-top">
     <div class="faq-inner">
 
       <div class="faq-header" ref="headerRef">
@@ -90,6 +90,8 @@ function toggle(i) {
 .faq-inner {
   width: min(760px, calc(100% - (var(--gutter) * 2)));
   margin-inline: auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* Header */

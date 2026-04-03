@@ -11,7 +11,7 @@ useScrollReveal(() => [innerRef.value])
 </script>
 
 <template>
-  <section id="cta" class="section cta-section">
+  <section id="cta" class="section cta-section noise-bg">
     <div class="cta-bg"></div>
     <div class="cta-inner" ref="innerRef">
       <div class="section-eyebrow center">Get Started</div>
@@ -39,7 +39,16 @@ useScrollReveal(() => [innerRef.value])
 
 <style scoped>
 .cta-section {
-  background: linear-gradient(135deg, var(--surface-tint) 0%, var(--surface-alt) 100%);
+  --faq-cta-blend: clamp(3rem, 7vw, 5.5rem);
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff 0,
+      #ffffff clamp(0.75rem, 1.6vw, 1.25rem),
+      var(--surface-tint) var(--faq-cta-blend),
+      var(--surface-tint) 100%
+    ),
+    linear-gradient(135deg, var(--surface-tint) 0%, var(--surface-alt) 100%);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -47,6 +56,7 @@ useScrollReveal(() => [innerRef.value])
 .cta-bg {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(var(--brand-rgb), 0.06) 0%, transparent 65%);
   pointer-events: none;
 }
@@ -119,6 +129,8 @@ useScrollReveal(() => [innerRef.value])
 }
 
 .cta-inner {
+  position: relative;
+  z-index: 2;
   opacity: 0;
   transition: opacity 0.7s ease;
 }
