@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import logoImg from '../assets/NAP-BLACK-BOX-LOGO-WHITE.png'
+import logoImg from '../assets/logo.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
 defineEmits(['open-booking'])
