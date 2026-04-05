@@ -201,6 +201,12 @@ onBeforeUnmount(() => {
 function scrollToHow() {
   scrollToSection('how')
 }
+
+function trackLead() {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('track', 'Lead')
+  }
+}
 </script>
 
 <template>
@@ -229,7 +235,7 @@ function scrollToHow() {
         </p>
 
         <div ref="actionsRef" class="hero-actions">
-          <button class="btn-primary btn-shine" @click="emit('open-booking')">
+          <button class="btn-primary btn-shine" @click="trackLead(); emit('open-booking')">
             Book a Free Demo
           </button>
           <button class="btn-primary btn-shine" @click="scrollToHow">

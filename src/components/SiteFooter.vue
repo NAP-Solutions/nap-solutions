@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
-defineEmits(['open-booking'])
+const emit = defineEmits(['open-booking'])
 
 const innerRef = ref(null)
 const router = useRouter()
@@ -13,6 +13,12 @@ useScrollReveal(() => [innerRef.value], { threshold: 0.05 })
 
 function scrollTo(id) {
   scrollToSection(id)
+}
+
+function trackLead() {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('track', 'Lead')
+  }
 }
 </script>
 
@@ -40,7 +46,7 @@ function scrollTo(id) {
           <h4>Company</h4>
           <ul>
             <li @click="scrollTo('hero')">About NAP</li>
-            <li @click="$emit('open-booking')">Book a Demo</li>
+            <li @click="trackLead(); emit('open-booking')">Book a Demo</li>
             <li @click="scrollTo('contact')">Contact</li>
           </ul>
         </div>

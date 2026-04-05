@@ -106,6 +106,12 @@ onBeforeUnmount(() => {
     deferredMountTimeout = 0
   }
 })
+
+function trackLead() {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('track', 'Lead')
+  }
+}
 </script>
 
 <template>
@@ -198,7 +204,7 @@ onBeforeUnmount(() => {
             <button
               :class="plan.featured ? 'btn-primary' : ['btn-ghost', 'btn-shine']"
               class="pricing-cta"
-              @click="$emit('open-booking')"
+              @click="trackLead(); $emit('open-booking')"
             >
               {{ plan.ctaLabel || 'Book a Demo' }}
             </button>

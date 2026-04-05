@@ -30,6 +30,12 @@ function goTo(hash, e) {
   closeMobileMenu()
 }
 
+function trackLead() {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('track', 'Lead')
+  }
+}
+
 onMounted(() => {
   document.addEventListener('keydown', onKeydown)
   window.addEventListener('resize',   onResize)
@@ -60,7 +66,11 @@ onUnmounted(() => {
         <li><a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a></li>
         <li><a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a></li>
         <li>
-          <a href="#" class="nav-cta btn-shine" @click.prevent="$emit('open-booking')">
+          <a
+            href="#"
+            class="nav-cta btn-shine"
+            @click.prevent="trackLead(); $emit('open-booking')"
+          >
             Book a Demo
           </a>
         </li>
@@ -89,7 +99,7 @@ onUnmounted(() => {
       <button
         class="nav-mobile-cta btn-shine"
         type="button"
-        @click="$emit('open-booking'); closeMobileMenu()"
+        @click="trackLead(); $emit('open-booking'); closeMobileMenu()"
       >
         Book a Demo
       </button>

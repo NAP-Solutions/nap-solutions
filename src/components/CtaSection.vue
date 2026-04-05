@@ -4,10 +4,16 @@ import { Check } from 'lucide-vue-next'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
 
-defineEmits(['open-booking'])
+const emit = defineEmits(['open-booking'])
 
 const innerRef = ref(null)
 useScrollReveal(() => [innerRef.value])
+
+function trackLead() {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('track', 'Lead')
+  }
+}
 </script>
 
 <template>
@@ -20,7 +26,7 @@ useScrollReveal(() => [innerRef.value])
         Pick a time that works for you and let us show you exactly how NAP
         Solutions works for your business.
       </p>
-      <button class="btn-primary btn-shine cta-btn" @click="$emit('open-booking')">
+      <button class="btn-primary btn-shine cta-btn" @click="trackLead(); emit('open-booking')">
         Book a Demo
       </button>
       <div class="cta-trust">
