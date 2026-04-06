@@ -7,8 +7,6 @@ const allFeatures = [
   'Appointment management',
   'OTP verification',
   'Call summaries',
-  'Multiple locations',
-  'Dedicated support',
 ]
 
 export const pricingPlans = [
@@ -30,7 +28,7 @@ export const pricingPlans = [
     badge: 'START HERE',
     subBadge: null,
     featured: false,
-    features: allFeatures.map((f, i) => ({ label: f, included: i < 7 })),
+    features: allFeatures.map((f, i) => ({ label: f, included: i < 8 })),
   },
   {
     tier: 'SCALE',
@@ -43,11 +41,11 @@ export const pricingPlans = [
     subBadge: null,
     featured: true,
     promoNote: 'First month only. Renews at $2,099/mo + tax.',
-    features: allFeatures.map((f, i) => ({ label: f, included: i < 7 })),
+    features: allFeatures.map((f, i) => ({ label: f, included: i < 8 })),
   },
   {
     tier: 'ENTERPRISE',
-    description: 'For multi-location businesses with custom needs',
+    description: 'For larger businesses with custom needs',
     minutes: '8,000 min / mo',
     price: '$3,999',
     badge: null,

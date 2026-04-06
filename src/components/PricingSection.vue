@@ -692,9 +692,9 @@ function trackLead() {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent-ink);
-  background: #fff;
-  border: 1px solid rgba(var(--accent-ink-rgb), 0.22);
+  color: #fff;
+  background: var(--accent-ink);
+  border: 1px solid var(--accent-ink);
   border-radius: 100px;
   padding: 5px 12px;
   margin-bottom: 14px;
