@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { ArrowBigLeft, ArrowBigRight, House } from 'lucide-vue-next'
 import logoImg from '../assets/logo.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
@@ -85,6 +86,52 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <div
+    v-if="!props.minimal && props.service === 'outbound-agent'"
+    class="page-service-controls page-service-controls--left"
+    :class="{ scrolled }"
+  >
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to AI Receptionist"
+      @click="goToAIReceptionist"
+    >
+      <ArrowBigLeft :size="18" :stroke-width="2.4" />
+    </button>
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to Home"
+      @click="goHome"
+    >
+      <House :size="17" :stroke-width="2.4" />
+    </button>
+  </div>
+
+  <div
+    v-if="!props.minimal && props.service === 'ai-receptionist'"
+    class="page-service-controls page-service-controls--right"
+    :class="{ scrolled }"
+  >
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to Outbound Agent"
+      @click="goToOutboundAgent"
+    >
+      <ArrowBigRight :size="18" :stroke-width="2.4" />
+    </button>
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to Home"
+      @click="goHome"
+    >
+      <House :size="17" :stroke-width="2.4" />
+    </button>
+  </div>
+
   <nav class="nav" :class="{ scrolled, 'mobile-open': mobileOpen }">
     <div class="nav-inner">
       <a class="nav-logo" href="#hero" @click.prevent="goTo('#hero', $event)">
@@ -106,7 +153,6 @@ onUnmounted(() => {
           </li>
         </template>
         <template v-else>
-          <li><a href="/" @click.prevent="goHome">Home Page</a></li>
           <li><a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a></li>
           <li><a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a></li>
           <li><a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a></li>
@@ -144,7 +190,6 @@ onUnmounted(() => {
         </button>
       </template>
       <template v-else>
-        <a href="/" @click.prevent="goHome">Home Page</a>
         <a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a>
         <a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a>
         <a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a>
@@ -326,6 +371,122 @@ onUnmounted(() => {
   border: 0;
   cursor: pointer;
 }
+
+.page-service-controls {
+  position: fixed;
+  --nav-pill-top: 14px;
+  --nav-pill-height: 62px;
+  --control-size: 42px;
+  --controls-gap: 8px;
+  --controls-pad: 10px;
+  --corner-offset: 14px;
+  --controls-height: calc(var(--control-size) + (var(--controls-pad) * 2));
+  top: calc(var(--nav-pill-top) + ((var(--nav-pill-height) - var(--controls-height)) / 2));
+  min-height: var(--controls-height);
+  display: flex;
+  align-items: center;
+  gap: var(--controls-gap);
+  padding: var(--controls-pad);
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  box-shadow: none;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  isolation: isolate;
+  z-index: 110;
+}
+
+.page-service-controls::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.16) 42%, rgba(255, 255, 255, 0.46) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.page-service-controls::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(140% 120% at 16% -18%, rgba(var(--brand-rgb), 0.28) 0%, rgba(255, 255, 255, 0) 52%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.page-service-controls.scrolled {
+  background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.26) 0%, rgba(var(--brand-rgb), 0.2) 48%, rgba(255, 255, 255, 0.62) 100%);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.84);
+  box-shadow:
+    0 10px 28px rgba(var(--brand-rgb), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    inset 0 -8px 16px rgba(255, 255, 255, 0.16);
+}
+
+.page-service-controls.scrolled::before {
+  opacity: 0.82;
+}
+
+.page-service-controls.scrolled::after {
+  opacity: 0.62;
+}
+
+.page-service-controls--left {
+  left: var(--corner-offset);
+}
+
+.page-service-controls--right {
+  right: var(--corner-offset);
+}
+
+.page-service-btn {
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.44) 0%, rgba(var(--brand-rgb), 0.34) 48%, rgba(255, 255, 255, 0.4) 100%);
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow:
+    0 8px 20px rgba(var(--brand-rgb), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+}
+
+.page-service-btn:hover {
+  opacity: 0.96;
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 10px 24px rgba(var(--brand-rgb), 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.24);
+}
+
+.page-service-btn:active {
+  transform: translateY(0);
+}
+
+.page-service-btn :deep(svg) {
+  display: block;
+}
+
 .nav-cta-disabled {
   background: linear-gradient(160deg, rgba(176, 183, 196, 0.36) 0%, rgba(149, 157, 171, 0.32) 52%, rgba(236, 240, 246, 0.38) 100%) !important;
   border-color: rgba(245, 248, 255, 0.62) !important;
@@ -495,6 +656,14 @@ onUnmounted(() => {
     font-size: 13px !important;
     padding: 9px 14px;
   }
+  .page-service-controls {
+    --nav-pill-height: 58px;
+    --control-size: 38px;
+    --controls-pad: 10px;
+  }
+  .page-service-btn {
+    border-radius: 11px;
+  }
 }
 
 @media (max-width: 960px) {
@@ -521,6 +690,15 @@ onUnmounted(() => {
     min-height: 60px;
     padding: 0 10px 0 14px;
     justify-content: space-between;
+  }
+  .page-service-controls {
+    --nav-pill-top: 12px;
+    --nav-pill-height: 60px;
+    --controls-pad: 9px;
+  }
+  .page-service-controls--left {
+    left: auto;
+    right: var(--corner-offset);
   }
   .nav-links { display: none; }
   .nav-wordmark { font-size: 13px; letter-spacing: 0.14em; }
@@ -590,6 +768,11 @@ onUnmounted(() => {
 }
 
 @media (max-width: 640px) {
+  .page-service-controls {
+    --nav-pill-height: 56px;
+    --control-size: 40px;
+    --controls-pad: 8px;
+  }
   .nav-wordmark { font-size: 12px; letter-spacing: 0.1em; }
   .nav-logo { gap: 8px; }
   .nav-logo-img { width: 32px; height: 32px; }
