@@ -31,7 +31,7 @@
   white-space: nowrap;
 }
 .marquee-sep {
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 
 @media (max-width: 640px) {

@@ -195,7 +195,7 @@ function trackLead() {
   transition: color 0.2s;
 }
 .faq-q:hover {
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 
 /* Chevron */
@@ -208,7 +208,7 @@ function trackLead() {
 }
 .faq-item.open .faq-chevron {
   transform: rotate(180deg);
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 
 /* Answer */

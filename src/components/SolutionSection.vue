@@ -140,12 +140,12 @@ useTilt(() => cardRefs.value)
 .fc-icon--purple {
   background: rgba(var(--accent-ink-rgb), 0.1);
   border: 1px solid rgba(var(--accent-ink-rgb), 0.24);
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .fc-icon--cyan {
   background: rgba(var(--accent-ink-rgb), 0.16);
   border: 1px solid rgba(var(--accent-ink-rgb), 0.32);
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .reveal-header {
   opacity: 0;

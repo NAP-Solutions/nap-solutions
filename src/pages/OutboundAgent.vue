@@ -65,6 +65,7 @@ onBeforeUnmount(() => {
   --accent: #b48bff;
   --accent-strong: #a273ff;
   --accent-ink: #6f42c1;
+  --accent-ink-text: #8358d6;
   --accent-ink-rgb: 111, 66, 193;
   --accent-rgb: 180, 139, 255;
 

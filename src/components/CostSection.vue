@@ -133,12 +133,12 @@ const costCopy = props.service === 'outbound-agent'
 .cost-big {
   font-size: clamp(1.9rem, 1.6rem + 0.8vw, 2.4rem);
   font-weight: 800;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   margin-bottom: 10px;
   line-height: 1;
 }
 .cost-big-highlight {
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .cost-lbl {
   font-size: 15px;
@@ -161,7 +161,7 @@ const costCopy = props.service === 'outbound-agent'
   max-width: 62ch;
 }
 .cost-note strong {
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   font-weight: 700;
 }
 

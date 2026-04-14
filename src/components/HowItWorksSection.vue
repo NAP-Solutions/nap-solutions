@@ -316,17 +316,17 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
 .si-purple {
   background: rgba(var(--accent-ink-rgb), 0.1);
   border: 1px solid rgba(var(--accent-ink-rgb), 0.24);
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .si-cyan {
   background: rgba(var(--accent-ink-rgb), 0.16);
   border: 1px solid rgba(var(--accent-ink-rgb), 0.32);
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .step-num {
   font-size: 11px;
   font-weight: 700;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   letter-spacing: 0.1em;
 }
 .step-content {
@@ -442,7 +442,7 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   white-space: nowrap;
 }
 .ch-live-dot {
@@ -520,13 +520,13 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .confirm-icon :deep(svg) { display: block; }
 .confirm-label {
   font-size: 12px;
   font-weight: 700;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   letter-spacing: 0.08em;
 }
 .confirm-detail {

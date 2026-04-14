@@ -443,7 +443,7 @@ function handlePlanCta(plan) {
   padding: 5px 16px;
   border-radius: 100px;
   background: #fff;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   border: 1.5px solid rgba(var(--accent-ink-rgb), 0.38);
 }
 .plan-badge.badge-popular {
@@ -533,11 +533,11 @@ function handlePlanCta(plan) {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   margin-bottom: 4px;
 }
 .pricing-card.featured .pricing-tier {
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .pricing-desc {
   font-size: 13px;
@@ -615,7 +615,7 @@ function handlePlanCta(plan) {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   background: rgba(var(--accent-ink-rgb), 0.15);
   border-radius: 100px;
   padding: 3px 10px;
@@ -659,7 +659,7 @@ function handlePlanCta(plan) {
   justify-content: center;
   flex-shrink: 0;
   background: rgba(var(--accent-ink-rgb), 0.15);
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
 }
 .feat-row.feat-excluded .feat-icon {
   background: rgba(10, 15, 30, 0.06);

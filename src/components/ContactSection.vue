@@ -125,7 +125,7 @@ async function submitForm() {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   margin-bottom: 10px;
 }
 .contact-heading {
