@@ -8,6 +8,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  paletteVariant: {
+    type: String,
+    default: 'ai-receptionist',
+  },
   staticOnMobile: {
     type: Boolean,
     default: true,
@@ -75,6 +79,8 @@ const fragmentShader = /* glsl */`
 
   // ── Fluid palette + physics ──────────────────────────────────────────────
   uniform vec3  uColor1, uColor2, uColor3, uColor4;
+  uniform vec3  uAccentColorA, uAccentColorB, uAccentColorC, uAccentColorD;
+  uniform float uAccentStrength;
   uniform vec3  uLightPos;
   uniform float uDepth, uSpeed, uNoiseScale, uWarpAmount;
   uniform float uFoldFrequency, uAngle, uConnections, uShadowWidth;
@@ -142,6 +148,22 @@ const fragmentShader = /* glsl */`
     vec3 col=mix(uColor1,uColor2,smoothstep(0.,          uShadowWidth+.15,t));
     col     =mix(col,    uColor3,smoothstep(uShadowWidth+.05,.65,         t));
     col     =mix(col,    uColor4,smoothstep(.55,1.05,t));
+
+    // Add occasional service accents without replacing the base look.
+    float warmSeed = snoise(vec3(p * 0.85 + vec2(2.3, -1.7), uTime * uSpeed * 0.42));
+    float warmBand = t + warmSeed * 0.22;
+    float warmMask = smoothstep(0.66, 0.94, warmBand) * uAccentStrength;
+    float familySeed = snoise(vec3(p * 1.22 + vec2(-3.6, 2.9), uTime * uSpeed * 0.33));
+    float familyMix = clamp((familySeed * 0.5 + 0.5) - 0.22, 0.0, 1.0); // teal-led family blend
+    float toneSeed = snoise(vec3(p * 1.57 + vec2(4.9, -3.4), uTime * uSpeed * 0.27));
+    float toneMix = clamp(toneSeed * 0.5 + 0.5, 0.0, 1.0);
+    vec3 familyA = mix(uAccentColorA, uAccentColorB, toneMix);
+    vec3 familyB = mix(uAccentColorC, uAccentColorD, toneMix);
+    vec3 warmColor = mix(familyA, familyB, familyMix);
+    col = mix(col, warmColor, clamp(warmMask, 0.0, 1.0));
+    float accentBoostMask = smoothstep(0.72, 0.96, t + toneSeed * 0.18) * (uAccentStrength * 0.20);
+    col = mix(col, familyA, clamp(accentBoostMask, 0.0, 1.0));
+
     return col;
   }
 
@@ -185,12 +207,9 @@ const fragmentShader = /* glsl */`
         }
       }
 
-      vec3 purple=vec3(0.659,0.773,0.992); // --brand
-      vec3 cyan  =vec3(0.600,0.894,1.000); // --accent
-      vec3 indigo=vec3(0.525,0.671,0.973); // --brand-strong
-      vec3 ringGlow = clamp(rings.r,0.,1.)*purple
-                    + clamp(rings.g,0.,1.)*cyan
-                    + clamp(rings.b,0.,1.)*indigo;
+      vec3 ringGlow = clamp(rings.r,0.,1.)*uColor2
+                    + clamp(rings.g,0.,1.)*uColor3
+                    + clamp(rings.b,0.,1.)*uColor4;
       ringGlow = clamp(ringGlow, 0., 1.);
 
       // ── Circle mask ────────────────────────────────────────────────────
@@ -217,10 +236,41 @@ const fragmentShader = /* glsl */`
 // ─────────────────────────────────────────────────────────────────────────────
 // NAP fluid palette
 // ─────────────────────────────────────────────────────────────────────────────
-const FLUID = {
-  color1:'#eaf2ff', color2:'#a8c5fd', color3:'#99e4ff', color4:'#ffffff',
-  depth:0.04, lightX:0.97, lightY:-0.36, speed:0.09, angle:1.5708,
-  foldFrequency:1.7, warpAmount:3.8, noiseScale:0.72, connections:0.87, shadowWidth:0.01,
+const SERVICE_COLOR_PAIRS = {
+  aiReceptionist: ['#a8c5fd', '#99e4ff'],
+  homeTeal: ['#00d4c0', '#7feee3'],
+  homeGreen: ['#7B2FFF', '#7B2FFF'],
+}
+
+const FLUID_BASE = {
+  depth: 0.04,
+  lightX: 0.97,
+  lightY: -0.36,
+  speed: 0.09,
+  angle: 1.5708,
+  foldFrequency: 1.7,
+  warpAmount: 3.8,
+  noiseScale: 0.72,
+  connections: 0.87,
+  shadowWidth: 0.01,
+}
+
+const FLUID_VARIANTS = {
+  'ai-receptionist': {
+    colors: ['#eaf2ff', '#a8c5fd', '#99e4ff', '#ffffff'],
+    accentColors: ['#a8c5fd', '#c9dcff', '#99e4ff', '#c3f8f2'],
+    accentStrength: 0.0,
+  },
+  home: {
+    colors: ['#ecfffb', '#00d4c0', '#99EDE5', '#ffffff'],
+    accentColors: [
+      SERVICE_COLOR_PAIRS.homeTeal[0],
+      SERVICE_COLOR_PAIRS.homeTeal[1],
+      SERVICE_COLOR_PAIRS.homeGreen[0],
+      SERVICE_COLOR_PAIRS.homeGreen[1],
+    ],
+    accentStrength: 0.26,
+  },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -241,6 +291,9 @@ function ease(x){ return x*x*(3-2*x) }   // Hermite smoothstep
 onMounted(() => {
   const el = canvasRef.value
   if (!el) return
+  const fluidVariant = FLUID_VARIANTS[props.paletteVariant] ?? FLUID_VARIANTS['ai-receptionist']
+  const [fluidColor1, fluidColor2, fluidColor3, fluidColor4] = fluidVariant.colors
+  const [accentColorA, accentColorB, accentColorC, accentColorD] = fluidVariant.accentColors
   const targetEl = el.parentElement || el
   const mobileMq = window.matchMedia(`(max-width: ${props.mobileBreakpoint}px)`)
   const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -277,19 +330,24 @@ onMounted(() => {
     uRingTime: { value: 0 },
     uMaskR: { value: 0 },
     uBlend: { value: 1 },
-    uColor1: { value: new THREE.Color(FLUID.color1) },
-    uColor2: { value: new THREE.Color(FLUID.color2) },
-    uColor3: { value: new THREE.Color(FLUID.color3) },
-    uColor4: { value: new THREE.Color(FLUID.color4) },
-    uDepth: { value: FLUID.depth },
-    uLightPos: { value: new THREE.Vector3(FLUID.lightX, FLUID.lightY, 1) },
-    uSpeed: { value: FLUID.speed },
-    uNoiseScale: { value: FLUID.noiseScale },
-    uWarpAmount: { value: FLUID.warpAmount },
-    uFoldFrequency: { value: FLUID.foldFrequency },
-    uAngle: { value: FLUID.angle },
-    uConnections: { value: FLUID.connections },
-    uShadowWidth: { value: FLUID.shadowWidth },
+    uColor1: { value: new THREE.Color(fluidColor1) },
+    uColor2: { value: new THREE.Color(fluidColor2) },
+    uColor3: { value: new THREE.Color(fluidColor3) },
+    uColor4: { value: new THREE.Color(fluidColor4) },
+    uAccentColorA: { value: new THREE.Color(accentColorA) },
+    uAccentColorB: { value: new THREE.Color(accentColorB) },
+    uAccentColorC: { value: new THREE.Color(accentColorC) },
+    uAccentColorD: { value: new THREE.Color(accentColorD) },
+    uAccentStrength: { value: fluidVariant.accentStrength },
+    uDepth: { value: FLUID_BASE.depth },
+    uLightPos: { value: new THREE.Vector3(FLUID_BASE.lightX, FLUID_BASE.lightY, 1) },
+    uSpeed: { value: FLUID_BASE.speed },
+    uNoiseScale: { value: FLUID_BASE.noiseScale },
+    uWarpAmount: { value: FLUID_BASE.warpAmount },
+    uFoldFrequency: { value: FLUID_BASE.foldFrequency },
+    uAngle: { value: FLUID_BASE.angle },
+    uConnections: { value: FLUID_BASE.connections },
+    uShadowWidth: { value: FLUID_BASE.shadowWidth },
     uPixelSize: { value: PIXEL_SIZE * getDpr() },
   }
 

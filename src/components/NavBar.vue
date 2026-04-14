@@ -1,13 +1,22 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import logoImg from '../assets/logo.png'
+import { useRouter } from 'vue-router'
+import logoImg from '../assets/NAP-BLACK-BOX-LOGO-WHITE.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
+
+const props = defineProps({
+  minimal: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 defineEmits(['open-booking'])
 
 const mobileOpen = ref(false)
 const scrolled   = ref(false)
 let scrollRaf = 0
+const router = useRouter()
 const { scrollToSection } = useScrollToSection()
 
 function toggleMobileMenu() { mobileOpen.value = !mobileOpen.value }
@@ -26,7 +35,18 @@ function onScroll() {
   })
 }
 function goTo(hash, e) {
-  scrollToSection(hash, e)
+  const target = document.querySelector(hash)
+  if (target) {
+    scrollToSection(hash, e)
+  } else {
+    if (e) e.preventDefault()
+    const normalizedHash = hash.startsWith('#') ? hash : `#${hash}`
+    router.push(`/ai-receptionist${normalizedHash}`)
+  }
+  closeMobileMenu()
+}
+function goToAIReceptionist() {
+  router.push('/ai-receptionist')
   closeMobileMenu()
 }
 
@@ -60,20 +80,38 @@ onUnmounted(() => {
       </a>
 
       <ul class="nav-links">
-        <li><a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a></li>
-        <li><a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a></li>
-        <li><a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a></li>
-        <li><a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a></li>
-        <li><a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a></li>
-        <li>
-          <a
-            href="#"
-            class="nav-cta btn-shine"
-            @click.prevent="trackLead(); $emit('open-booking')"
-          >
-            Book a Demo
-          </a>
-        </li>
+        <template v-if="props.minimal">
+          <li>
+            <button class="nav-cta btn-shine nav-link-btn" type="button" @click="goToAIReceptionist">
+              AI Receptionist
+            </button>
+          </li>
+          <li>
+            <span
+              class="nav-wip-wrap"
+              tabindex="0"
+              role="note"
+              aria-label="Outbound Agent is a work in progress and coming soon."
+            >
+              <button class="nav-cta nav-cta-disabled nav-link-btn" type="button" disabled aria-disabled="true">
+                Outbound Agent
+              </button>
+              <span class="nav-wip-tooltip" role="tooltip">Work in progress, coming soon.</span>
+            </span>
+          </li>
+        </template>
+        <template v-else>
+          <li><a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a></li>
+          <li><a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a></li>
+          <li><a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a></li>
+          <li><a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a></li>
+          <li><a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a></li>
+          <li>
+            <a href="#" class="nav-cta btn-shine" @click.prevent="trackLead(); $emit('open-booking')">
+              Book a Demo
+            </a>
+          </li>
+        </template>
       </ul>
 
       <button
@@ -91,18 +129,36 @@ onUnmounted(() => {
     </div>
 
     <div id="mobile-nav" class="mobile-menu" :class="{ open: mobileOpen }">
-      <a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a>
-      <a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a>
-      <a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a>
-      <a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a>
-      <a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a>
-      <button
-        class="nav-mobile-cta btn-shine"
-        type="button"
-        @click="trackLead(); $emit('open-booking'); closeMobileMenu()"
-      >
-        Book a Demo
-      </button>
+      <template v-if="props.minimal">
+        <button class="nav-mobile-cta btn-shine" type="button" @click="goToAIReceptionist">
+          AI Receptionist
+        </button>
+        <span
+          class="nav-wip-wrap nav-wip-wrap-mobile"
+          tabindex="0"
+          role="note"
+          aria-label="Outbound Agent is a work in progress and coming soon."
+        >
+          <button class="nav-mobile-cta nav-mobile-cta-disabled" type="button" disabled aria-disabled="true">
+            Outbound Agent
+          </button>
+          <span class="nav-wip-tooltip nav-wip-tooltip-mobile" role="tooltip">Work in progress, coming soon.</span>
+        </span>
+      </template>
+      <template v-else>
+        <a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a>
+        <a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a>
+        <a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a>
+        <a href="#pricing" @click.prevent="goTo('#pricing', $event)">Pricing</a>
+        <a href="#faq" @click.prevent="goTo('#faq', $event)">FAQ</a>
+        <button
+          class="nav-mobile-cta btn-shine"
+          type="button"
+          @click="trackLead(); $emit('open-booking'); closeMobileMenu()"
+        >
+          Book a Demo
+        </button>
+      </template>
     </div>
   </nav>
 </template>
@@ -267,6 +323,27 @@ onUnmounted(() => {
     inset 0 1px 0 rgba(255, 255, 255, 0.92),
     inset 0 -8px 14px rgba(255, 255, 255, 0.24) !important;
 }
+.nav-link-btn {
+  border: 0;
+  cursor: pointer;
+}
+.nav-cta-disabled {
+  background: linear-gradient(160deg, rgba(176, 183, 196, 0.36) 0%, rgba(149, 157, 171, 0.32) 52%, rgba(236, 240, 246, 0.38) 100%) !important;
+  border-color: rgba(245, 248, 255, 0.62) !important;
+  color: rgba(72, 79, 91, 0.92) !important;
+  box-shadow:
+    0 8px 18px rgba(96, 106, 123, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(10px) saturate(116%);
+  -webkit-backdrop-filter: blur(10px) saturate(116%);
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+.nav-cta-disabled:hover {
+  transform: none;
+  border-color: rgba(245, 248, 255, 0.62) !important;
+}
 
 /* ── Hamburger ────────────────────────────────────────── */
 .nav-toggle {
@@ -309,6 +386,78 @@ onUnmounted(() => {
     inset 0 1px 0 rgba(255, 255, 255, 0.84);
   backdrop-filter: blur(9px) saturate(140%);
   -webkit-backdrop-filter: blur(9px) saturate(140%);
+}
+.nav-mobile-cta-disabled {
+  background: linear-gradient(160deg, rgba(176, 183, 196, 0.36) 0%, rgba(149, 157, 171, 0.32) 52%, rgba(236, 240, 246, 0.38) 100%);
+  border-color: rgba(245, 248, 255, 0.62);
+  color: rgba(72, 79, 91, 0.92);
+  box-shadow:
+    0 8px 18px rgba(96, 106, 123, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px) saturate(116%);
+  -webkit-backdrop-filter: blur(10px) saturate(116%);
+  opacity: 1;
+  cursor: not-allowed;
+}
+.nav-wip-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.nav-wip-wrap-mobile {
+  width: 100%;
+}
+.nav-wip-tooltip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(12, 16, 24, 0.94);
+  color: #f4f7ff;
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: nowrap;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 20;
+}
+.nav-wip-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: rgba(12, 16, 24, 0.94);
+}
+.nav-wip-wrap:hover .nav-wip-tooltip,
+.nav-wip-wrap:focus-visible .nav-wip-tooltip,
+.nav-wip-wrap:focus-within .nav-wip-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.nav-wip-tooltip-mobile {
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  transform: translateY(4px);
+  text-align: center;
+  white-space: normal;
+}
+.nav-wip-tooltip-mobile::after {
+  bottom: 100%;
+  left: 24px;
+  transform: none;
+}
+.nav-wip-wrap-mobile:hover .nav-wip-tooltip-mobile,
+.nav-wip-wrap-mobile:focus-visible .nav-wip-tooltip-mobile,
+.nav-wip-wrap-mobile:focus-within .nav-wip-tooltip-mobile {
+  transform: translateY(0);
 }
 
 /* ── Responsive: tablet / mobile ─────────────────────── */
@@ -436,3 +585,4 @@ onUnmounted(() => {
   .nav-wordmark { display: none; }
 }
 </style>
+
