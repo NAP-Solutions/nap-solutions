@@ -202,7 +202,7 @@ onMounted(() => {
 .pp-contact-link {
   font-size: 15px;
   font-weight: 600;
-  color: var(--accent-ink);
+  color: var(--accent-ink-text, var(--accent-ink));
   text-decoration: none;
   border-bottom: 1.5px solid rgba(var(--accent-rgb), 0.4);
   padding-bottom: 1px;
