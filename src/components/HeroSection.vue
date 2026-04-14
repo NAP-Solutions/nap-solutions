@@ -229,6 +229,12 @@ function scrollToHow() {
 function goToAIReceptionist() {
   router.push('/ai-receptionist')
 }
+
+function trackLead() {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('track', 'Lead')
+  }
+}
 </script>
 
 <template>
@@ -239,6 +245,7 @@ function goToAIReceptionist() {
       @intro-done="onIntroDone"
     />
     <div class="hero-scrim"></div>
+    <div class="hero-edge-fade hero-edge-fade--bottom" aria-hidden="true"></div>
 
     <div v-if="revealed" class="hero-inner section-inner">
       <div class="hero-content">
@@ -293,7 +300,7 @@ function goToAIReceptionist() {
             </span>
           </template>
           <template v-else>
-            <button class="btn-primary btn-shine" @click="emit('open-booking')">
+            <button class="btn-primary btn-shine" @click="trackLead(); emit('open-booking')">
               Book a Free Demo
             </button>
             <button class="btn-primary btn-shine" @click="scrollToHow">
@@ -343,6 +350,25 @@ function goToAIReceptionist() {
   z-index: 1;
   background: rgba(255, 255, 255, 0.42);
   pointer-events: none;
+}
+
+.hero-edge-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: clamp(56px, 9vw, 132px);
+  pointer-events: none;
+}
+
+.hero-edge-fade--bottom {
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 248, 255, 0) 0%,
+    rgba(248, 251, 255, 0.74) 60%,
+    #fff 100%
+  );
 }
 
 .hero-inner {

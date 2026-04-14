@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { Check, X } from 'lucide-vue-next'
+import { Check } from 'lucide-vue-next'
 import { pricingPlans } from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
 import HeroCanvas from './HeroCanvas.vue'
 
-defineEmits(['open-booking'])
+const emit = defineEmits(['open-booking'])
 
 const headerRef = ref(null)
 const bannerRef = ref(null)
@@ -106,6 +106,25 @@ onBeforeUnmount(() => {
     deferredMountTimeout = 0
   }
 })
+
+function trackLead() {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('track', 'Lead')
+  }
+}
+
+function handlePlanCta(plan) {
+  if (plan?.ctaLabel?.toLowerCase().startsWith('contact')) {
+    const contactEl = document.getElementById('contact')
+    if (contactEl) {
+      contactEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+  }
+
+  trackLead()
+  emit('open-booking')
+}
 </script>
 
 <template>
@@ -129,7 +148,7 @@ onBeforeUnmount(() => {
       <div class="base-plan-banner" ref="bannerRef">
         <span class="base-plan-pill">BASE PLAN</span>
         <p class="base-plan-text">
-          Starting at <strong>$479/mo</strong> — 2,000 mins — 24/7 receptionist &amp; calendar integration included
+          Starting at <strong>$59/mo</strong> - 100 mins - 24/7 receptionist &amp; calendar integration included
         </p>
       </div>
 
@@ -184,11 +203,9 @@ onBeforeUnmount(() => {
                 v-for="(feat, j) in plan.features"
                 :key="j"
                 class="feat-row"
-                :class="{ 'feat-excluded': !feat.included }"
               >
                 <span class="feat-icon">
-                  <Check v-if="feat.included" :size="11" />
-                  <X v-else :size="11" />
+                  <Check :size="11" />
                 </span>
                 <span class="feat-label">{{ feat.label }}</span>
               </li>
@@ -198,7 +215,7 @@ onBeforeUnmount(() => {
             <button
               :class="plan.featured ? 'btn-primary' : ['btn-ghost', 'btn-shine']"
               class="pricing-cta"
-              @click="$emit('open-booking')"
+              @click="handlePlanCta(plan)"
             >
               {{ plan.ctaLabel || 'Book a Demo' }}
             </button>
@@ -214,9 +231,11 @@ onBeforeUnmount(() => {
 
       <div class="referral-callout" ref="referralRef">
         <span class="referral-pill">Referral Bonus</span>
-        <h3 class="referral-title">Refer a friend. Get a $200 cheque.</h3>
+        <h3 class="referral-title">Refer a friend. Get up to $200.</h3>
         <p class="referral-copy">
-          If someone you refer becomes a NAP client, we send you a $200 cheque as a thank-you.
+          If someone you refer becomes a NAP client,
+          <br> 
+          we send you up to $200 as a thank-you.
         </p>
         <p class="referral-note">Offer applies after your referral signs and completes onboarding.</p>
         <button class="btn-primary btn-shine referral-cta" @click="$emit('open-booking')">
@@ -409,7 +428,7 @@ onBeforeUnmount(() => {
   border: none;
 }
 
-/* Card — full border on all sides, same shape for all plans */
+/* Card - full border on all sides, same shape for all plans */
 .pricing-card {
   position: relative;
   background: #fff;
@@ -684,9 +703,9 @@ onBeforeUnmount(() => {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent-ink);
-  background: #fff;
-  border: 1px solid rgba(var(--accent-ink-rgb), 0.22);
+  color: #fff;
+  background: var(--accent-ink);
+  border: 1px solid var(--accent-ink);
   border-radius: 100px;
   padding: 5px 12px;
   margin-bottom: 14px;
@@ -780,3 +799,4 @@ onBeforeUnmount(() => {
   }
 }
 </style>
+

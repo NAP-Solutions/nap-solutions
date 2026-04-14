@@ -21,7 +21,7 @@ export const faqItems = [
   },
   {
     q: 'What types of businesses does NAP Solutions work best for?',
-    a: 'NAP Solutions is ideal for any appointment-based business - medical, dental, legal, wellness, home services, beauty, fitness, and more. If your business relies on phone bookings and misses calls after hours, NAP Solutions is built for you.',
+    a: 'NAP Solutions is Ideal for any business requiring client interactions over the phone. If your business relies on phone bookings and misses calls after hours, NAP Solutions is built for you.',
   },
   {
     q: 'Can the AI book, reschedule, and cancel appointments?',

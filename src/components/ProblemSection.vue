@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section id="problem" class="section bg-white">
+  <section id="problem" class="section bg-white noise-bg noise-bg--fade-top">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">The Problem</div>
