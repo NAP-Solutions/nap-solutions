@@ -12,6 +12,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
 })
 
 const emit = defineEmits(['open-booking'])
@@ -24,8 +28,43 @@ const trustRef = ref(null)
 const router = useRouter()
 const { scrollToSection } = useScrollToSection()
 
-const HERO_TITLE_START = 'Never miss'
-const HERO_TITLE_END = 'again.'
+const HERO_CONTENT = {
+  'ai-receptionist': {
+    titleStart: 'Never miss',
+    titlePrefix: 'a ',
+    titleEnd: ' again.',
+    cycleWords: ['call', 'lead', 'booking', 'client'],
+    subText:
+      'Your AI receptionist answers every call, books appointments, and handles your front desk around the clock, at a fraction of the cost.',
+    primaryCta: 'Book a Free Demo',
+    secondaryCta: 'See how it works ->',
+    trustItems: ['Setup included', 'Cancel anytime'],
+  },
+  'outbound-agent': {
+    titleStart: 'The AI that',
+    titlePrefix: '',
+    titleEnd: '.',
+    cycleWords: [
+      'calls your leads',
+      'qualifies prospects',
+      'follows up instantly',
+      'books meetings',
+    ],
+    subText:
+      "NAP Solutions' AI outbound agent runs your outreach from first dial to booked meeting, so your team focuses on closing instead of chasing follow-ups.",
+    primaryCta: 'Book a Free Demo',
+    secondaryCta: 'See it in action ->',
+    trustItems: ['24/7 calling coverage', '100% follow-up cadence'],
+  },
+}
+
+const heroCopy = HERO_CONTENT[props.service] ?? HERO_CONTENT['ai-receptionist']
+const serviceRoute = props.service === 'outbound-agent' ? '/outbound-agent' : '/ai-receptionist'
+const isOutboundService = props.service === 'outbound-agent'
+
+const HERO_TITLE_START = heroCopy.titleStart
+const HERO_TITLE_PREFIX = heroCopy.titlePrefix
+const HERO_TITLE_END = heroCopy.titleEnd
 const CYCLE_DELAY_MS = 2200
 const CYCLE_MIN_DURATION = 0.22
 const CYCLE_DURATION_PER_CHAR = 0.055
@@ -37,8 +76,8 @@ const titleLayers = [
   { className: 'hero-title-layer hero-title-layer--fill', ariaHidden: false },
 ]
 
-const cycleWords = ['call', 'lead', 'booking', 'client']
-const trustItems = ['Setup included', 'Cancel anytime']
+const cycleWords = heroCopy.cycleWords
+const trustItems = heroCopy.trustItems
 
 let cycleIdx = 0
 let cycleTimer = 0
@@ -223,11 +262,15 @@ function scrollToHow() {
     scrollToSection('how')
     return
   }
-  router.push('/ai-receptionist#how')
+  router.push(`${serviceRoute}#how`)
 }
 
 function goToAIReceptionist() {
   router.push('/ai-receptionist')
+}
+
+function goToOutboundAgent() {
+  router.push('/outbound-agent')
 }
 
 function trackLead() {
@@ -241,15 +284,15 @@ function trackLead() {
   <section id="hero" class="hero" :class="{ 'hero--intro': !revealed }">
     <HeroCanvas
       :intro="!props.minimal"
-      :palette-variant="props.minimal ? 'home' : 'ai-receptionist'"
+      :palette-variant="props.minimal ? 'home' : props.service"
       @intro-done="onIntroDone"
     />
     <div class="hero-scrim"></div>
     <div class="hero-edge-fade hero-edge-fade--bottom" aria-hidden="true"></div>
 
     <div v-if="revealed" class="hero-inner section-inner">
-      <div class="hero-content">
-        <h1 ref="headingRef" class="hero-title-stack">
+      <div class="hero-content" :class="{ 'hero-content--outbound': !props.minimal && isOutboundService }">
+        <h1 ref="headingRef" class="hero-title-stack" :class="{ 'hero-title-stack--outbound': !props.minimal && isOutboundService }">
           <template v-if="props.minimal">
             <span class="hero-title-simple-layer hero-title-simple-layer--stroke" aria-hidden="true">
               NAP Solutions
@@ -266,7 +309,7 @@ function trackLead() {
               :aria-hidden="layer.ariaHidden ? 'true' : null"
             >
               <span class="h1-light">{{ HERO_TITLE_START }}</span>
-              <span class="h1-grad">a <span class="cycle-word">{{ cycleWord }}</span> {{ HERO_TITLE_END }}</span>
+              <span class="h1-grad">{{ HERO_TITLE_PREFIX }}<span class="cycle-word">{{ cycleWord }}</span>{{ HERO_TITLE_END }}</span>
             </span>
           </template>
         </h1>
@@ -276,8 +319,7 @@ function trackLead() {
             Providing AI integrations for your business.
           </template>
           <template v-else>
-            Your AI receptionist answers every call, books appointments, and
-            handles your front desk - around the clock, at a <span class="hero-sub-fraction-break">fraction of the cost.</span>
+            {{ heroCopy.subText }}
           </template>
         </p>
 
@@ -286,25 +328,16 @@ function trackLead() {
             <button class="btn-primary btn-shine" @click="goToAIReceptionist">
               AI Receptionist
             </button>
-            <span
-              class="wip-button-wrap"
-              tabindex="0"
-              role="note"
-              aria-label="Outbound Agent is a work in progress and coming soon."
-            >
-              <button class="btn-primary btn-disabled btn-wip" type="button" disabled aria-disabled="true">
-                Outbound Agent
-              </button>
-              <span class="wip-hangtag" aria-hidden="true">Construction</span>
-              <span class="wip-tooltip" role="tooltip">Work in progress, coming soon.</span>
-            </span>
+            <button class="btn-primary btn-shine" @click="goToOutboundAgent">
+              Outbound Agent
+            </button>
           </template>
           <template v-else>
             <button class="btn-primary btn-shine" @click="trackLead(); emit('open-booking')">
-              Book a Free Demo
+              {{ heroCopy.primaryCta }}
             </button>
             <button class="btn-primary btn-shine" @click="scrollToHow">
-              See how it works &rarr;
+              {{ heroCopy.secondaryCta }}
             </button>
           </template>
         </div>
@@ -384,6 +417,10 @@ function trackLead() {
   max-width: 680px;
 }
 
+.hero-content--outbound {
+  max-width: 860px;
+}
+
 .hero-title-stack {
   --hero-stroke-color: #fff;
   --hero-stroke-width: clamp(2.0px, 0.03em, 2.1px);
@@ -395,6 +432,10 @@ function trackLead() {
   margin-bottom: 22px;
   text-wrap: balance;
   position: relative;
+}
+
+.hero-title-stack--outbound {
+  max-width: 820px;
 }
 
 .hero-title-layer {
@@ -718,6 +759,12 @@ function trackLead() {
   }
 }
 
+@media (min-width: 961px) {
+  .hero-content--outbound .h1-grad {
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 640px) {
   .hero {
     min-height: 100svh;
@@ -769,7 +816,8 @@ function trackLead() {
     align-self: center;
     gap: 12px;
   }
-  .hero-actions .btn-primary {
+  .hero-actions .btn-primary,
+  .hero-actions .btn-ghost {
     width: min(100%, 340px);
     display: grid;
     place-items: center;
@@ -780,30 +828,6 @@ function trackLead() {
     line-height: 1;
     text-align: center;
     border-bottom-width: 1px;
-  }
-
-  .hero-actions .wip-button-wrap {
-    width: min(100%, 340px);
-    display: grid;
-    place-items: center;
-    margin-inline: auto;
-  }
-
-  .hero-actions .wip-button-wrap .btn-primary {
-    width: 100%;
-  }
-
-  .hero-actions .wip-button-wrap .btn-wip {
-    overflow: hidden;
-  }
-
-  .hero-actions .wip-button-wrap .btn-wip::after {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    transform: none;
-    border-radius: 12px 12px 0 0;
   }
 
   .hero-trust {

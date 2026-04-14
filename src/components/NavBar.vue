@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import logoImg from '../assets/logo.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
@@ -8,6 +8,10 @@ const props = defineProps({
   minimal: {
     type: Boolean,
     default: false,
+  },
+  service: {
+    type: String,
+    default: 'ai-receptionist',
   },
 })
 
@@ -18,6 +22,7 @@ const scrolled   = ref(false)
 let scrollRaf = 0
 const router = useRouter()
 const { scrollToSection } = useScrollToSection()
+const serviceRoute = computed(() => props.service === 'outbound-agent' ? '/outbound-agent' : '/ai-receptionist')
 
 function toggleMobileMenu() { mobileOpen.value = !mobileOpen.value }
 function closeMobileMenu()  { mobileOpen.value = false }
@@ -41,12 +46,16 @@ function goTo(hash, e) {
   } else {
     if (e) e.preventDefault()
     const normalizedHash = hash.startsWith('#') ? hash : `#${hash}`
-    router.push(`/ai-receptionist${normalizedHash}`)
+    router.push(`${serviceRoute.value}${normalizedHash}`)
   }
   closeMobileMenu()
 }
 function goToAIReceptionist() {
   router.push('/ai-receptionist')
+  closeMobileMenu()
+}
+function goToOutboundAgent() {
+  router.push('/outbound-agent')
   closeMobileMenu()
 }
 function goHome() {
@@ -91,17 +100,9 @@ onUnmounted(() => {
             </button>
           </li>
           <li>
-            <span
-              class="nav-wip-wrap"
-              tabindex="0"
-              role="note"
-              aria-label="Outbound Agent is a work in progress and coming soon."
-            >
-              <button class="nav-cta nav-cta-disabled nav-link-btn" type="button" disabled aria-disabled="true">
-                Outbound Agent
-              </button>
-              <span class="nav-wip-tooltip" role="tooltip">Work in progress, coming soon.</span>
-            </span>
+            <button class="nav-cta btn-shine nav-link-btn" type="button" @click="goToOutboundAgent">
+              Outbound Agent
+            </button>
           </li>
         </template>
         <template v-else>
@@ -138,17 +139,9 @@ onUnmounted(() => {
         <button class="nav-mobile-cta btn-shine" type="button" @click="goToAIReceptionist">
           AI Receptionist
         </button>
-        <span
-          class="nav-wip-wrap nav-wip-wrap-mobile"
-          tabindex="0"
-          role="note"
-          aria-label="Outbound Agent is a work in progress and coming soon."
-        >
-          <button class="nav-mobile-cta nav-mobile-cta-disabled" type="button" disabled aria-disabled="true">
-            Outbound Agent
-          </button>
-          <span class="nav-wip-tooltip nav-wip-tooltip-mobile" role="tooltip">Work in progress, coming soon.</span>
-        </span>
+        <button class="nav-mobile-cta btn-shine" type="button" @click="goToOutboundAgent">
+          Outbound Agent
+        </button>
       </template>
       <template v-else>
         <a href="/" @click.prevent="goHome">Home Page</a>
@@ -385,7 +378,12 @@ onUnmounted(() => {
   border-radius: 10px;
   font-size: 15px;
   font-weight: 700;
-  padding: 12px 16px;
+  line-height: 1;
+  padding: 0 16px;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   box-shadow:
     0 8px 18px rgba(var(--brand-rgb), 0.18),
@@ -581,10 +579,9 @@ onUnmounted(() => {
 
   .mobile-menu .nav-mobile-cta {
     width: 100%;
+    height: 46px;
     min-height: 46px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0 16px;
   }
 
   .nav-wip-wrap-mobile {

@@ -4,10 +4,35 @@ import { Check } from 'lucide-vue-next'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
 
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
+
 const emit = defineEmits(['open-booking'])
 
 const innerRef = ref(null)
 useScrollReveal(() => [innerRef.value])
+
+const ctaCopy = props.service === 'outbound-agent'
+  ? {
+      eyebrow: 'Get Started',
+      heading: 'Ready to Let AI Fill Your Calendar?',
+      sub:
+        'See the outbound agent call, qualify, and book meetings in real time. No commitment required.',
+      button: 'Book a Free Demo',
+      trustItems: ['No long-term contracts', 'Setup in days, not months'],
+    }
+  : {
+      eyebrow: 'Get Started',
+      heading: 'Ready to Stop Missing Revenue?',
+      sub:
+        'Pick a time that works for you and let us show you exactly how NAP Solutions works for your business.',
+      button: 'Book a Demo',
+      trustItems: ['Setup included', 'Cancel anytime'],
+    }
 
 function trackLead() {
   if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
@@ -20,23 +45,18 @@ function trackLead() {
   <section id="cta" class="section cta-section noise-bg">
     <div class="cta-bg"></div>
     <div class="cta-inner" ref="innerRef">
-      <div class="section-eyebrow center">Get Started</div>
-      <LiquidHeading class="cta-heading center">Ready to Stop<br />Missing Revenue?</LiquidHeading>
+      <div class="section-eyebrow center">{{ ctaCopy.eyebrow }}</div>
+      <LiquidHeading class="cta-heading center">{{ ctaCopy.heading }}</LiquidHeading>
       <p class="cta-sub">
-        Pick a time that works for you and let us show you exactly how NAP
-        Solutions works for your business.
+        {{ ctaCopy.sub }}
       </p>
       <button class="btn-primary btn-shine cta-btn" @click="trackLead(); emit('open-booking')">
-        Book a Demo
+        {{ ctaCopy.button }}
       </button>
       <div class="cta-trust">
-        <div class="trust-item">
+        <div class="trust-item" v-for="item in ctaCopy.trustItems" :key="item">
           <span class="trust-check"><Check :size="9" /></span>
-          Setup included
-        </div>
-        <div class="trust-item">
-          <span class="trust-check"><Check :size="9" /></span>
-          Cancel anytime
+          {{ item }}
         </div>
       </div>
     </div>

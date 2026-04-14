@@ -7,11 +7,128 @@ import {
   Bot,
   Check,
   Send,
+  Clock,
 } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useTilt } from '../composables/useTilt'
 import LiquidHeading from './LiquidHeading.vue'
+
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
+
+const iconMap = {
+  PhoneCall,
+  MessageCircle,
+  CalendarCheck,
+  ShieldCheck,
+  Clock,
+}
+
+const serviceContent = {
+  'ai-receptionist': {
+    eyebrow: 'How It Works',
+    heading: 'From first ring to fully booked.',
+    sub: "Every call handled end-to-end. Here's exactly what our AI takes care of so you don't have to.",
+    steps: [
+      {
+        title: 'Call Received',
+        desc: 'Your AI receptionist picks up on the first ring any time of day. No hold music, no voicemail.',
+        icon: 'PhoneCall',
+        iconVariant: 'purple',
+      },
+      {
+        title: 'Caller Qualified',
+        desc: 'The AI greets callers naturally, gathers details, and identifies what they need before booking.',
+        icon: 'MessageCircle',
+        iconVariant: 'cyan',
+      },
+      {
+        title: 'Appointment Booked',
+        desc: 'Appointments are confirmed in real time, synced to your calendar, and verified before the call ends.',
+        icon: 'CalendarCheck',
+        iconVariant: 'purple',
+      },
+      {
+        title: 'Escalated If Needed',
+        desc: 'Complex or urgent cases are handed off immediately so nothing falls through the cracks.',
+        icon: 'ShieldCheck',
+        iconVariant: 'cyan',
+      },
+    ],
+    chat: {
+      name: 'NAP Receptionist',
+      sub: 'Dr. Smith Dental - Incoming call',
+      messages: [
+        { role: 'ai', text: 'Hi! Thanks for calling. How can I help you today?', meta: 'NAP AI - just now' },
+        { role: 'user', text: 'I need to book a cleaning. Do you have anything this week?', meta: 'Caller' },
+        { role: 'ai', text: 'Absolutely - Thursday at 10am or Friday at 2pm. Which works better?', meta: 'NAP AI' },
+        { role: 'user', text: 'Thursday please.', meta: 'Caller' },
+      ],
+      confirmLabel: 'APPOINTMENT CONFIRMED',
+      confirmTitle: 'Dental Cleaning',
+      confirmLine2: 'Thursday - 10:00 AM',
+      confirmLine3: 'Synced to calendar',
+    },
+  },
+  'outbound-agent': {
+    eyebrow: 'How It Works',
+    heading: 'From first dial to booked meeting.',
+    sub: 'The outbound agent runs your full outreach workflow automatically, from calling to qualification to calendar booking.',
+    steps: [
+      {
+        title: 'Lead List Connected',
+        desc: 'Upload your lead list or connect your CRM, and the agent prepares every contact automatically.',
+        icon: 'ShieldCheck',
+        iconVariant: 'purple',
+      },
+      {
+        title: 'AI Places Calls',
+        desc: 'The agent dials leads at optimal times and delivers your script in a natural, consistent voice.',
+        icon: 'PhoneCall',
+        iconVariant: 'cyan',
+      },
+      {
+        title: 'Prospects Qualified',
+        desc: 'Qualification questions and objection handling run in real time so high-intent leads are identified quickly.',
+        icon: 'MessageCircle',
+        iconVariant: 'purple',
+      },
+      {
+        title: 'Meetings Booked',
+        desc: 'Interested prospects are booked directly into your calendar and handed off with full call context.',
+        icon: 'CalendarCheck',
+        iconVariant: 'cyan',
+      },
+      {
+        title: 'Follow-Ups Automated',
+        desc: 'Unanswered leads are retried on schedule until every campaign gets full follow-through.',
+        icon: 'Clock',
+        iconVariant: 'purple',
+      },
+    ],
+    chat: {
+      name: 'NAP Outbound Agent',
+      sub: 'Outbound campaign - Live call',
+      messages: [
+        { role: 'ai', text: 'Hi Alex, this is Maya from NAP Solutions. Do you have 30 seconds?', meta: 'NAP AI - just now' },
+        { role: 'user', text: "Sure, what's this about?", meta: 'Prospect' },
+        { role: 'ai', text: 'We help teams automate outbound follow-up and book more meetings without adding reps.', meta: 'NAP AI' },
+        { role: 'user', text: 'Follow-up consistency is actually our biggest gap.', meta: 'Prospect' },
+      ],
+      confirmLabel: 'MEETING BOOKED',
+      confirmTitle: 'Outbound Strategy Demo',
+      confirmLine2: 'Friday - 2:00 PM',
+      confirmLine3: 'Added to your calendar',
+    },
+  },
+}
+
+const activeContent = serviceContent[props.service] ?? serviceContent['ai-receptionist']
 
 const headerRef = ref(null)
 const stepRefs = ref([])
@@ -27,69 +144,35 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
   <section id="how" class="section bg-alt noise-bg noise-bg--fade-bottom">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
-        <div class="section-eyebrow">How It Works</div>
+        <div class="section-eyebrow">{{ activeContent.eyebrow }}</div>
         <LiquidHeading>
-          From first ring<br />to fully booked.
+          {{ activeContent.heading }}
         </LiquidHeading>
         <p class="section-sub">
-          Every call handled end-to-end. Here's exactly what our AI takes care
-          of so you don't have to.
+          {{ activeContent.sub }}
         </p>
       </div>
 
       <div class="hiw-layout">
-        <!-- Step cards -->
         <div class="steps-col">
-          <div class="step-card" :ref="el => stepRefs[0] = el">
+          <div
+            v-for="(step, i) in activeContent.steps"
+            :key="step.title"
+            class="step-card"
+            :ref="el => stepRefs[i] = el"
+          >
             <div class="tilt-glare" aria-hidden="true"></div>
             <div class="step-icon-wrap">
-              <div class="step-icon si-purple"><PhoneCall :size="20" /></div>
-              <span class="step-num">01</span>
+              <div class="step-icon" :class="`si-${step.iconVariant}`"><component :is="iconMap[step.icon]" :size="20" /></div>
+              <span class="step-num">{{ String(i + 1).padStart(2, '0') }}</span>
             </div>
             <div class="step-content">
-              <h3 class="step-title">Call Received</h3>
-              <p class="step-desc">Your AI receptionist picks up on the first ring — any time of day, any day of the week. No hold music, no voicemail.</p>
-            </div>
-          </div>
-
-          <div class="step-card" :ref="el => stepRefs[1] = el">
-            <div class="tilt-glare" aria-hidden="true"></div>
-            <div class="step-icon-wrap">
-              <div class="step-icon si-cyan"><MessageCircle :size="20" /></div>
-              <span class="step-num">02</span>
-            </div>
-            <div class="step-content">
-              <h3 class="step-title">Caller Qualified</h3>
-              <p class="step-desc">The AI greets the caller naturally, understands their needs, and gathers everything needed to book — name, service, preferred time.</p>
-            </div>
-          </div>
-
-          <div class="step-card" :ref="el => stepRefs[2] = el">
-            <div class="tilt-glare" aria-hidden="true"></div>
-            <div class="step-icon-wrap">
-              <div class="step-icon si-purple"><CalendarCheck :size="20" /></div>
-              <span class="step-num">03</span>
-            </div>
-            <div class="step-content">
-              <h3 class="step-title">Appointment Booked</h3>
-              <p class="step-desc">The appointment is confirmed in real time, synced to your calendar, and the caller gets confirmation before the call ends.</p>
-            </div>
-          </div>
-
-          <div class="step-card" :ref="el => stepRefs[3] = el">
-            <div class="tilt-glare" aria-hidden="true"></div>
-            <div class="step-icon-wrap">
-              <div class="step-icon si-cyan"><ShieldCheck :size="20" /></div>
-              <span class="step-num">04</span>
-            </div>
-            <div class="step-content">
-              <h3 class="step-title">Escalated If Needed</h3>
-              <p class="step-desc">Complex cases or emergencies get handed off to your team immediately. Nothing falls through the cracks.</p>
+              <h3 class="step-title">{{ step.title }}</h3>
+              <p class="step-desc">{{ step.desc }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Chat widget -->
         <div class="chat-col" ref="chatRef">
           <div class="chat-widget" ref="chatWidgetRef">
             <div class="tilt-glare" aria-hidden="true"></div>
@@ -101,8 +184,8 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
               </div>
               <div class="ch-avatar"><Bot :size="15" /></div>
               <div class="ch-info">
-                <span class="ch-name">NAP Receptionist</span>
-                <span class="ch-sub">Dr. Smith Dental · Incoming call</span>
+                <span class="ch-name">{{ activeContent.chat.name }}</span>
+                <span class="ch-sub">{{ activeContent.chat.sub }}</span>
               </div>
               <div class="ch-live">
                 <span class="ch-live-dot"></span>
@@ -111,33 +194,22 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
             </div>
 
             <div class="chat-body">
-              <div class="bubble bubble-ai">
-                Hi! Thanks for calling. How can I help you today?
-              </div>
-              <p class="bubble-meta">NAP AI · just now</p>
-
-              <div class="bubble bubble-user">
-                I need to book a cleaning. Do you have anything this week?
-              </div>
-              <p class="bubble-meta bubble-meta--right">Caller</p>
-
-              <div class="bubble bubble-ai">
-                Absolutely — Thursday at 10am or Friday at 2pm. Which works better?
-              </div>
-              <p class="bubble-meta">NAP AI</p>
-
-              <div class="bubble bubble-user">Thursday please.</div>
-              <p class="bubble-meta bubble-meta--right">Caller</p>
+              <template v-for="(message, i) in activeContent.chat.messages" :key="i">
+                <div class="bubble" :class="message.role === 'ai' ? 'bubble-ai' : 'bubble-user'">
+                  {{ message.text }}
+                </div>
+                <p class="bubble-meta" :class="{ 'bubble-meta--right': message.role !== 'ai' }">{{ message.meta }}</p>
+              </template>
 
               <div class="confirm-card">
                 <div class="confirm-top">
                   <span class="confirm-icon"><Check :size="13" /></span>
-                  <span class="confirm-label">APPOINTMENT CONFIRMED</span>
+                  <span class="confirm-label">{{ activeContent.chat.confirmLabel }}</span>
                 </div>
                 <p class="confirm-detail">
-                  <strong>Dental Cleaning</strong><br />
-                  Thursday · 10:00 AM<br />
-                  Synced to calendar
+                  <strong>{{ activeContent.chat.confirmTitle }}</strong><br />
+                  {{ activeContent.chat.confirmLine2 }}<br />
+                  {{ activeContent.chat.confirmLine3 }}
                 </p>
               </div>
             </div>
@@ -154,7 +226,6 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
     </div>
   </section>
 </template>
-
 <style scoped>
 .bg-alt {
   --solution-how-blend: clamp(3rem, 7vw, 5.5rem);
@@ -531,3 +602,4 @@ useTilt(() => [chatWidgetRef.value], { requireReveal: false })
   }
 }
 </style>
+

@@ -1,15 +1,37 @@
 <script setup>
 import { ref } from 'vue'
 import { PhoneIncoming, CalendarCheck, Clock, Users } from 'lucide-vue-next'
-import { solutionCards } from '../data/solutionData'
+import { solutionCards, outboundSolutionCards } from '../data/solutionData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useTilt } from '../composables/useTilt'
 import LiquidHeading from './LiquidHeading.vue'
+
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
 
 const iconMap = { PhoneIncoming, CalendarCheck, Clock, Users }
 
 const headerRef = ref(null)
 const cardRefs = ref([])
+const sectionCopy = props.service === 'outbound-agent'
+  ? {
+      eyebrow: 'The Solution',
+      heading: 'An AI outbound agent that never stops dialing.',
+      sub:
+        'NAP Solutions contacts leads, qualifies interest, books meetings, and follows up automatically around the clock.',
+    }
+  : {
+      eyebrow: 'The Solution',
+      heading: 'An AI receptionist that never clocks out.',
+      sub:
+        'NAP Solutions answers every call, qualifies the caller, and books the appointment - 24/7, 365 days a year.',
+    }
+
+const activeCards = props.service === 'outbound-agent' ? outboundSolutionCards : solutionCards
 
 useScrollReveal(() => [headerRef.value, ...cardRefs.value])
 useTilt(() => cardRefs.value)
@@ -19,19 +41,18 @@ useTilt(() => cardRefs.value)
   <section id="solution" class="section bg-solution noise-bg">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
-        <div class="section-eyebrow">The Solution</div>
+        <div class="section-eyebrow">{{ sectionCopy.eyebrow }}</div>
         <LiquidHeading>
-          An AI receptionist<br />that never clocks out.
+          {{ sectionCopy.heading }}
         </LiquidHeading>
         <p class="section-sub">
-          NAP Solutions answers every call, qualifies the caller, and books the
-          appointment — 24/7, 365 days a year.
+          {{ sectionCopy.sub }}
         </p>
       </div>
 
       <div class="feature-grid">
         <div
-          v-for="(card, i) in solutionCards"
+          v-for="(card, i) in activeCards"
           :key="i"
           class="feature-card"
           :ref="el => cardRefs[i] = el"

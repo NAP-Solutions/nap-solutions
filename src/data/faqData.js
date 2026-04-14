@@ -72,3 +72,38 @@ export const faqItems = [
     a: 'We build on enterprise-grade infrastructure with high uptime guarantees. In the rare event of an issue, your calls will be handled according to fallback rules we set up with you during onboarding.',
   },
 ]
+
+export const outboundFaqItems = [
+  {
+    q: 'Will the outbound agent sound robotic?',
+    a: 'No. The outbound agent uses natural, conversational voice AI and follows your script guidelines so calls sound professional and human.',
+  },
+  {
+    q: 'How fast can we launch?',
+    a: 'Most teams can go live in just a few days. We configure scripts, qualification rules, call windows, and integrations during onboarding.',
+  },
+  {
+    q: 'Can we customize the script and qualification flow?',
+    a: 'Yes. You can fully customize opening lines, qualifying questions, objection handling, and handoff rules for your team.',
+  },
+  {
+    q: 'Does it integrate with our CRM and calendar?',
+    a: 'Yes. The platform syncs lead outcomes, notes, and booked meetings directly into your connected CRM and calendar tools.',
+  },
+  {
+    q: 'What happens when a prospect asks for a human?',
+    a: 'The agent can transfer hot prospects to your team in real time or schedule a callback, based on the workflow you choose.',
+  },
+  {
+    q: 'Is outbound calling compliant?',
+    a: 'Compliance depends on your campaign setup and local regulations. We help you configure compliant call windows, disclosures, and opt-out handling.',
+  },
+  {
+    q: 'How is pricing structured?',
+    a: 'Pricing is based on plan tier and call minutes, with custom enterprise options for high-volume teams or specialized workflows.',
+  },
+  {
+    q: 'Is this replacing our sales reps?',
+    a: 'It is built to augment your team. The AI handles repetitive dialing and follow-up, while your reps focus on qualified conversations and closing.',
+  },
+]

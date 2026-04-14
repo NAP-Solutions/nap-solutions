@@ -1,45 +1,83 @@
 <script setup>
 import LiquidHeading from './LiquidHeading.vue'
+
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
+
+const costCopy = props.service === 'outbound-agent'
+  ? {
+      eyebrow: 'Revenue Impact',
+      heading: 'What manual outbound is costing you.',
+      sub: 'Conservative monthly estimate for traditional cold calling:',
+      leftValue: '$300',
+      leftLabel: 'Cost per lead',
+      midValue: '50',
+      midLabel: 'Leads needed per month',
+      rightValue: '$15K',
+      rightLabel: 'Monthly spend',
+      totalValue: '$4.5K+',
+      totalLabel: 'Potential savings with AI',
+      note:
+        'Traditional outreach can consume $15,000+ monthly. AI outbound calling can reduce interaction costs by 70% to 90%.',
+    }
+  : {
+      eyebrow: 'Revenue Impact',
+      heading: 'What silence is costing you.',
+      sub: 'Conservative monthly estimate for a mid-size business:',
+      leftValue: '4',
+      leftLabel: 'Missed calls per night',
+      midValue: '30',
+      midLabel: 'Nights per month',
+      rightValue: '$250',
+      rightLabel: 'Avg booking value',
+      totalValue: '$30K',
+      totalLabel: 'Lost revenue per month',
+      note:
+        'That is up to $30,000+ in walkaway revenue every single month. NAP Solutions captures it back.',
+    }
 </script>
 
 <template>
   <section id="cost" class="section bg-alt noise-bg">
     <div class="section-inner">
       <div class="cost-header">
-        <div class="section-eyebrow">Revenue Impact</div>
-        <LiquidHeading>What silence is<br />costing you.</LiquidHeading>
+        <div class="section-eyebrow">{{ costCopy.eyebrow }}</div>
+        <LiquidHeading>{{ costCopy.heading }}</LiquidHeading>
         <p class="section-sub">
-          Conservative monthly estimate for a mid-size business:
+          {{ costCopy.sub }}
         </p>
       </div>
 
       <div class="cost-scroll">
         <div class="cost-row">
           <div class="cost-cell cost-cell--times">
-            <div class="cost-big">4</div>
-            <div class="cost-lbl">Missed calls<br />per night</div>
+            <div class="cost-big">{{ costCopy.leftValue }}</div>
+            <div class="cost-lbl">{{ costCopy.leftLabel }}</div>
           </div>
           <div class="cost-op">&times;</div>
           <div class="cost-cell cost-cell--times">
-            <div class="cost-big">30</div>
-            <div class="cost-lbl">Nights<br />per month</div>
+            <div class="cost-big">{{ costCopy.midValue }}</div>
+            <div class="cost-lbl">{{ costCopy.midLabel }}</div>
           </div>
           <div class="cost-op">&times;</div>
           <div class="cost-cell cost-cell--equals">
-            <div class="cost-big">$250</div>
-            <div class="cost-lbl">Avg booking<br />value</div>
+            <div class="cost-big">{{ costCopy.rightValue }}</div>
+            <div class="cost-lbl">{{ costCopy.rightLabel }}</div>
           </div>
           <div class="cost-op cost-op--equals">=</div>
           <div class="cost-cell cost-cell-highlight">
-            <div class="cost-big cost-big-highlight">$30K</div>
-            <div class="cost-lbl">Lost revenue<br />per month</div>
+            <div class="cost-big cost-big-highlight">{{ costCopy.totalValue }}</div>
+            <div class="cost-lbl">{{ costCopy.totalLabel }}</div>
           </div>
         </div>
       </div>
 
       <p class="cost-note">
-        That is up to <strong>$30,000+ in walkaway revenue</strong> every single
-        month. NAP Solutions captures it back.
+        {{ costCopy.note }}
       </p>
     </div>
   </section>
