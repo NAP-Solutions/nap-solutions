@@ -572,6 +572,18 @@ onUnmounted(() => {
   .mobile-menu a:last-of-type {
     border-bottom: none;
   }
+
+  .mobile-menu .nav-mobile-cta {
+    width: 100%;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-wip-wrap-mobile {
+    display: flex;
+  }
 }
 
 @media (max-width: 640px) {
