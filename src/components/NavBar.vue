@@ -49,6 +49,10 @@ function goToAIReceptionist() {
   router.push('/ai-receptionist')
   closeMobileMenu()
 }
+function goHome() {
+  router.push('/')
+  closeMobileMenu()
+}
 
 function trackLead() {
   if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
@@ -101,6 +105,7 @@ onUnmounted(() => {
           </li>
         </template>
         <template v-else>
+          <li><a href="/" @click.prevent="goHome">Home Page</a></li>
           <li><a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a></li>
           <li><a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a></li>
           <li><a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a></li>
@@ -146,6 +151,7 @@ onUnmounted(() => {
         </span>
       </template>
       <template v-else>
+        <a href="/" @click.prevent="goHome">Home Page</a>
         <a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a>
         <a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a>
         <a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a>
