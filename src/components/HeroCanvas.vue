@@ -261,6 +261,11 @@ const FLUID_VARIANTS = {
     accentColors: ['#a8c5fd', '#c9dcff', '#99e4ff', '#c3f8f2'],
     accentStrength: 0.0,
   },
+  'outbound-agent': {
+    colors: ['#faf7ff', '#e2d4ff', '#c4a5ff', '#ffffff'],
+    accentColors: ['#e2d4ff', '#d0b8ff', '#b48bff', '#a273ff'],
+    accentStrength: 0.18,
+  },
   home: {
     colors: ['#ecfffb', '#00d4c0', '#99EDE5', '#ffffff'],
     accentColors: [

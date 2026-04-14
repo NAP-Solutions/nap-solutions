@@ -1,17 +1,46 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { gsap } from 'gsap'
-import { problemItems, statCards } from '../data/problemData'
+import {
+  problemItems,
+  statCards,
+  outboundProblemItems,
+  outboundStatCards,
+} from '../data/problemData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { createSplitTextAnimation } from '../composables/useSplitTextAnimation'
 import { useTilt } from '../composables/useTilt'
 import LiquidHeading from './LiquidHeading.vue'
+
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
 
 const headerRef = ref(null)
 const headingRef = ref(null)
 const subRef = ref(null)
 const itemRefs = ref([])
 const statRefs = ref([])
+
+const sectionCopy = props.service === 'outbound-agent'
+  ? {
+      eyebrow: 'The Problem',
+      headingTop: 'Manual outbound is',
+      headingBottom: 'burning your pipeline.',
+      sub: 'Traditional cold calling is high effort, low yield, and almost impossible to scale consistently.',
+    }
+  : {
+      eyebrow: 'The Problem',
+      headingTop: 'Your phone stops working',
+      headingBottom: 'when clients need it most.',
+      sub: 'Businesses are losing bookings every night, every weekend, and most do not even realize it.',
+    }
+
+const activeProblemItems = props.service === 'outbound-agent' ? outboundProblemItems : problemItems
+const activeStatCards = props.service === 'outbound-agent' ? outboundStatCards : statCards
 
 let headerObserver
 let headerTimeline
@@ -103,20 +132,18 @@ onBeforeUnmount(() => {
   <section id="problem" class="section bg-white noise-bg noise-bg--fade-top">
     <div class="section-inner">
       <div class="reveal-header" ref="headerRef">
-        <div class="section-eyebrow">The Problem</div>
+        <div class="section-eyebrow">{{ sectionCopy.eyebrow }}</div>
         <LiquidHeading ref="headingRef">
-          Your phone stops <br class="problem-heading-break-mobile" />working
-          <br class="problem-heading-break" />when clients <br class="problem-heading-break-mobile" />need it most.
+          {{ sectionCopy.headingTop }}<br />{{ sectionCopy.headingBottom }}
         </LiquidHeading>
         <p ref="subRef" class="section-sub problem-sub">
-          Businesses are losing bookings every night, every weekend, and most do
-          not even realize it.
+          {{ sectionCopy.sub }}
         </p>
       </div>
       <div class="problem-layout">
         <div class="problem-list">
           <div
-            v-for="(item, i) in problemItems"
+            v-for="(item, i) in activeProblemItems"
             :key="i"
             class="problem-item"
             :ref="el => itemRefs[i] = el"
@@ -127,7 +154,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="stats-col">
           <div
-            v-for="(stat, i) in statCards"
+            v-for="(stat, i) in activeStatCards"
             :key="i"
             class="stat-card"
             :ref="el => statRefs[i] = el"

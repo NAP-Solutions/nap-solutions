@@ -1,7 +1,7 @@
-const allFeatures = [
+const receptionistFeatures = [
   '24/7 AI receptionist',
   'Calendar integration',
-  'Setup & onboarding',
+  'Setup and onboarding',
   'Custom integrations',
   'CRM integration',
   'Appointment management',
@@ -9,9 +9,21 @@ const allFeatures = [
   'Call summaries',
 ]
 
-const includedFeatures = allFeatures.map((label) => ({ label, included: true }))
+const outboundFeatures = [
+  '24/7 AI outbound calling',
+  'Lead list and CRM sync',
+  'Multi-attempt follow-up',
+  'Custom qualification scripts',
+  'Calendar booking automation',
+  'Live handoff to your team',
+  'Call summaries and transcripts',
+  'Campaign analytics dashboard',
+]
 
-export const pricingPlans = [
+const receptionistIncludedFeatures = receptionistFeatures.map((label) => ({ label, included: true }))
+const outboundIncludedFeatures = outboundFeatures.map((label) => ({ label, included: true }))
+
+export const receptionistPricingPlans = [
   {
     tier: 'GROWTH',
     description: 'For small practices looking to automate',
@@ -20,7 +32,7 @@ export const pricingPlans = [
     badge: null,
     subBadge: null,
     featured: false,
-    features: includedFeatures,
+    features: receptionistIncludedFeatures,
   },
   {
     tier: 'SCALE',
@@ -30,7 +42,7 @@ export const pricingPlans = [
     badge: 'START HERE',
     subBadge: null,
     featured: false,
-    features: includedFeatures,
+    features: receptionistIncludedFeatures,
   },
   {
     tier: 'ENTERPRISE',
@@ -43,7 +55,7 @@ export const pricingPlans = [
     subBadge: null,
     featured: true,
     promoNote: 'First month only. Renews at $1,199/mo + tax.',
-    features: includedFeatures,
+    features: receptionistIncludedFeatures,
   },
   {
     tier: 'CUSTOM',
@@ -54,6 +66,55 @@ export const pricingPlans = [
     subBadge: null,
     featured: false,
     ctaLabel: 'Contact Sales Team',
-    features: includedFeatures,
+    features: receptionistIncludedFeatures,
   },
 ]
+
+export const outboundPricingPlans = [
+  {
+    tier: 'GROWTH',
+    description: 'For teams launching outbound automation',
+    minutes: '100 min / mo',
+    price: '$59',
+    badge: null,
+    subBadge: null,
+    featured: false,
+    features: outboundIncludedFeatures,
+  },
+  {
+    tier: 'SCALE',
+    description: 'For growing teams running daily campaigns',
+    minutes: '500 min / mo',
+    price: '$299',
+    badge: 'START HERE',
+    subBadge: null,
+    featured: false,
+    features: outboundIncludedFeatures,
+  },
+  {
+    tier: 'ENTERPRISE',
+    description: 'For high-volume outbound operations',
+    minutes: '2,000 min / mo',
+    price: '$999',
+    originalPrice: '$1,199',
+    discountText: 'FIRST MONTH',
+    badge: 'MOST POPULAR',
+    subBadge: null,
+    featured: true,
+    promoNote: 'First month only. Renews at $1,199/mo + tax.',
+    features: outboundIncludedFeatures,
+  },
+  {
+    tier: 'CUSTOM',
+    description: 'For custom workflows and large data sets',
+    minutes: 'Custom min / mo',
+    price: 'Custom',
+    badge: null,
+    subBadge: null,
+    featured: false,
+    ctaLabel: 'Contact Sales Team',
+    features: outboundIncludedFeatures,
+  },
+]
+
+export const pricingPlans = receptionistPricingPlans

@@ -1,10 +1,17 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Check } from 'lucide-vue-next'
-import { pricingPlans } from '../data/pricingData'
+import { receptionistPricingPlans, outboundPricingPlans } from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
 import HeroCanvas from './HeroCanvas.vue'
+
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
 
 const emit = defineEmits(['open-booking'])
 
@@ -14,6 +21,24 @@ const cardRefs = ref([])
 const referralRef = ref(null)
 const pricingSectionRef = ref(null)
 const shouldRenderCanvas = ref(false)
+
+const pricingCopy = props.service === 'outbound-agent'
+  ? {
+      heading: 'Simple. Scalable. Outbound-ready.',
+      sub:
+        'All plans include setup, onboarding, campaign configuration, and CRM integration. Book a demo to see the right fit.',
+      baseBanner:
+        'Starting at $59/mo - 100 mins - 24/7 outbound calling and CRM sync included',
+    }
+  : {
+      heading: 'Simple. Transparent. No hidden fees.',
+      sub:
+        'All plans include full setup, onboarding, and calendar integration. Book a demo and we will walk you through everything.',
+      baseBanner:
+        'Starting at $59/mo - 100 mins - 24/7 receptionist and calendar integration included',
+    }
+
+const activePlans = props.service === 'outbound-agent' ? outboundPricingPlans : receptionistPricingPlans
 
 useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value, referralRef.value])
 
@@ -129,7 +154,7 @@ function handlePlanCta(plan) {
 
 <template>
   <section id="pricing" ref="pricingSectionRef" class="section pricing-section">
-    <HeroCanvas v-if="shouldRenderCanvas" :intro="false" />
+    <HeroCanvas v-if="shouldRenderCanvas" :intro="false" :palette-variant="props.service" />
     <div class="pricing-scrim"></div>
     <div class="pricing-edge-fade pricing-edge-fade--top" aria-hidden="true"></div>
     <div class="pricing-edge-fade pricing-edge-fade--bottom" aria-hidden="true"></div>
@@ -137,18 +162,17 @@ function handlePlanCta(plan) {
       <div class="reveal-header" ref="headerRef">
         <div class="section-eyebrow">Pricing</div>
         <LiquidHeading class="pricing-heading">
-          Simple. Transparent.<br />No hidden fees.
+          {{ pricingCopy.heading }}
         </LiquidHeading>
         <p class="section-sub">
-          All plans include full setup, onboarding, and calendar integration. Book
-          a demo and we will walk you through everything.
+          {{ pricingCopy.sub }}
         </p>
       </div>
 
       <div class="base-plan-banner" ref="bannerRef">
         <span class="base-plan-pill">BASE PLAN</span>
         <p class="base-plan-text">
-          Starting at <strong>$59/mo</strong> - 100 mins - 24/7 receptionist &amp; calendar integration included
+          {{ pricingCopy.baseBanner }}
         </p>
       </div>
 
@@ -156,7 +180,7 @@ function handlePlanCta(plan) {
 
       <div class="pricing-grid">
         <div
-          v-for="(plan, i) in pricingPlans"
+          v-for="(plan, i) in activePlans"
           :key="plan.tier"
           class="pricing-plan"
           :class="{ 'is-featured': plan.featured }"
@@ -226,7 +250,7 @@ function handlePlanCta(plan) {
       </div>
 
       <p class="pricing-footer">
-        All plans include full setup, onboarding, and calendar integration. Prices + tax. No hidden fees.
+        All plans include full setup and onboarding. Prices + tax. No hidden fees.
       </p>
 
       <div class="referral-callout" ref="referralRef">

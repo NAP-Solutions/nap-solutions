@@ -9,6 +9,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
 })
 
 const emit = defineEmits(['open-booking'])
@@ -18,13 +22,18 @@ const router = useRouter()
 const { scrollToSection } = useScrollToSection()
 useScrollReveal(() => [innerRef.value], { threshold: 0.05 })
 
+const serviceRoute = props.service === 'outbound-agent' ? '/outbound-agent' : '/ai-receptionist'
+const serviceDescription = props.service === 'outbound-agent'
+  ? 'AI outbound agents that call every lead, qualify intent, and book meetings automatically.'
+  : 'AI-powered receptionists that answer every call, book every appointment, and never clock out.'
+
 function scrollTo(id) {
   const target = document.querySelector(`#${id}`)
   if (target) {
     scrollToSection(id)
     return
   }
-  router.push(`/ai-receptionist#${id}`)
+  router.push(`${serviceRoute}#${id}`)
 }
 
 function trackLead() {
@@ -43,13 +52,14 @@ function trackLead() {
             <span class="footer-wordmark">NAP SOLUTIONS</span>
           </div>
           <p v-if="!props.minimal">
-            AI-powered receptionists that answer every call, book every
-            appointment, and never clock out.
+            {{ serviceDescription }}
           </p>
         </div>
         <div v-if="!props.minimal" class="footer-col">
           <h4>Product</h4>
           <ul>
+            <li @click="router.push('/ai-receptionist')">AI Receptionist</li>
+            <li @click="router.push('/outbound-agent')">Outbound Agent</li>
             <li @click="scrollTo('pricing')">Pricing</li>
             <li @click="scrollTo('faq')">FAQ</li>
           </ul>

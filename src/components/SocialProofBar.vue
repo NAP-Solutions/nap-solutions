@@ -3,6 +3,25 @@ import { ref } from 'vue'
 import { Activity, Home, Heart, Stethoscope, Briefcase } from 'lucide-vue-next'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
+
+const proofContent = {
+  'ai-receptionist': {
+    label: 'Trusted by appointment-based businesses',
+    note: 'Client logos coming soon - currently in active onboarding',
+  },
+  'outbound-agent': {
+    label: 'Built for teams that run on outbound pipeline',
+    note: '24/7 outreach coverage - no lead left behind',
+  },
+}
+
+const content = proofContent[props.service] ?? proofContent['ai-receptionist']
 const barRef = ref(null)
 useScrollReveal(() => [barRef.value])
 </script>
@@ -10,7 +29,7 @@ useScrollReveal(() => [barRef.value])
 <template>
   <div class="sp-bar" ref="barRef">
     <div class="sp-inner">
-      <p class="sp-label">Trusted by appointment-based businesses</p>
+      <p class="sp-label">{{ content.label }}</p>
       <div class="sp-logos">
         <div class="sp-slot">
           <div class="sp-icon-wrap">
@@ -45,7 +64,7 @@ useScrollReveal(() => [barRef.value])
       </div>
       <div class="sp-coming">
         <span class="sp-dot"></span>
-        Client logos coming soon — currently in active onboarding
+        {{ content.note }}
       </div>
     </div>
   </div>

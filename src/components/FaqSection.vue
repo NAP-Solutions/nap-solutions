@@ -1,8 +1,15 @@
 <script setup>
 import { ref } from 'vue'
-import { faqItems } from '../data/faqData'
+import { faqItems, outboundFaqItems } from '../data/faqData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
+
+const props = defineProps({
+  service: {
+    type: String,
+    default: 'ai-receptionist',
+  },
+})
 
 const emit = defineEmits(['open-booking'])
 
@@ -11,6 +18,26 @@ const showAll = ref(false)
 const headerRef = ref(null)
 const listRef = ref(null)
 const ctaRef = ref(null)
+
+const faqCopy = props.service === 'outbound-agent'
+  ? {
+      heading: 'Outbound questions, answered',
+      subtitle:
+        'Everything you need to know about setup, compliance, integrations, and how the outbound agent works day to day.',
+      ctaLabel: 'Still deciding?',
+      ctaSub: 'Book a free outbound demo and we will walk through your use case.',
+      ctaButton: 'Book an Outbound Demo',
+    }
+  : {
+      heading: 'Frequently asked questions',
+      subtitle:
+        "Answers to common questions about NAP Solutions and how it works. If you have anything else, don't hesitate to reach out.",
+      ctaLabel: 'Still have questions?',
+      ctaSub: "Book a free demo and we'll walk you through everything online.",
+      ctaButton: 'Book a Demo',
+    }
+
+const activeFaqItems = props.service === 'outbound-agent' ? outboundFaqItems : faqItems
 
 useScrollReveal(() => [headerRef.value, listRef.value, ctaRef.value])
 
@@ -30,16 +57,15 @@ function trackLead() {
     <div class="faq-inner">
 
       <div class="faq-header" ref="headerRef">
-        <LiquidHeading class="faq-heading">Frequently asked questions</LiquidHeading>
+        <LiquidHeading class="faq-heading">{{ faqCopy.heading }}</LiquidHeading>
         <p class="faq-subtitle">
-          Answers to common questions about NAP Solutions and how it works.
-          If you have anything else, don't hesitate to reach out.
+          {{ faqCopy.subtitle }}
         </p>
       </div>
 
       <div class="faq-list" ref="listRef">
         <div
-          v-for="(item, i) in (showAll ? faqItems : faqItems.slice(0, 6))"
+          v-for="(item, i) in (showAll ? activeFaqItems : activeFaqItems.slice(0, 6))"
           :key="i"
           class="faq-item"
           :class="{ open: openIndex === i }"
@@ -69,17 +95,17 @@ function trackLead() {
 
       <div class="faq-controls">
         <button class="faq-show-more" @click="showAll = !showAll">
-          {{ showAll ? 'Show fewer questions' : `Show all ${faqItems.length} questions` }}
+          {{ showAll ? 'Show fewer questions' : `Show all ${activeFaqItems.length} questions` }}
         </button>
       </div>
 
       <div class="faq-cta" ref="ctaRef">
         <div class="faq-cta-text">
-          <p class="faq-cta-label">Still have questions?</p>
-          <p class="faq-cta-sub">Book a free demo and we'll walk you through everything online.</p>
+          <p class="faq-cta-label">{{ faqCopy.ctaLabel }}</p>
+          <p class="faq-cta-sub">{{ faqCopy.ctaSub }}</p>
         </div>
         <button class="btn-primary btn-shine" @click="trackLead(); emit('open-booking')">
-          Book a Demo
+          {{ faqCopy.ctaButton }}
         </button>
       </div>
 

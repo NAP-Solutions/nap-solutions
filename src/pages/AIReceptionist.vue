@@ -25,19 +25,19 @@ function closeBooking() {
 </script>
 
 <template>
-  <NavBar @open-booking="openBooking" />
+  <NavBar service="ai-receptionist" @open-booking="openBooking" />
   <main>
-    <HeroSection @open-booking="openBooking" />
-    <SocialProofBar />
-    <ProblemSection />
-    <CostSection />
-    <SolutionSection />
-    <HowItWorksSection />
-    <PricingSection @open-booking="openBooking" />
-    <FaqSection @open-booking="openBooking" />
-    <CtaSection @open-booking="openBooking" />
+    <HeroSection service="ai-receptionist" @open-booking="openBooking" />
+    <SocialProofBar service="ai-receptionist" />
+    <ProblemSection service="ai-receptionist" />
+    <CostSection service="ai-receptionist" />
+    <SolutionSection service="ai-receptionist" />
+    <HowItWorksSection service="ai-receptionist" />
+    <PricingSection service="ai-receptionist" @open-booking="openBooking" />
+    <FaqSection service="ai-receptionist" @open-booking="openBooking" />
+    <CtaSection service="ai-receptionist" @open-booking="openBooking" />
     <ContactSection />
   </main>
-  <SiteFooter @open-booking="openBooking" />
+  <SiteFooter service="ai-receptionist" @open-booking="openBooking" />
   <BookingModal :open="bookingOpen" @close="closeBooking" />
 </template>

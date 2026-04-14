@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { ArrowBigLeft, ArrowBigRight, House } from 'lucide-vue-next'
 import logoImg from '../assets/logo.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
@@ -8,6 +9,10 @@ const props = defineProps({
   minimal: {
     type: Boolean,
     default: false,
+  },
+  service: {
+    type: String,
+    default: 'ai-receptionist',
   },
 })
 
@@ -18,6 +23,7 @@ const scrolled   = ref(false)
 let scrollRaf = 0
 const router = useRouter()
 const { scrollToSection } = useScrollToSection()
+const serviceRoute = computed(() => props.service === 'outbound-agent' ? '/outbound-agent' : '/ai-receptionist')
 
 function toggleMobileMenu() { mobileOpen.value = !mobileOpen.value }
 function closeMobileMenu()  { mobileOpen.value = false }
@@ -41,12 +47,16 @@ function goTo(hash, e) {
   } else {
     if (e) e.preventDefault()
     const normalizedHash = hash.startsWith('#') ? hash : `#${hash}`
-    router.push(`/ai-receptionist${normalizedHash}`)
+    router.push(`${serviceRoute.value}${normalizedHash}`)
   }
   closeMobileMenu()
 }
 function goToAIReceptionist() {
   router.push('/ai-receptionist')
+  closeMobileMenu()
+}
+function goToOutboundAgent() {
+  router.push('/outbound-agent')
   closeMobileMenu()
 }
 function goHome() {
@@ -76,6 +86,52 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <div
+    v-if="!props.minimal && props.service === 'outbound-agent'"
+    class="page-service-controls page-service-controls--left"
+    :class="{ scrolled }"
+  >
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to AI Receptionist"
+      @click="goToAIReceptionist"
+    >
+      <ArrowBigLeft :size="18" :stroke-width="2.4" />
+    </button>
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to Home"
+      @click="goHome"
+    >
+      <House :size="17" :stroke-width="2.4" />
+    </button>
+  </div>
+
+  <div
+    v-if="!props.minimal && props.service === 'ai-receptionist'"
+    class="page-service-controls page-service-controls--right"
+    :class="{ scrolled }"
+  >
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to Outbound Agent"
+      @click="goToOutboundAgent"
+    >
+      <ArrowBigRight :size="18" :stroke-width="2.4" />
+    </button>
+    <button
+      class="page-service-btn btn-shine"
+      type="button"
+      aria-label="Go to Home"
+      @click="goHome"
+    >
+      <House :size="17" :stroke-width="2.4" />
+    </button>
+  </div>
+
   <nav class="nav" :class="{ scrolled, 'mobile-open': mobileOpen }">
     <div class="nav-inner">
       <a class="nav-logo" href="#hero" @click.prevent="goTo('#hero', $event)">
@@ -91,21 +147,12 @@ onUnmounted(() => {
             </button>
           </li>
           <li>
-            <span
-              class="nav-wip-wrap"
-              tabindex="0"
-              role="note"
-              aria-label="Outbound Agent is a work in progress and coming soon."
-            >
-              <button class="nav-cta nav-cta-disabled nav-link-btn" type="button" disabled aria-disabled="true">
-                Outbound Agent
-              </button>
-              <span class="nav-wip-tooltip" role="tooltip">Work in progress, coming soon.</span>
-            </span>
+            <button class="nav-cta btn-shine nav-link-btn" type="button" @click="goToOutboundAgent">
+              Outbound Agent
+            </button>
           </li>
         </template>
         <template v-else>
-          <li><a href="/" @click.prevent="goHome">Home Page</a></li>
           <li><a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a></li>
           <li><a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a></li>
           <li><a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a></li>
@@ -138,20 +185,11 @@ onUnmounted(() => {
         <button class="nav-mobile-cta btn-shine" type="button" @click="goToAIReceptionist">
           AI Receptionist
         </button>
-        <span
-          class="nav-wip-wrap nav-wip-wrap-mobile"
-          tabindex="0"
-          role="note"
-          aria-label="Outbound Agent is a work in progress and coming soon."
-        >
-          <button class="nav-mobile-cta nav-mobile-cta-disabled" type="button" disabled aria-disabled="true">
-            Outbound Agent
-          </button>
-          <span class="nav-wip-tooltip nav-wip-tooltip-mobile" role="tooltip">Work in progress, coming soon.</span>
-        </span>
+        <button class="nav-mobile-cta btn-shine" type="button" @click="goToOutboundAgent">
+          Outbound Agent
+        </button>
       </template>
       <template v-else>
-        <a href="/" @click.prevent="goHome">Home Page</a>
         <a href="#problem" @click.prevent="goTo('#problem', $event)">The Problem</a>
         <a href="#solution" @click.prevent="goTo('#solution', $event)">The Solution</a>
         <a href="#how" @click.prevent="goTo('#how', $event)">How It Works</a>
@@ -333,6 +371,122 @@ onUnmounted(() => {
   border: 0;
   cursor: pointer;
 }
+
+.page-service-controls {
+  position: fixed;
+  --nav-pill-top: 14px;
+  --nav-pill-height: 62px;
+  --control-size: 42px;
+  --controls-gap: 8px;
+  --controls-pad: 10px;
+  --corner-offset: 14px;
+  --controls-height: calc(var(--control-size) + (var(--controls-pad) * 2));
+  top: calc(var(--nav-pill-top) + ((var(--nav-pill-height) - var(--controls-height)) / 2));
+  min-height: var(--controls-height);
+  display: flex;
+  align-items: center;
+  gap: var(--controls-gap);
+  padding: var(--controls-pad);
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  box-shadow: none;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  isolation: isolate;
+  z-index: 110;
+}
+
+.page-service-controls::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.16) 42%, rgba(255, 255, 255, 0.46) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.page-service-controls::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(140% 120% at 16% -18%, rgba(var(--brand-rgb), 0.28) 0%, rgba(255, 255, 255, 0) 52%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.page-service-controls.scrolled {
+  background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.26) 0%, rgba(var(--brand-rgb), 0.2) 48%, rgba(255, 255, 255, 0.62) 100%);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.84);
+  box-shadow:
+    0 10px 28px rgba(var(--brand-rgb), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    inset 0 -8px 16px rgba(255, 255, 255, 0.16);
+}
+
+.page-service-controls.scrolled::before {
+  opacity: 0.82;
+}
+
+.page-service-controls.scrolled::after {
+  opacity: 0.62;
+}
+
+.page-service-controls--left {
+  left: var(--corner-offset);
+}
+
+.page-service-controls--right {
+  right: var(--corner-offset);
+}
+
+.page-service-btn {
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.44) 0%, rgba(var(--brand-rgb), 0.34) 48%, rgba(255, 255, 255, 0.4) 100%);
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow:
+    0 8px 20px rgba(var(--brand-rgb), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+}
+
+.page-service-btn:hover {
+  opacity: 0.96;
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 10px 24px rgba(var(--brand-rgb), 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.24);
+}
+
+.page-service-btn:active {
+  transform: translateY(0);
+}
+
+.page-service-btn :deep(svg) {
+  display: block;
+}
+
 .nav-cta-disabled {
   background: linear-gradient(160deg, rgba(176, 183, 196, 0.36) 0%, rgba(149, 157, 171, 0.32) 52%, rgba(236, 240, 246, 0.38) 100%) !important;
   border-color: rgba(245, 248, 255, 0.62) !important;
@@ -385,7 +539,12 @@ onUnmounted(() => {
   border-radius: 10px;
   font-size: 15px;
   font-weight: 700;
-  padding: 12px 16px;
+  line-height: 1;
+  padding: 0 16px;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   box-shadow:
     0 8px 18px rgba(var(--brand-rgb), 0.18),
@@ -497,6 +656,14 @@ onUnmounted(() => {
     font-size: 13px !important;
     padding: 9px 14px;
   }
+  .page-service-controls {
+    --nav-pill-height: 58px;
+    --control-size: 38px;
+    --controls-pad: 10px;
+  }
+  .page-service-btn {
+    border-radius: 11px;
+  }
 }
 
 @media (max-width: 960px) {
@@ -523,6 +690,15 @@ onUnmounted(() => {
     min-height: 60px;
     padding: 0 10px 0 14px;
     justify-content: space-between;
+  }
+  .page-service-controls {
+    --nav-pill-top: 12px;
+    --nav-pill-height: 60px;
+    --controls-pad: 9px;
+  }
+  .page-service-controls--left {
+    left: auto;
+    right: var(--corner-offset);
   }
   .nav-links { display: none; }
   .nav-wordmark { font-size: 13px; letter-spacing: 0.14em; }
@@ -581,10 +757,9 @@ onUnmounted(() => {
 
   .mobile-menu .nav-mobile-cta {
     width: 100%;
+    height: 46px;
     min-height: 46px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0 16px;
   }
 
   .nav-wip-wrap-mobile {
@@ -593,6 +768,11 @@ onUnmounted(() => {
 }
 
 @media (max-width: 640px) {
+  .page-service-controls {
+    --nav-pill-height: 56px;
+    --control-size: 40px;
+    --controls-pad: 8px;
+  }
   .nav-wordmark { font-size: 12px; letter-spacing: 0.1em; }
   .nav-logo { gap: 8px; }
   .nav-logo-img { width: 32px; height: 32px; }
