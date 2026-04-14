@@ -793,6 +793,19 @@ function trackLead() {
     width: 100%;
   }
 
+  .hero-actions .wip-button-wrap .btn-wip {
+    overflow: hidden;
+  }
+
+  .hero-actions .wip-button-wrap .btn-wip::after {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    transform: none;
+    border-radius: 12px 12px 0 0;
+  }
+
   .hero-trust {
     flex-direction: row;
     align-items: center;
