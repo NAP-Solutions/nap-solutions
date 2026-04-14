@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import logoImg from '../assets/NAP-BLACK-BOX-LOGO-WHITE.png'
+import logoImg from '../assets/logo.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
 const props = defineProps({
