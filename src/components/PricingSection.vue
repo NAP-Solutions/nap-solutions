@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { Check, X } from 'lucide-vue-next'
+import { Check } from 'lucide-vue-next'
 import { pricingPlans } from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
 import HeroCanvas from './HeroCanvas.vue'
 
-defineEmits(['open-booking'])
+const emit = defineEmits(['open-booking'])
 
 const headerRef = ref(null)
 const bannerRef = ref(null)
@@ -112,6 +112,19 @@ function trackLead() {
     window.fbq('track', 'Lead')
   }
 }
+
+function handlePlanCta(plan) {
+  if (plan?.ctaLabel?.toLowerCase().startsWith('contact')) {
+    const contactEl = document.getElementById('contact')
+    if (contactEl) {
+      contactEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+  }
+
+  trackLead()
+  emit('open-booking')
+}
 </script>
 
 <template>
@@ -135,7 +148,7 @@ function trackLead() {
       <div class="base-plan-banner" ref="bannerRef">
         <span class="base-plan-pill">BASE PLAN</span>
         <p class="base-plan-text">
-          Starting at <strong>$479/mo</strong> — 2,000 mins — 24/7 receptionist &amp; calendar integration included
+          Starting at <strong>$59/mo</strong> - 100 mins - 24/7 receptionist &amp; calendar integration included
         </p>
       </div>
 
@@ -190,11 +203,9 @@ function trackLead() {
                 v-for="(feat, j) in plan.features"
                 :key="j"
                 class="feat-row"
-                :class="{ 'feat-excluded': !feat.included }"
               >
                 <span class="feat-icon">
-                  <Check v-if="feat.included" :size="11" />
-                  <X v-else :size="11" />
+                  <Check :size="11" />
                 </span>
                 <span class="feat-label">{{ feat.label }}</span>
               </li>
@@ -204,7 +215,7 @@ function trackLead() {
             <button
               :class="plan.featured ? 'btn-primary' : ['btn-ghost', 'btn-shine']"
               class="pricing-cta"
-              @click="trackLead(); $emit('open-booking')"
+              @click="handlePlanCta(plan)"
             >
               {{ plan.ctaLabel || 'Book a Demo' }}
             </button>
@@ -417,7 +428,7 @@ function trackLead() {
   border: none;
 }
 
-/* Card — full border on all sides, same shape for all plans */
+/* Card - full border on all sides, same shape for all plans */
 .pricing-card {
   position: relative;
   background: #fff;
@@ -788,3 +799,4 @@ function trackLead() {
   }
 }
 </style>
+
