@@ -782,6 +782,17 @@ function trackLead() {
     border-bottom-width: 1px;
   }
 
+  .hero-actions .wip-button-wrap {
+    width: min(100%, 340px);
+    display: grid;
+    place-items: center;
+    margin-inline: auto;
+  }
+
+  .hero-actions .wip-button-wrap .btn-primary {
+    width: 100%;
+  }
+
   .hero-trust {
     flex-direction: row;
     align-items: center;
