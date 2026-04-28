@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Check } from 'lucide-vue-next'
-import { receptionistPricingPlans, outboundPricingPlans } from '../data/pricingData'
+import { receptionistPricingPlans, outboundPricingPlans, receptionistComparisonRows } from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
 import HeroCanvas from './HeroCanvas.vue'
@@ -18,9 +18,11 @@ const emit = defineEmits(['open-booking'])
 const headerRef = ref(null)
 const bannerRef = ref(null)
 const cardRefs = ref([])
+const tableRef = ref(null)
 const referralRef = ref(null)
 const pricingSectionRef = ref(null)
 const shouldRenderCanvas = ref(false)
+const isOutbound = props.service === 'outbound-agent'
 
 const pricingCopy = props.service === 'outbound-agent'
   ? {
@@ -38,9 +40,32 @@ const pricingCopy = props.service === 'outbound-agent'
         'Starting at $59/mo - 100 mins - 24/7 receptionist and calendar integration included',
     }
 
-const activePlans = props.service === 'outbound-agent' ? outboundPricingPlans : receptionistPricingPlans
+const activePlans = outboundPricingPlans
+const receptionistComparisonPlans = receptionistPricingPlans.filter((plan) =>
+  ['GROWTH', 'SCALE', 'ENTERPRISE'].includes(plan.tier)
+)
 
-useScrollReveal(() => [headerRef.value, bannerRef.value, ...cardRefs.value, referralRef.value])
+function getComparisonValue(row, tier) {
+  const key = tier.toLowerCase()
+  return row[key] ?? '-'
+}
+
+function isMutedComparisonValue(value) {
+  const normalized = String(value).trim().toLowerCase()
+  return normalized === 'no' || normalized.startsWith('no ')
+}
+
+useScrollReveal(() => {
+  const revealTargets = [headerRef.value, bannerRef.value, referralRef.value]
+
+  if (isOutbound) {
+    revealTargets.push(...cardRefs.value)
+  } else {
+    revealTargets.push(tableRef.value)
+  }
+
+  return revealTargets
+})
 
 let canvasWarmupObserver = null
 let idleWarmupHandle = 0
@@ -176,9 +201,9 @@ function handlePlanCta(plan) {
         </p>
       </div>
 
-      <p class="plans-label">MONTHLY PLANS</p>
+      <p class="plans-label">{{ isOutbound ? 'MONTHLY PLANS' : 'PLAN COMPARISON' }}</p>
 
-      <div class="pricing-grid">
+      <div v-if="isOutbound" class="pricing-grid">
         <div
           v-for="(plan, i) in activePlans"
           :key="plan.tier"
@@ -248,9 +273,68 @@ function handlePlanCta(plan) {
           <p v-if="plan.promoNote" class="pricing-note">{{ plan.promoNote }}</p>
         </div>
       </div>
+      <div v-else class="comparison-table-wrap" ref="tableRef">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th class="comparison-feature-head">
+                <div class="comparison-feature-header">
+                  <div class="comparison-feature-kicker">Included</div>
+                  <div class="comparison-feature-title">Features</div>
+                  <p class="comparison-feature-sub">Compare what each plan includes at a glance.</p>
+                </div>
+              </th>
+              <th
+                v-for="plan in receptionistComparisonPlans"
+                :key="plan.tier"
+                class="comparison-col-head"
+                :class="{ 'is-featured-col': plan.featured }"
+              >
+                <span v-if="plan.discountText" class="comparison-plan-corner-badge">
+                  {{ plan.discountText }}
+                </span>
+                <div class="comparison-plan-header">
+                  <div class="comparison-plan-tier">{{ plan.tier }}</div>
+                  <div class="comparison-plan-price-row">
+                    <span class="comparison-plan-price">{{ plan.price }}</span>
+                    <span class="comparison-plan-meta">
+                      <span v-if="plan.originalPrice" class="comparison-plan-old-price comparison-plan-old-price--stacked">
+                        {{ plan.originalPrice }}
+                      </span>
+                      <span class="comparison-plan-period">/ mo</span>
+                    </span>
+                  </div>
+                  <p class="comparison-plan-minutes">{{ plan.minutes }}</p>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in receptionistComparisonRows" :key="row.feature">
+              <th>{{ row.feature }}</th>
+              <td
+                v-for="plan in receptionistComparisonPlans"
+                :key="`${row.feature}-${plan.tier}`"
+                :class="{ 'is-featured-col': plan.featured }"
+              >
+                <span
+                  class="comparison-value"
+                  :class="{ 'comparison-value-muted': isMutedComparisonValue(getComparisonValue(row, plan.tier)) }"
+                >
+                  {{ getComparisonValue(row, plan.tier) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <p class="pricing-footer">
-        All plans include full setup and onboarding. Prices + tax. No hidden fees.
+        {{
+          isOutbound
+            ? 'All plans include full setup and onboarding. Prices + tax. No hidden fees.'
+            : 'Need tailored minutes or workflow requirements? Book a demo and we will map the right plan for your team.'
+        }}
       </p>
 
       <div class="referral-callout" ref="referralRef">
@@ -421,6 +505,194 @@ function handlePlanCta(plan) {
 .pricing-plan:nth-child(2) { transition-delay: 0.08s; }
 .pricing-plan:nth-child(3) { transition-delay: 0.16s; }
 .pricing-plan:nth-child(4) { transition-delay: 0.24s; }
+
+.comparison-table-wrap {
+  margin-top: clamp(0.5rem, 1.4vw, 0.9rem);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.comparison-table-wrap[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border: 1.5px solid rgba(10, 15, 30, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 38px rgba(var(--accent-ink-rgb), 0.09);
+}
+
+.comparison-table thead th {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(10, 15, 30, 0.09);
+  white-space: nowrap;
+}
+
+.comparison-feature-head {
+  width: 33%;
+  vertical-align: top;
+}
+
+.comparison-col-head {
+  width: 22.33%;
+  vertical-align: top;
+  position: relative;
+}
+
+.comparison-feature-header {
+  display: grid;
+  gap: 6px;
+  max-width: 32ch;
+}
+
+.comparison-feature-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--accent-ink-text, var(--accent-ink));
+}
+
+.comparison-feature-title {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.comparison-feature-sub {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.comparison-table tbody th,
+.comparison-table tbody td {
+  padding: 16px 20px;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--text-body);
+  border-bottom: 1px solid rgba(10, 15, 30, 0.07);
+}
+
+.comparison-table thead th + th,
+.comparison-table tbody th + td,
+.comparison-table tbody td + td {
+  border-left: 1px solid rgba(10, 15, 30, 0.07);
+}
+
+.comparison-table tbody th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.comparison-table tbody td {
+  text-align: left;
+  font-weight: 500;
+}
+
+.comparison-value {
+  display: inline-block;
+}
+
+.comparison-value-muted {
+  color: var(--text-muted);
+}
+
+.is-featured-col {
+  background: linear-gradient(180deg, rgba(var(--accent-ink-rgb), 0.07), rgba(255, 255, 255, 0));
+}
+
+.comparison-plan-header {
+  display: grid;
+  gap: 6px;
+}
+
+.comparison-plan-corner-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--accent-ink);
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.comparison-plan-tier {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent-ink-text, var(--accent-ink));
+  text-transform: uppercase;
+}
+
+.comparison-plan-price-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.comparison-plan-meta {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+.comparison-plan-price {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+}
+
+.comparison-plan-period {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.comparison-plan-old-price {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.comparison-plan-old-price--stacked {
+  line-height: 1;
+}
+
+.comparison-plan-minutes {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.comparison-table tbody tr:last-child th,
+.comparison-table tbody tr:last-child td {
+  border-bottom: none;
+}
 
 /* Badge sits above the card, centered, overlapping the top border */
 .plan-badge-wrap {
@@ -784,6 +1056,41 @@ function handlePlanCta(plan) {
 
   .reveal-header .section-sub {
     width: min(100%, 24rem);
+  }
+
+  .comparison-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-inline: -4px;
+    padding-inline: 4px;
+  }
+
+  .comparison-table {
+    min-width: 760px;
+    border-radius: 14px;
+  }
+
+  .comparison-table thead th {
+    font-size: 14px;
+    padding: 16px 18px;
+  }
+
+  .comparison-table tbody th,
+  .comparison-table tbody td {
+    font-size: 14px;
+    padding: 14px 18px;
+  }
+
+  .comparison-plan-price {
+    font-size: 34px;
+  }
+
+  .comparison-plan-period {
+    font-size: 16px;
+  }
+
+  .comparison-feature-title {
+    font-size: 22px;
   }
 }
 

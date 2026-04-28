@@ -23,6 +23,63 @@ const outboundFeatures = [
 const receptionistIncludedFeatures = receptionistFeatures.map((label) => ({ label, included: true }))
 const outboundIncludedFeatures = outboundFeatures.map((label) => ({ label, included: true }))
 
+export const receptionistComparisonRows = [
+  {
+    feature: '24/7 AI receptionist',
+    growth: 'Yes',
+    scale: 'Yes',
+    enterprise: 'Yes',
+  },
+  {
+    feature: 'Calendar integration',
+    growth: 'Basic',
+    scale: 'Yes',
+    enterprise: 'Yes',
+  },
+  {
+    feature: 'Call summaries',
+    growth: 'Yes',
+    scale: 'Yes',
+    enterprise: 'Yes',
+  },
+  {
+    feature: 'Appointment booking',
+    growth: 'Basic',
+    scale: 'Yes',
+    enterprise: 'Yes',
+  },
+  {
+    feature: 'Reschedule/cancel flows',
+    growth: 'No or limited',
+    scale: 'Yes',
+    enterprise: 'Yes',
+  },
+  {
+    feature: 'OTP verification',
+    growth: 'No',
+    scale: 'Optional',
+    enterprise: 'Yes',
+  },
+  {
+    feature: 'CRM/custom integration',
+    growth: 'No',
+    scale: 'Limited',
+    enterprise: 'Yes',
+  },
+  {
+    feature: 'Dashboard',
+    growth: 'Basic',
+    scale: 'Full',
+    enterprise: 'Full',
+  },
+  {
+    feature: 'Support',
+    growth: 'Email',
+    scale: 'Priority',
+    enterprise: 'Priority + custom',
+  },
+]
+
 export const receptionistPricingPlans = [
   {
     tier: 'GROWTH',
