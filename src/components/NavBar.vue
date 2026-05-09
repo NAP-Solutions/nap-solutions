@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowBigLeft, ArrowBigRight, House } from 'lucide-vue-next'
-import logoImg from '../assets/logo.png'
+import logoImg from '../assets/RIVA-LOGO.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
 const props = defineProps({
@@ -136,7 +136,7 @@ onUnmounted(() => {
     <div class="nav-inner">
       <a class="nav-logo" href="#hero" @click.prevent="goTo('#hero', $event)">
         <img :src="logoImg" alt="NAP Solutions" class="nav-logo-img" />
-        <span class="nav-wordmark">NAP SOLUTIONS</span>
+        <span class="nav-wordmark"></span>
       </a>
 
       <ul class="nav-links">
@@ -294,7 +294,7 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 .nav-logo-img {
-  width: 36px;
+  width: auto;
   height: 36px;
   border-radius: 9px;
   object-fit: cover;
