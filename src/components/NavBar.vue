@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowBigLeft, ArrowBigRight, House } from 'lucide-vue-next'
-import logoImg from '../assets/RIVA-LOGO.png'
+import logoImg from '../assets/NAP-LOGO.png'
 import { useScrollToSection } from '../composables/useScrollToSection'
 
 const props = defineProps({
@@ -297,7 +297,7 @@ onUnmounted(() => {
   width: auto;
   height: 36px;
   border-radius: 9px;
-  object-fit: cover;
+  object-fit: contain;
 }
 .nav-wordmark {
   display: inline-flex;
@@ -691,6 +691,10 @@ onUnmounted(() => {
     padding: 0 10px 0 14px;
     justify-content: space-between;
   }
+  .nav-logo-img {
+    width: 40px;
+    height: 40px;
+  }
   .page-service-controls {
     --nav-pill-top: 12px;
     --nav-pill-height: 60px;
@@ -775,7 +779,7 @@ onUnmounted(() => {
   }
   .nav-wordmark { font-size: 12px; letter-spacing: 0.1em; }
   .nav-logo { gap: 8px; }
-  .nav-logo-img { width: 32px; height: 32px; }
+  .nav-logo-img { width: 38px; height: 38px; }
   .nav-inner { min-height: 56px; }
 }
 
