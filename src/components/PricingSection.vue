@@ -1,7 +1,11 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { Check } from 'lucide-vue-next'
-import { receptionistPricingPlans, outboundPricingPlans, receptionistComparisonRows } from '../data/pricingData'
+import {
+  receptionistPricingPlans,
+  outboundPricingPlans,
+  receptionistComparisonRows,
+  outboundComparisonRows,
+} from '../data/pricingData'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import LiquidHeading from './LiquidHeading.vue'
 import HeroCanvas from './HeroCanvas.vue'
@@ -17,12 +21,13 @@ const emit = defineEmits(['open-booking'])
 
 const headerRef = ref(null)
 const bannerRef = ref(null)
-const cardRefs = ref([])
 const tableRef = ref(null)
+const customRef = ref(null)
 const referralRef = ref(null)
 const pricingSectionRef = ref(null)
 const shouldRenderCanvas = ref(false)
 const isOutbound = props.service === 'outbound-agent'
+const comparisonTierOrder = ['GROWTH', 'SCALE', 'DELUXE', 'ENTERPRISE']
 
 const pricingCopy = props.service === 'outbound-agent'
   ? {
@@ -40,10 +45,13 @@ const pricingCopy = props.service === 'outbound-agent'
         'Starting at $59/mo - 100 mins - 24/7 receptionist and calendar integration included',
     }
 
-const activePlans = outboundPricingPlans
-const receptionistComparisonPlans = receptionistPricingPlans.filter((plan) =>
-  ['GROWTH', 'SCALE', 'ENTERPRISE'].includes(plan.tier)
+const comparisonPlans = (isOutbound ? outboundPricingPlans : receptionistPricingPlans).filter((plan) =>
+  comparisonTierOrder.includes(plan.tier)
 )
+const comparisonRows = isOutbound ? outboundComparisonRows : receptionistComparisonRows
+const customPlan = isOutbound
+  ? outboundPricingPlans.find((plan) => plan.tier === 'CUSTOM')
+  : null
 
 function getComparisonValue(row, tier) {
   const key = tier.toLowerCase()
@@ -58,11 +66,8 @@ function isMutedComparisonValue(value) {
 useScrollReveal(() => {
   const revealTargets = [headerRef.value, bannerRef.value, referralRef.value]
 
-  if (isOutbound) {
-    revealTargets.push(...cardRefs.value)
-  } else {
-    revealTargets.push(tableRef.value)
-  }
+  revealTargets.push(tableRef.value)
+  if (isOutbound) revealTargets.push(customRef.value)
 
   return revealTargets
 })
@@ -201,79 +206,9 @@ function handlePlanCta(plan) {
         </p>
       </div>
 
-      <p class="plans-label">{{ isOutbound ? 'MONTHLY PLANS' : 'PLAN COMPARISON' }}</p>
+      <p class="plans-label">PLAN COMPARISON</p>
 
-      <div v-if="isOutbound" class="pricing-grid">
-        <div
-          v-for="(plan, i) in activePlans"
-          :key="plan.tier"
-          class="pricing-plan"
-          :class="{ 'is-featured': plan.featured }"
-          :ref="el => cardRefs[i] = el"
-        >
-          <!-- Popular badge floats above the card -->
-          <div v-if="plan.badge" class="plan-badge-wrap">
-            <span class="plan-badge" :class="{ 'badge-popular': plan.featured }">
-              {{ plan.badge }}
-            </span>
-          </div>
-
-          <div class="pricing-card" :class="{ featured: plan.featured }">
-            <!-- Header -->
-            <div class="card-header">
-              <div class="pricing-tier">{{ plan.tier }}</div>
-              <p class="pricing-desc">{{ plan.description }}</p>
-            </div>
-
-            <!-- Price -->
-            <div class="pricing-head">
-              <div class="pricing-price-row">
-                <div class="pricing-price">{{ plan.price }}</div>
-                <div class="pricing-period">/ mo + tax</div>
-              </div>
-              <div v-if="plan.originalPrice || plan.discountText" class="pricing-promo-row">
-                <span v-if="plan.originalPrice" class="pricing-old-price">{{ plan.originalPrice }}</span>
-                <span v-if="plan.discountText" class="pricing-discount-pill">{{ plan.discountText }}</span>
-              </div>
-            </div>
-
-            <!-- Minutes -->
-            <div class="pricing-mins-row">
-              <span class="mins-dot"></span>
-              <span class="mins-label">{{ plan.minutes }}</span>
-              <span v-if="plan.subBadge" class="mins-trial">{{ plan.subBadge }}</span>
-            </div>
-
-            <div class="pricing-divider"></div>
-
-            <!-- Features -->
-            <ul class="pricing-features">
-              <li
-                v-for="(feat, j) in plan.features"
-                :key="j"
-                class="feat-row"
-              >
-                <span class="feat-icon">
-                  <Check :size="11" />
-                </span>
-                <span class="feat-label">{{ feat.label }}</span>
-              </li>
-            </ul>
-
-            <!-- CTA -->
-            <button
-              :class="plan.featured ? 'btn-primary' : ['btn-ghost', 'btn-shine']"
-              class="pricing-cta"
-              @click="handlePlanCta(plan)"
-            >
-              {{ plan.ctaLabel || 'Book a Demo' }}
-            </button>
-          </div>
-
-          <p v-if="plan.promoNote" class="pricing-note">{{ plan.promoNote }}</p>
-        </div>
-      </div>
-      <div v-else class="comparison-table-wrap" ref="tableRef">
+      <div class="comparison-table-wrap" ref="tableRef">
         <table class="comparison-table">
           <thead>
             <tr>
@@ -281,11 +216,11 @@ function handlePlanCta(plan) {
                 <div class="comparison-feature-header">
                   <div class="comparison-feature-kicker">Included</div>
                   <div class="comparison-feature-title">Features</div>
-                  <p class="comparison-feature-sub">Compare what each plan includes at a glance.</p>
+                  <p class="comparison-feature-sub">Plan comparisons</p>
                 </div>
               </th>
               <th
-                v-for="plan in receptionistComparisonPlans"
+                v-for="plan in comparisonPlans"
                 :key="plan.tier"
                 class="comparison-col-head"
                 :class="{ 'is-featured-col': plan.featured }"
@@ -310,10 +245,10 @@ function handlePlanCta(plan) {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in receptionistComparisonRows" :key="row.feature">
+            <tr v-for="row in comparisonRows" :key="row.feature">
               <th>{{ row.feature }}</th>
               <td
-                v-for="plan in receptionistComparisonPlans"
+                v-for="plan in comparisonPlans"
                 :key="`${row.feature}-${plan.tier}`"
                 :class="{ 'is-featured-col': plan.featured }"
               >
@@ -327,6 +262,39 @@ function handlePlanCta(plan) {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div v-if="isOutbound && customPlan" ref="customRef" class="custom-plan-section">
+        <div class="custom-plan-copy">
+          <span class="custom-plan-pill">Custom option</span>
+          <h3 class="custom-plan-title">Need a fully tailored outbound setup?</h3>
+          <p class="custom-plan-text">
+            {{ customPlan.description }}. We can customize call volume, workflows, integrations, and campaign logic around your team.
+          </p>
+        </div>
+
+        <div class="custom-plan-card">
+          <div class="custom-plan-card-head">
+            <div>
+              <div class="pricing-tier">{{ customPlan.tier }}</div>
+              <p class="pricing-desc">Built for specialized workflows and large-scale campaigns.</p>
+            </div>
+            <div class="custom-plan-meta">
+              <span class="custom-plan-price">{{ customPlan.price }}</span>
+              <span class="custom-plan-minutes">{{ customPlan.minutes }}</span>
+            </div>
+          </div>
+
+          <ul class="custom-plan-features">
+            <li v-for="feature in customPlan.features" :key="feature.label" class="custom-plan-feature">
+              {{ feature.label }}
+            </li>
+          </ul>
+
+          <button class="btn-primary btn-shine custom-plan-cta" @click="handlePlanCta(customPlan)">
+            {{ customPlan.ctaLabel || 'Book a Demo' }}
+          </button>
+        </div>
       </div>
 
       <p class="pricing-footer">
@@ -540,12 +508,12 @@ function handlePlanCta(plan) {
 }
 
 .comparison-feature-head {
-  width: 33%;
+  width: 24%;
   vertical-align: top;
 }
 
 .comparison-col-head {
-  width: 22.33%;
+  width: 19%;
   vertical-align: top;
   position: relative;
 }
@@ -553,7 +521,7 @@ function handlePlanCta(plan) {
 .comparison-feature-header {
   display: grid;
   gap: 6px;
-  max-width: 32ch;
+  max-width: 20ch;
 }
 
 .comparison-feature-kicker {
@@ -974,6 +942,138 @@ function handlePlanCta(plan) {
   letter-spacing: 0.3px;
 }
 
+.custom-plan-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 28px;
+  padding: clamp(24px, 4vw, 34px);
+  border-radius: 18px;
+  border: 1.5px solid rgba(var(--accent-ink-rgb), 0.22);
+  background:
+    linear-gradient(135deg, rgba(var(--accent-ink-rgb), 0.08), rgba(255, 255, 255, 0.94)),
+    #fff;
+  box-shadow: 0 16px 38px rgba(var(--accent-ink-rgb), 0.08);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.custom-plan-section[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.custom-plan-copy {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.custom-plan-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-ink-text, var(--accent-ink));
+  background: rgba(var(--accent-ink-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.16);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+
+.custom-plan-title {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.custom-plan-text {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-body);
+}
+
+.custom-plan-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(var(--accent-ink-rgb), 0.14);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.custom-plan-card-head {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.custom-plan-meta {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  text-align: right;
+}
+
+.custom-plan-price {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+}
+
+.custom-plan-minutes {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.custom-plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+
+.custom-plan-feature {
+  position: relative;
+  padding-left: 16px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-body);
+}
+
+.custom-plan-feature::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.52em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+}
+
+.custom-plan-cta {
+  margin-top: 22px;
+  width: 100%;
+}
+
 .referral-callout {
   margin: 24px auto 0;
   max-width: 760px;
@@ -1041,6 +1141,10 @@ function handlePlanCta(plan) {
   .pricing-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .custom-plan-section {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1091,6 +1195,19 @@ function handlePlanCta(plan) {
 
   .comparison-feature-title {
     font-size: 22px;
+  }
+
+  .custom-plan-card-head {
+    flex-direction: column;
+  }
+
+  .custom-plan-meta {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .custom-plan-features {
+    grid-template-columns: 1fr;
   }
 }
 

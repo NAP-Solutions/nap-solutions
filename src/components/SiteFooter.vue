@@ -84,7 +84,7 @@ function trackLead() {
 
       <div class="social-row">
         <a
-          href="https://www.instagram.com/getnapsolutions"
+          href="https://www.instagram.com/rivabynap/"
           target="_blank"
           rel="noopener noreferrer"
           class="social-link"
@@ -94,10 +94,10 @@ function trackLead() {
             <circle cx="12" cy="12" r="4" />
             <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
           </svg>
-          getnapsolutions
+          rivabynap
         </a>
         <a
-          href="https://www.tiktok.com/@napsolutions"
+          href="https://www.tiktok.com/@rivabynap/"
           target="_blank"
           rel="noopener noreferrer"
           class="social-link"
@@ -105,7 +105,7 @@ function trackLead() {
           <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z" />
           </svg>
-          napsolutions
+          @rivabynap
         </a>
         <a
           v-if="props.minimal"

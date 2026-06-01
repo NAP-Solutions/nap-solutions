@@ -28,57 +28,88 @@ export const receptionistComparisonRows = [
     feature: '24/7 AI receptionist',
     growth: 'Yes',
     scale: 'Yes',
+    deluxe: 'Yes',
     enterprise: 'Yes',
   },
   {
     feature: 'Calendar integration',
     growth: 'Basic',
     scale: 'Yes',
+    deluxe: 'Yes',
     enterprise: 'Yes',
   },
   {
     feature: 'Call summaries',
-    growth: 'Yes',
+    growth: 'No',
     scale: 'Yes',
+    deluxe: 'Yes',
     enterprise: 'Yes',
   },
   {
     feature: 'Appointment booking',
     growth: 'Basic',
     scale: 'Yes',
+    deluxe: 'Yes',
     enterprise: 'Yes',
   },
   {
     feature: 'Reschedule/cancel flows',
     growth: 'No or limited',
     scale: 'Yes',
+    deluxe: 'Yes',
     enterprise: 'Yes',
   },
   {
     feature: 'OTP verification',
     growth: 'No',
     scale: 'Optional',
+    deluxe: 'Yes',
     enterprise: 'Yes',
   },
   {
     feature: 'CRM/custom integration',
     growth: 'No',
     scale: 'Limited',
+    deluxe: 'Yes',
     enterprise: 'Yes',
   },
   {
     feature: 'Dashboard',
     growth: 'Basic',
     scale: 'Full',
+    deluxe: 'Full',
     enterprise: 'Full',
   },
   {
-    feature: 'Support',
-    growth: 'Email',
-    scale: 'Priority',
-    enterprise: 'Priority + custom',
+    feature: 'Outbound agent',
+    growth: 'No',
+    scale: 'No',
+    deluxe: '1,000 min / mo',
+    enterprise: 'No',
   },
 ]
+
+const outboundComparisonRowExclusions = new Set([
+  '24/7 AI outbound calling',
+  'Lead list and CRM sync',
+  'Multi-attempt follow-up',
+])
+
+export const outboundComparisonRows = outboundFeatures
+  .filter((feature) => !outboundComparisonRowExclusions.has(feature))
+  .map((feature) => ({
+  feature,
+  growth: 'Yes',
+  scale: 'Yes',
+  deluxe: 'Yes',
+  enterprise: 'Yes',
+  })).concat({
+  feature: 'AI receptionist',
+  growth: 'No',
+  scale: 'No',
+  deluxe: '1,000 min / mo',
+  enterprise: 'No',
+})
 
 export const receptionistPricingPlans = [
   {
@@ -97,6 +128,16 @@ export const receptionistPricingPlans = [
     minutes: '500 min / mo',
     price: '$299',
     badge: 'START HERE',
+    subBadge: null,
+    featured: false,
+    features: receptionistIncludedFeatures,
+  },
+  {
+    tier: 'DELUXE',
+    description: 'For teams needing enterprise features with more volume',
+    minutes: '1,000 min / mo',
+    price: '$799',
+    badge: null,
     subBadge: null,
     featured: false,
     features: receptionistIncludedFeatures,
@@ -144,6 +185,16 @@ export const outboundPricingPlans = [
     minutes: '500 min / mo',
     price: '$299',
     badge: 'START HERE',
+    subBadge: null,
+    featured: false,
+    features: outboundIncludedFeatures,
+  },
+  {
+    tier: 'DELUXE',
+    description: 'For teams needing enterprise features with more volume',
+    minutes: '1,000 min / mo',
+    price: '$799',
+    badge: null,
     subBadge: null,
     featured: false,
     features: outboundIncludedFeatures,

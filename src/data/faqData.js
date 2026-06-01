@@ -53,7 +53,7 @@ export const faqItems = [
   },
   {
     q: 'How much does NAP Solutions cost?',
-    a: 'Plans start at $479/month (Base), with Growth at $1,199/month, Scale at $1,799 for the first month then $2,099/month, and Enterprise at $3,999/month. We confirm the best fit during your demo based on your call volume and business needs.',
+    a: 'Plans start at $59/month for Growth, with Scale at $299/month, Deluxe at $799/month, and Enterprise at $999 for the first month then $1,199/month. We confirm the best fit during your demo based on your call volume and business needs.',
   },
   {
     q: 'Are there contracts or long-term commitments?',
