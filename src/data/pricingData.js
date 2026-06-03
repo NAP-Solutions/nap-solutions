@@ -84,7 +84,7 @@ export const receptionistComparisonRows = [
     feature: 'Outbound agent',
     growth: 'No',
     scale: 'No',
-    deluxe: '1,000 min / mo',
+    deluxe: '500 min / mo',
     enterprise: 'No',
   },
 ]
@@ -192,7 +192,7 @@ export const outboundPricingPlans = [
   {
     tier: 'DELUXE',
     description: 'For teams needing enterprise features with more volume',
-    minutes: '1,000 min / mo',
+    minutes: '500 min / mo',
     price: '$799',
     badge: null,
     subBadge: null,
